@@ -43,115 +43,68 @@ arRoot = {
     root: strInput      //need to pull from programmatic input **
 };
 
-arRoot.verb = function(Tense, Form) {
+arRoot.verb = function(tense, formNum) {
 
-  switch (Tense) {
+  switch (tense) {
 
     //Active Tense
     case "PastPerfect":
-      switch (Form) {
+        return conjPastPerfect(arRoot.root, formNum);
+        break;
 
-        case 1:
-          // pull non-programmatic value from backend? **
-          console.log("Form 1 not yet implemented, sorry.");
-          break;
-
-        case 2:
-          return this.root[0] + ar_a + this.root[1] + ar_2v + ar_a + this.root[2] + ar_a;
-          break;
-
-        case 3:
-          return this.root[0]+ar_a+ar_A+this.root[1]+ar_a+this.root[2]+ar_a;
-
-        case 4:
-          return ar_hA+this.root[0]+ar_0+this.root[1]+ar_a+this.root[2]+ar_a;
-
-        case 5:
-          return ar_t + ar_a + arRoot.verb(Tense,2);
-          break;
-
-        case 6:
-          return ar_t + ar_a + arRoot.verb(Tense,3);
-          break;
-
-        case 7:
-          return ar_A+ar_i+ar_n+ar_0+this.root[0]+ar_a+this.root[1]+ar_a+this.root[2]+ar_a;
-          break;
-
-        case 8:
-          return ar_A+ar_i+this.root[0]+ar_0+ar_t+ar_a+this.root[1]+ar_a+this.root[2]+ar_a;
-          break;
-
-        case 9:
-          return ar_A+ar_i+this.root[0]+ar_0+this.root[1]+ar_a+this.root[2]+ar_2v+ar_a;;
-          break;
-
-        case 10:
-          return ar_A+ar_i+ar_s+ar_0+ar_t+ar_a+this.root[0]+ar_0+this.root[1]+ar_a+this.root[2]+ar_a;
-          break;
-
-        default:
-            console.log("Error, invalid form passed.");
-            break;
-        //end case "PastPerfect":
-      }
-    break;
-
-//Active Tense
     case "PresentImperfect":
-        switch (Form) {
+        return conjPresentImperfect(arRoot.root, formNum);
+        break;
 
+//       switch (Form) {
 //
+//         case 1:
+//           // pull non-programmatic value from backend? **
+//           console.log("Form 1 not yet implemented, sorry.");
+//           break;
 //
+//         case 2:
+//           return this.root[0] + ar_a + this.root[1] + ar_2v + ar_a + this.root[2] + ar_a;
+//           break;
+//
+//         case 3:
+//           return this.root[0]+ar_a+ar_A+this.root[1]+ar_a+this.root[2]+ar_a;
+//
+//         case 4:
+//           return ar_hA+this.root[0]+ar_0+this.root[1]+ar_a+this.root[2]+ar_a;
+//
+//         case 5:
+//           return ar_t + ar_a + arRoot.verb(Tense,2);
+//           break;
+//
+//         case 6:
+//           return ar_t + ar_a + arRoot.verb(Tense,3);
+//           break;
+//
+//         case 7:
+//           return ar_A+ar_i+ar_n+ar_0+this.root[0]+ar_a+this.root[1]+ar_a+this.root[2]+ar_a;
+//           break;
+//
+//         case 8:
+//           return ar_A+ar_i+this.root[0]+ar_0+ar_t+ar_a+this.root[1]+ar_a+this.root[2]+ar_a;
+//           break;
+//
+//         case 9:
+//           return ar_A+ar_i+this.root[0]+ar_0+this.root[1]+ar_a+this.root[2]+ar_2v+ar_a;;
+//           break;
+//
+//         case 10:
+//           return ar_A+ar_i+ar_s+ar_0+ar_t+ar_a+this.root[0]+ar_0+this.root[1]+ar_a+this.root[2]+ar_a;
+//           break;
+//
+//         default:
+//             console.log("Error, invalid form passed.");
+//             break;
+//         //end case "PastPerfect":
+//       }
+
 // RESUME WORK HERE ***
-
-        case 1:
-          // pull non-programmatic value from backend? **
-          console.log("Form 1 not yet implemented, sorry.");
-          break;
-
-        case 2:
-          return this.root[0] + ar_a + this.root[1] + ar_2v + ar_a + this.root[2] + ar_a;
-          break;
-
-        case 3:
-          return this.root[0]+ar_a+ar_A+this.root[1]+ar_a+this.root[2]+ar_a;
-
-        case 4:
-          return ar_hA+this.root[0]+ar_0+this.root[1]+ar_a+this.root[2]+ar_a;
-
-        case 5:
-          return ar_t + ar_a + arRoot.verb(Tense,2);
-          break;
-
-        case 6:
-          return ar_t + ar_a + arRoot.verb(Tense,3);
-          break;
-
-        case 7:
-          return ar_A+ar_i+ar_n+ar_0+this.root[0]+ar_a+this.root[1]+ar_a+this.root[2]+ar_a;
-          break;
-
-        case 8:
-          return ar_A+ar_i+this.root[0]+ar_0+ar_t+ar_a+this.root[1]+ar_a+this.root[2]+ar_a;
-          break;
-
-        case 9:
-          return ar_A+ar_i+this.root[0]+ar_0+this.root[1]+ar_a+this.root[2]+ar_2v+ar_a;;
-          break;
-
-        case 10:
-          return ar_A+ar_i+ar_s+ar_0+ar_t+ar_a+this.root[0]+ar_0+this.root[1]+ar_a+this.root[2]+ar_a;
-          break;
-
-        default:
-            console.log("Error, invalid form passed.");
-            break;
-        //end case "PastPerfect":
-      }
-      break;
-
-    case "Imperative":
+     case "Imperative":
       break;
 
 //Passive Tense
@@ -169,6 +122,108 @@ arRoot.verb = function(Tense, Form) {
 
 };
 
+function conjPastPerfect(root, formNum) {
+//returns conjugated trilateral verb in Past Perfect (active)
+
+    switch (formNum) {
+
+        case 1:
+          // pull non-programmatic value from backend? **
+          console.log("Form 1 not yet implemented, sorry.");
+          break;
+
+        case 2:
+          return root[0] + ar_a + root[1] + ar_2v + ar_a + root[2] + ar_a;
+          break;
+
+        case 3:
+          return root[0]+ ar_A + ar_A +root[1]+ ar_A +root[2]+ ar_a;
+
+        case 4:
+          return ar_hA +root[0]+ ar_0+root[1]+ ar_A +root[2]+ ar_a;
+
+        case 5:
+          return ar_t + ar_a + conjPastPerfect(root, 2);
+          break;
+
+        case 6:
+          return ar_t + ar_a + conjPastPerfect(root, 3);
+          break;
+
+        case 7:
+          return ar_A + ar_i + ar_n+ ar_0+root[0]+ ar_A +root[1]+ ar_A +root[2]+ ar_a;
+          break;
+
+        case 8:
+          return ar_A + ar_i +root[0]+ ar_0+ ar_t + ar_A +root[1]+ ar_A +root[2]+ ar_a;
+          break;
+
+        case 9:
+          return ar_A + ar_i +root[0]+ ar_0+root[1]+ ar_A +root[2]+ ar_2v+ ar_a;;
+          break;
+
+        case 10:
+          return ar_A + ar_i + ar_s+ ar_0+ ar_t + ar_A +root[0]+ ar_0+root[1]+ ar_A +root[2]+ ar_a;
+          break;
+
+        default:
+          console.log("Error, invalid form passed.");
+          break;
+      }
+
+}
+
+
+function conjPresentImperfect(root, formNum) {
+//returns conjugated trilateral verb in Present Imperfect (active)
+
+    switch (formNum) {
+
+        case 1:
+          // pull non-programmatic value from backend? **
+          console.log("Form 1 not yet implemented, sorry.");
+          break;
+
+        case 2:
+          return root[0] + ar_a + root[1] + ar_2v + ar_a + root[2] + ar_a;
+          break;
+
+        case 3:
+          return root[0]+ ar_A + ar_A +root[1]+ ar_A +root[2]+ ar_a;
+
+        case 4:
+          return ar_hA +root[0]+ ar_0+root[1]+ ar_A +root[2]+ ar_a;
+
+        case 5:
+          return ar_t + ar_a + conjPastPerfect(root, 2);
+          break;
+
+        case 6:
+          return ar_t + ar_a + conjPastPerfect(root, 3);
+          break;
+
+        case 7:
+          return ar_A + ar_i + ar_n+ ar_0+root[0]+ ar_A +root[1]+ ar_A +root[2]+ ar_a;
+          break;
+
+        case 8:
+          return ar_A + ar_i +root[0]+ ar_0+ ar_t + ar_A +root[1]+ ar_A +root[2]+ ar_a;
+          break;
+
+        case 9:
+          return ar_A + ar_i +root[0]+ ar_0+root[1]+ ar_A +root[2]+ ar_2v+ ar_a;;
+          break;
+
+        case 10:
+          return ar_A + ar_i + ar_s + ar_0 + ar_t + ar_A + root[0] + ar_0+root[1] + ar_A + root[2] + ar_a;
+          break;
+
+        default:
+            console.log("Error, invalid form passed.");
+            break;
+      }
+
+}
 //
 // objA.verbPastPerfect = {
 //     arDesc: "فعل الماضي",
