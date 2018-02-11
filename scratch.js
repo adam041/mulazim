@@ -1,15 +1,7 @@
-//make constants out of Arabic character holders
-//make methods to do concatenations based on a string
-
-
-
-//crap
-var reF2 = new RegExp();
-sp = "&nbsp";
-//end crap
-
+// // // CONSTANTS
 //Variables holding frequently used arabic characters.
-//Using variables prevents RTF/LTR mismatch dorkery
+//Holding Arabic strings inside prevents RTF/LTR mismatch dorkery
+
 ar_a="َ";			//fatah
 ar_i="ِ";			//kasrah
 ar_u="ْ";			//damma
@@ -28,48 +20,181 @@ ar_s="س";			//sin
 ar_m="م";			//mim
 ar_l="ل";			//lam
 
-root = "فعل";
 
-//verbs, active perfect conjugation
-f2 = root[0]+ar_a+root[1]+ar_2v+ar_a+root[2]+ar_a;
-f3 = root[0]+ar_a+ar_A+root[1]+ar_a+root[2]+ar_a;
-f4 = ar_hA+root[0]+ar_0+root[1]+ar_a+root[2]+ar_a;
-f5 = ar_t+ar_a+f2;
-f6 = ar_t+ar_a+f3;
-f7 = ar_A+ar_i+ar_n+ar_0+root[0]+ar_a+root[1]+ar_a+root[2]+ar_a;
-f8 = ar_A+ar_i+root[0]+ar_0+ar_t+ar_a+root[1]+ar_a+root[2]+ar_a;
-f9 = ar_A+ar_i+root[0]+ar_0+root[1]+ar_a+root[2]+ar_2v+ar_a;
-f10 = ar_A+ar_i+ar_s+ar_0+ar_t+ar_a+root[0]+ar_0+root[1]+ar_a+root[2]+ar_a;
-
-//begin script
-jQuery("#foo").html("hello world");
-jQuery("#foo").html(root+" 2 "+f2+" 3 "+f3+" 4 "+f4+" 5 "+f5 + " 6 " + f6 + " 7 "+f7 +" 8 "+f8+" 9 "+f9+" 10 "+f10);
+// // // INPUTS
+    var strInput = "فعل";   //** eventually need to pull strInput from backend or 'menu' element
 
 
-var objActPerfect = {
-    arDesc: "",
-    enDesc: "Verb in Past Tense, with Active Voice",
-    var root = this.string;
+// // // Do stuff
 
-    if ( root.length != 3 ) {
+jQuery( document ).ready(function() {
+    var strOutput = "hello there";
 
-        //alert user that bad root used
+    strOutput = arRoot.verb("PastPerfect",10);
 
-    }
+    jQuery("#foo").html(strOutput);
 
-    f2 = function() {
-        return root[0]+ar_a+root[1]+ar_2v+ar_a+root[2]+ar_a;
-    }
+});
 
-    f2: root[0]+ar_a+root[1]+ar_2v+ar_a+root[2]+ar_a,
-    f3: root[0]+ar_a+ar_A+root[1]+ar_a+root[2]+ar_a,
-    f4: ar_hA+root[0]+ar_0+root[1]+ar_a+root[2]+ar_a,
-    f5: ar_t+ar_a+f2,
-    f6: ar_t+ar_a+f3,
-    f7: ar_A+ar_i+ar_n+ar_0+root[0]+ar_a+root[1]+ar_a+root[2]+ar_a,
-    f8: ar_A+ar_i+root[0]+ar_0+ar_t+ar_a+root[1]+ar_a+root[2]+ar_a,
-    f9: ar_A+ar_i+root[0]+ar_0+root[1]+ar_a+root[2]+ar_2v+ar_a,
-    f10: ar_A+ar_i+ar
+
+
+arRoot = {
+//** is there a better way to declare object?
+    root: strInput      //need to pull from programmatic input **
+};
+
+arRoot.verb = function(Tense, Form) {
+
+  switch (Tense) {
+
+    //Active Tense
+    case "PastPerfect":
+      switch (Form) {
+
+        case 1:
+          // pull non-programmatic value from backend? **
+          console.log("Form 1 not yet implemented, sorry.");
+          break;
+
+        case 2:
+          return this.root[0] + ar_a + this.root[1] + ar_2v + ar_a + this.root[2] + ar_a;
+          break;
+
+        case 3:
+          return this.root[0]+ar_a+ar_A+this.root[1]+ar_a+this.root[2]+ar_a;
+
+        case 4:
+          return ar_hA+this.root[0]+ar_0+this.root[1]+ar_a+this.root[2]+ar_a;
+
+        case 5:
+          return ar_t + ar_a + arRoot.verb(Tense,2);
+          break;
+
+        case 6:
+          return ar_t + ar_a + arRoot.verb(Tense,3);
+          break;
+
+        case 7:
+          return ar_A+ar_i+ar_n+ar_0+this.root[0]+ar_a+this.root[1]+ar_a+this.root[2]+ar_a;
+          break;
+
+        case 8:
+          return ar_A+ar_i+this.root[0]+ar_0+ar_t+ar_a+this.root[1]+ar_a+this.root[2]+ar_a;
+          break;
+
+        case 9:
+          return ar_A+ar_i+this.root[0]+ar_0+this.root[1]+ar_a+this.root[2]+ar_2v+ar_a;;
+          break;
+
+        case 10:
+          return ar_A+ar_i+ar_s+ar_0+ar_t+ar_a+this.root[0]+ar_0+this.root[1]+ar_a+this.root[2]+ar_a;
+          break;
+
+        default:
+            console.log("Error, invalid form passed.");
+            break;
+        //end case "PastPerfect":
+      }
+    break;
+
+//Active Tense
+    case "PresentImperfect":
+        switch (Form) {
+
+//
+//
+// RESUME WORK HERE ***
+
+        case 1:
+          // pull non-programmatic value from backend? **
+          console.log("Form 1 not yet implemented, sorry.");
+          break;
+
+        case 2:
+          return this.root[0] + ar_a + this.root[1] + ar_2v + ar_a + this.root[2] + ar_a;
+          break;
+
+        case 3:
+          return this.root[0]+ar_a+ar_A+this.root[1]+ar_a+this.root[2]+ar_a;
+
+        case 4:
+          return ar_hA+this.root[0]+ar_0+this.root[1]+ar_a+this.root[2]+ar_a;
+
+        case 5:
+          return ar_t + ar_a + arRoot.verb(Tense,2);
+          break;
+
+        case 6:
+          return ar_t + ar_a + arRoot.verb(Tense,3);
+          break;
+
+        case 7:
+          return ar_A+ar_i+ar_n+ar_0+this.root[0]+ar_a+this.root[1]+ar_a+this.root[2]+ar_a;
+          break;
+
+        case 8:
+          return ar_A+ar_i+this.root[0]+ar_0+ar_t+ar_a+this.root[1]+ar_a+this.root[2]+ar_a;
+          break;
+
+        case 9:
+          return ar_A+ar_i+this.root[0]+ar_0+this.root[1]+ar_a+this.root[2]+ar_2v+ar_a;;
+          break;
+
+        case 10:
+          return ar_A+ar_i+ar_s+ar_0+ar_t+ar_a+this.root[0]+ar_0+this.root[1]+ar_a+this.root[2]+ar_a;
+          break;
+
+        default:
+            console.log("Error, invalid form passed.");
+            break;
+        //end case "PastPerfect":
+      }
+      break;
+
+    case "Imperative":
+      break;
+
+//Passive Tense
+    case "PastPerfect":
+      break;
+
+//Passive Tense
+    case "PresentPerfect":
+      break;
+
+    default:
+      console.log("error, invalid tense entered");
+      break;
+      }
+
+};
+
+//
+// objA.verbPastPerfect = {
+//     arDesc: "فعل الماضي",
+//     enDesc: "Verb in Past Tense, with Active Voice",
+//
+//     if ( this.root.length != 3 ) {
+//         window.alert("Sorry, root is not three characters.");
+//     }
+//
+// //  create methods for conjugation
+//     f2 = function() {
+//         return this.root[0]+ar_a+this.root[1]+ar_2v+ar_a+this.root[2]+ar_a;
+//     }
+//
+// };
+
+//     f1: "???",
+//     f2: root[0]+ar_a+root[1]+ar_2v+ar_a+root[2]+ar_a,
+//     f3: root[0]+ar_a+ar_A+root[1]+ar_a+root[2]+ar_a,
+//     f4: ar_hA+root[0]+ar_0+root[1]+ar_a+root[2]+ar_a,
+//     f5: ar_t+ar_a+f2,
+//     f6: ar_t+ar_a+f3,
+//     f7: ar_A+ar_i+ar_n+ar_0+root[0]+ar_a+root[1]+ar_a+root[2]+ar_a,
+//     f8: ar_A+ar_i+root[0]+ar_0+ar_t+ar_a+root[1]+ar_a+root[2]+ar_a,
+//     f9: ar_A+ar_i+root[0]+ar_0+root[1]+ar_a+root[2]+ar_2v+ar_a,
+//     f10: ar_A+ar_i+ar
 
 
 // //create objCEAC methods for array functions
@@ -91,17 +216,12 @@ var objActPerfect = {
 //
 // return objCEAC;
 // }
-};
 
-//use case
-var root = "فعل";
-var output = "";
-output = root.objActPerfect.f2;
 
-var objCEAC = {
-    head: {text: "", array: []}, //text holds metadata and remarks as string; array holds remarks ONLY as array of objects each having the properties .section, .label, .delimiter, and .value
-    body: {text: "", array: []}, //text holds string, array holds CEAC body as array of objects each having the properties .section, .label, .delimiter, and .value
-    barcode: "",     //10 digit barcode of CEAC
-    casenumber: "",  //case number for DS-260 cases, repeats barcode for all others
-    formtype: ""     //form type of CEAC, i.e. DS-160, DS-260, DS-1648
-};
+// var objCEAC = {
+//     head: {text: "", array: []}, //text holds metadata and remarks as string; array holds remarks ONLY as array of objects each having the properties .section, .label, .delimiter, and .value
+//     body: {text: "", array: []}, //text holds string, array holds CEAC body as array of objects each having the properties .section, .label, .delimiter, and .value
+//     barcode: "",     //10 digit barcode of CEAC
+//     casenumber: "",  //case number for DS-260 cases, repeats barcode for all others
+//     formtype: ""     //form type of CEAC, i.e. DS-160, DS-260, DS-1648
+// };
