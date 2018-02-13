@@ -16,21 +16,22 @@ body {
 th {
     font-weight: bold;
     border: solid black 1px;
-    height:50px;
+    height: 50px;
     vertical-align: top;
-    padding:0;
+    padding: 0;
     border-collapse: collapse;
     }
 
 td {
     border: solid black 1px;
-    height:50px;
+    height: 50px;
     vertical-align: top;
-    padding:0;
+    padding: 0;
     border-collapse: collapse;
 }
 
 .ui-menu {
     width: 50px;
-    text-align:right;
+    text-align: right;
+
 }
