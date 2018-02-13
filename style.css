@@ -1,0 +1,36 @@
+/*
+ -  make Ar text bigger than English text
+ -  Clean up table styling, possibly make td/th same height/width
+*/
+
+@import url(https://code.jquery.com/ui/1.12.1/themes/humanity/jquery-ui.css);
+
+body {
+    font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
+/*
+    font-size: 62.5%;
+    background-color: #c7d5de;
+*/
+    }
+
+th {
+    font-weight: bold;
+    border: solid black 1px;
+    height:50px;
+    vertical-align: top;
+    padding:0;
+    border-collapse: collapse;
+    }
+
+td {
+    border: solid black 1px;
+    height:50px;
+    vertical-align: top;
+    padding:0;
+    border-collapse: collapse;
+}
+
+.ui-menu {
+    width: 50px;
+    text-align:right;
+}
