@@ -2,28 +2,199 @@
 <html>
 
 <head>
-  <title>LtCactus Test Page</title>
+  <title>LtCactus Conjugates </title>
 
     <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-    <script src="scratch.js"></script>
+    <script src="conjugate.js"></script>
 
+<!--  supplement style to make Ar text bigger - flag style span or p
+    breakout css to own file
+ -->
     <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/humanity/jquery-ui.css">
+    <style>
+        body {
+            font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
+/*
+            font-size: 62.5%;
+            background-color: #c7d5de;
+ */
+            }
 
-<!--  supplement style to make Ar text bigger - flag style span or p -->
+        th {
+            font-weight: bold;
+            border: solid black 1px;
+            height:50px;
+            vertical-align: top;
+            padding:0;
+            border-collapse: collapse;
+            }
+
+        td {
+        border: solid black 1px;
+        height:50px;
+        vertical-align: top;
+        padding:0;
+        border-collapse: collapse;
+        }
+
+    </style>
 
     <meta charset="utf-8" />
 
 </head>
 
 
-
 <body>
 
-    <span id="foo">
-        default text
-    </span>
+    <table>
+        <thead>
+            <tr>
+                <th style='text-align:center'>Nouns</th>
+                <th style='text-align:center'>Verbs</th>
+                <th style='text-align:center'>Meta</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <!-- subtable theads should have English in row 1, then Arabic in row 2 -->
+                <td> <div id="subTableNouns">
+                    <table>
+                    <thead>
+                        <tr>
+                            <th>Noun of Time and Place</th>
+                            <th>Recipient (Passive Participle)</th>
+                            <th>Agent (Active Participle)</th>
+                            <th>Verbal Noun (Masdar)</th>
+                        </tr>
+                        <tr>
+                            <th>اسم المكان و الزمان</th>
+                            <th>اسم المفعول</th>
+                            <th>اسم الفاعل</th>
+                            <th>المصدر</th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th>done</th>
+                            <th>doer</th>
+                            <th>doing</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="colPlaceTime"> ... </td>
+                            <td id="colPassiveParticiple"> ... </td>
+                            <td id="colActiveParticiple"> ... </td>
+                            <td id="colMasdar"> ... </td>
+                        </tr>
+                    </tbody>
+                    </table>
+                </div> </td>
+                <td> <div id="subTableVerbs">
+                    <table>
+                    <thead>
+                        <tr>
+                            <th>Passive Present (Imperfect)</th>
+                            <th>Passive Past (Perfect)</th>
+                            <th>Imperative (Command)</th>
+                            <th>Active Present (Imperfect)</th>
+                            <th>Active Past (Perfect)</th>
+                        </tr>
+                        <tr>
+                            <th>المضارع</th>
+                            <th>اسم الماصي</th>
+                            <th>الأمر</th>
+                            <th>اسم المضارع</th>
+                            <th>اسم الماصي</th>
+                        </tr>
+                        <tr>
+                            <th>is done</th>
+                            <th>was done</th>
+                            <th>do!</th>
+                            <th>he does</th>
+                            <th>he did</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="colPassivePresent"> ... </td>
+                            <td id="colPassivePast"> ... </td>
+                            <td id="colImperative"> ... </td>
+                            <td id="colActivePresent"> ... </td>
+                            <td id="colActivePast"> ... </td>
+                        </tr>
+                    </tbody>
+                    </table>
+                </div></td>
+
+                <td> <div id="subTableMeta">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Form</th>
+                                <th>Meaning, Use, and Relationship</th>
+                            </tr>
+                            <tr>
+                                <th>الوزن</th>
+                                <th>المعنى والاستعمال والعلاقة</th>
+                            </tr>
+                            <tr>
+                                <th> </th>
+                                <th> </th>
+                            </tr>
+                         </thead>
+
+                         <tbody>
+                            <tr>
+                                <td>I </td>
+                                <td>Regular </td>
+                            </tr>
+                            <tr>
+                                <td>II </td>
+                                <td>Causative </td>
+                            </tr>
+                            <tr>
+                                <td>III </td>
+                                <td>Participation, Reciprocal </td>
+                            </tr>
+                            <tr>
+                                <td>IV </td>
+                                <td>Reflexive </td>
+                            </tr>
+                            <tr>
+                                <td>V </td>
+                                <td>Reflexive </td>
+                            </tr>
+                            <tr>
+                                <td>VI </td>
+                                <td>Reciprocal, Pretension </td>
+                            </tr>
+                            <tr>
+                                <td>VII </td>
+                                <td>Passive, Responsive </td>
+                            </tr>
+                            <tr>
+                                <td>VIII </td>
+                                <td>Participative, Reflexive </td>
+                            </tr>
+                            <tr>
+                                <td>IX </td>
+                                <td>Colors, Defects </td>
+                            </tr>
+                            <tr>
+                                <td>X </td>
+                                <td>Pretending, Requesting Change, Usage </td>
+                            </tr>
+
+                         </tbody>
+                    </table>
+                </div> </td>
+            </tr>
+        </tbody>
+
+     </table>
 
 </body>
 
