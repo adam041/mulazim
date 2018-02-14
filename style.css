@@ -13,25 +13,66 @@ body {
 */
     }
 
-th {
-    font-weight: bold;
-    border: solid black 1px;
-    height: 50px;
-    vertical-align: top;
-    padding: 0;
+table {
     border-collapse: collapse;
     }
 
-td {
+td table {
+    border: black 1px;
+}
+
+th {
+/* for master table */
+    font-weight: x-large;
+    text-align:center;
+    vertical-align: top;
+    padding: 5;
+    border-collapse: collapse;
+    background-color: #f4ce42;
     border: solid black 1px;
-    height: 50px;
+    }
+
+td td th {
+/* for sub-tables */
+    text-align:center;
+    vertical-align: top;
+    padding: 0;
+    border-collapse: collapse;
+    background-color: #adb6ff;
+    border: solid black 0px;
+
+}
+
+#activeRoot {
+    font-weight: boldest;
+    font-size: xx-large;
+}
+
+td {
     vertical-align: top;
     padding: 0;
     border-collapse: collapse;
 }
 
-.ui-menu {
-    width: 50px;
-    text-align: right;
+td td {
+    border: solid black 1px;
+    height: 40px;
+    /*     40px height keeps row heights from getting dorked up */
+}
 
+/* tri-color shade rows */
+tr tr tr:nth-child(3n+1) {
+    background-color: #bab7ad;
+}
+
+tr tr tr:nth-child(3n+2) {
+    background-color: #7cd6aa;
+}
+tr tr tr:nth-child(3n+3) {
+    background-color: #ff7f7f;
+}
+
+.ui-menu {
+/*     width: 30px; */
+    text-align: right;
 }

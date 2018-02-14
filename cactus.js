@@ -1,14 +1,9 @@
 /*
 Work list
 
-- display active root & re-work table layout
-
 - styling
-    - three color scheme for rows (1 4 7 10, 2 5 8, 3 6 9
-    - noun / verb / both jQuery tabs
-    - row size cleanup
-    - fewer borders
-    - distinct header formats
+    - noun / verb / both jQuery tabs or make noun/verb cols hideable
+    - distinct header formats ~ separate meta columns to two tables
 
 -core logic
     -scripts for other columns verbs(3), nouns(3)
@@ -45,14 +40,10 @@ function conjugateUpdate( root ) {
     arRoot.root = root;
 
     document.title = "LtCactus Conjugates " + arRoot.root;
-    //*** update element giving user feedback as to which root was selected
-
-    var htmlTableStart = "<table> <tbody> ",
-        htmlTableRows = "",
-        htmlTableEnd = "</tbody> </table>";
+    jQuery("#activeRoot").html( arRoot.root );
 
 //Nouns
-    //tbd
+    var htmlTableRows = "";
 
 //Nouns
     //tbd
@@ -61,11 +52,12 @@ function conjugateUpdate( root ) {
     //tbd
 
 //Nouns - Masdar
+
     htmlTableRows = "";
     for (var i = 1; i <= 10; ++ i) {
         htmlTableRows += "<tr> <td> " + arRoot.noun("Masdar", i) + " </td> </tr> ";
         }
-    jQuery("#colMasdar").html( htmlTableStart + htmlTableRows + htmlTableEnd );
+    jQuery("#rowsMasdar").html( htmlTableRows );
 
 //PassivePresent
     //tbd
@@ -81,14 +73,14 @@ function conjugateUpdate( root ) {
     for (var i = 1; i <= 10; ++ i) {
         htmlTableRows += "<tr> <td> " + arRoot.verb("ActivePresent", i) + " </td> </tr> ";
         }
-    jQuery("#colActivePresent").html( htmlTableStart + htmlTableRows + htmlTableEnd );
+    jQuery("#rowsActivePresent").html( htmlTableRows );
 
 //ActivePast
     htmlTableRows = "";
     for (var i = 1; i <= 10; ++ i) {
         htmlTableRows += "<tr> <td> " + arRoot.verb("ActivePast", i) + " </td> </tr> ";
         }
-    jQuery("#colActivePast").html( htmlTableStart + htmlTableRows + htmlTableEnd );
+    jQuery("#rowsActivePast").html( htmlTableRows );
 
 };
 
@@ -97,7 +89,11 @@ $( function() {
     $( "#menuOfRoots" ).menu();
 } );
 
+$( function() {
+// not currently used
+    $( "#tabs" ).tabs();
+  } );
+
 arRoot = {
 //** is there a better way to declare object?
-    //root: strInput      //need to pull from programmatic input **
 };
