@@ -3,7 +3,7 @@ Work list
 
 - styling
     - noun / verb / both jQuery tabs or make noun/verb cols hideable
-    - distinct header formats ~ separate meta columns to two tables
+    - separate meta columns to two tables (to get border in header IAW other headers), reduce font size of english lang text?
 
 -core logic
     -scripts for other columns verbs(3), nouns(3)
