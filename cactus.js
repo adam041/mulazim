@@ -2,11 +2,15 @@
 Work list
 
 - styling
-    - noun / verb / both jQuery tabs or make noun/verb cols hideable
+    - double-check table nesting...
+    - ...jQuery tabs mostly working, but need to remove padding/margins around table/divs within tabs
     - reduce font size of english lang text? (make class for <td> first?)
     - theader class - is it needed?
+    - remove commented out headers from HTML?
 
 -core logic
+    -refresh conjugations when tabs switched
+    -add all tab with nouns+verbs?
     -scripts for other columns verbs(3), nouns(3)
     -handling irregular verbs
 
@@ -92,8 +96,8 @@ $( function() {
 } );
 
 $( function() {
-// not currently used
     $( "#tabs" ).tabs();
+//     conjugateUpdate( $( "#activeRoot" ).text() );
   } );
 
 arRoot = {
