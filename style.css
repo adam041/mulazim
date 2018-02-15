@@ -24,7 +24,7 @@ th {
     padding: 5;
     border-collapse: collapse;
     background-color: #f4ce42;
-    border: solid black 1px;
+    border: solid black 0px;
     }
 
 td td th {
@@ -34,8 +34,7 @@ td td th {
     padding: 0;
     border-collapse: collapse;
     background-color: #adb6ff;
-    border: solid black 0px;
-
+    border-left: solid black 1px;
 }
 
 #activeRoot {

@@ -3,7 +3,8 @@ Work list
 
 - styling
     - noun / verb / both jQuery tabs or make noun/verb cols hideable
-    - separate meta columns to two tables (to get border in header IAW other headers), reduce font size of english lang text?
+    - reduce font size of english lang text? (make class for <td> first?)
+    - theader class - is it needed?
 
 -core logic
     -scripts for other columns verbs(3), nouns(3)
@@ -13,6 +14,7 @@ Work list
     -get more verbs n=5 >>> n=50 >>> n=500
     -pull jQuery menu inputs (from google sheet?)
     -handling of prepositions related to verb forms
+    -english translations (mouseover?)
 
 -secondary features
     -within tense conjugation (i.e. for all subjects; add column on left)
