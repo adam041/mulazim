@@ -9,7 +9,6 @@ Work list
     - remove commented out headers from HTML?
 
 -core logic
-    -refresh conjugations when tabs switched
     -add all tab with nouns+verbs?
     -scripts for other columns verbs(3), nouns(3)
     -handling irregular verbs
@@ -33,7 +32,7 @@ jQuery( document ).ready(function() {
 
 
 //Implement click controls for menu
-    $( "li" ).click(function() {
+    $( "#menuOfRoots li" ).click(function() {
         conjugateUpdate( $(this).text() );
     });
 
