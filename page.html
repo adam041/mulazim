@@ -20,222 +20,233 @@
 
 
 <body>
-<div id="tabs">
+<div id="tabsC">
     <table id="masterTable">
     <thead> <tr>
         <th>
             <ul>
-                <li><a href="#tabs-1">Nouns</a></li>
-                <li><a href="#tabs-2">Verbs</a></li>
-                <li><a href="#tabs-3">Nouns + Verbs</a></li>
+                <li><a href="#tabsC-1">Nouns</a></li>
+                <li><a href="#tabsC-2">Verbs</a></li>
+                <li><a href="#tabsC-3">Nouns + Verbs</a></li>
             </ul>
         </th>
-        <th> </th>
+        <th> &nbsp </th>
         <th id="activeRoot"> </th>
       </tr> </thead>
 
-    <tbody> <tr> <!-- this row holds all sub-tables -->
-        <td>  <!-- This td holds all tabs -->
-            <div id="tabs-1"> <table id="nounTable">
+    <tbody>
+    <tr> <!-- this row holds all sub-tables -->
 
-<!--
-            <div class="tHeader"> <thead> <tr> <th colspan="4">Nouns</th> </tr> </thead> </div>
- -->
+        <td>  <!-- This td holds all tabs -->
+
+        <div id="tabsC-1"> <table id="nounTable">
 
             <tbody> <tr>
                 <td id="tdNounTimePlace"> <table>
+                    <div class="tHeadBlock">
                     <thead>
                         <tr> <th>Noun of Time and Place</th> </tr>
                         <tr> <th>اسم المكان و الزمان</th> </tr>
-                        <tr> <th> </th> </tr>
+                        <tr> <th> &nbsp </th> </tr>
                     </thead>
+                    </div>
                     <tbody id="rowsNounTimePlace"> </tbody>
                 </table> </td>
 
                 <td id="tdPassiveParticiple"> <table>
                     <thead>
+                        <div class="tHeadBlock">
                         <tr> <th>Recipient (Passive Participle)</th> </tr>
                         <tr> <th>اسم المفعول</th> </tr>
                         <tr> <th>done</th> </tr>
+                        </div>
                     </thead>
                     <tbody id="rowsPassiveParticiple"> </tbody>
                 </table> </td>
 
                 <td id="tdPassiveParticiple"> <table>
                     <thead>
+                    <div class="tHeadBlock">
                         <tr> <th>Agent (Active Participle)</th> </tr>
                         <tr> <th>اسم الفاعل</th> </tr>
                         <tr> <th>doer</th> </tr>
+                    </div>
                     </thead>
                     <tbody id="rowsActiveParticiple"> </tbody>
                 </table> </td>
 
                 <td id="tdMasdar"> <table>
                     <thead>
+                        <div class="tHeadBlock">
                         <tr> <th>Verbal Noun (Masdar)</th> </tr>
                         <tr> <th>المصدر</th> </tr>
                         <tr> <th>doing</th> </tr>
+                        </div>
                     </thead>
                     <tbody id="rowsMasdar"> </tbody>
                 </table> </td>
+
             </tr> </tbody>
-        </table> </div> <!-- </td> -->
 
-            <div id="tabs-2"> <table id="verbTable">
-<!--
-                <div class="tHeader" <thead> <tr> <th colspan="5">Verbs</th> </tr> </thead> </div>
- -->
-                <tbody> <tr>
-                    <td id="tdPassivePresent"> <table>
-                        <thead>
-                            <tr> <th>Passive Present (Imperfect)</th> </tr>
-                            <tr> <th>المضارع</th> </tr>
-                            <tr> <th>is done</th> </tr>
-                        </thead>
-                        <tbody id="rowsPassivePresent"> </tbody>
-                    </table> </td>
+        </table> </div>
 
-                    <td id="tdPassivePast"> <table>
-                        <thead>
-                            <tr> <th>Passive Past (Perfect)</th> </tr>
-                            <tr> <th>اسم الماصي</th> </tr>
-                            <tr> <th>was done</th> </tr>
-                        </thead>
-                        <tbody id="rowsPassivePast"> </tbody>
-                    </table> </td>
+        <div id="tabsC-2"> <table id="verbTable">
 
-                    <td id="tdImperative"> <table>
-                        <thead>
-                            <tr> <th>Imperative (Command) <br> &nbsp </th> </tr>
-        <!-- * Maintence note: <br> &nbsp is kludge keep header row height consistent...CSS would be more elegant  -->
-                            <tr> <th>الأمر</th> </tr>
-                            <tr> <th>do!</th> </tr>
-                        </thead>
-                        <tbody id="rowsImperative"> </tbody>
-                    </table> </td>
+            <tbody> <tr>
+                <td id="tdPassivePresent"> <table>
+                    <thead>
+                        <div class="tHeadBlock">
+                        <tr> <th>Passive Present (Imperfect)</th> </tr>
+                        <tr> <th>المضارع</th> </tr>
+                        <tr> <th>is done</th> </tr>
+                        </div>
+                    </thead>
+                    <tbody id="rowsPassivePresent"> </tbody>
+                </table> </td>
 
-                    <td id="tdActivePresent"> <table>
-                        <thead>
-                            <tr> <th>Active Present (Imperfect)</th> </tr>
-                            <tr> <th>اسم المضارع</th> </tr>
-                            <tr> <th>he does</th> </tr>
-                        </thead>
-                        <tbody id="rowsActivePresent"> </table>
+                <td id="tdPassivePast"> <table>
+                    <thead>
+                        <div class="tHeadBlock">
+                        <tr> <th>Passive Past (Perfect)</th> </tr>
+                        <tr> <th>اسم الماصي</th> </tr>
+                        <tr> <th>was done</th> </tr>
+                        </div>
+                    </thead>
+                    <tbody id="rowsPassivePast"> </tbody>
+                </table> </td>
 
-                    <td id="tdActivePast"> <table>
-                        <thead>
-                            <tr> <th>Active Past (Perfect)</th> </tr>
-                            <tr> <th>اسم الماصي</th> </tr>
-                            <tr> <th>he did</th> </tr>
-                        </thead>
-                        <tbody id="rowsActivePast"> </tbody>
-                    </table> </td>
+                <td id="tdImperative"> <table>
+                    <thead>
+                        <div class="tHeadBlock">
+                        <tr> <th>Imperative (Command)</th> </tr>
+                        <tr> <th>الأمر</th> </tr>
+                        <tr> <th>do!</th> </tr>
+                        </div>
+                    </thead>
+                    <tbody id="rowsImperative"> </tbody>
+                </table> </td>
 
-                </tr> </tbody>
+                <td id="tdActivePresent"> <table>
+                    <thead>
+                        <div class="tHeadBlock">
+                        <tr> <th>Active Present (Imperfect)</th> </tr>
+                        <tr> <th>اسم المضارع</th> </tr>
+                        <tr> <th>he does</th> </tr>
+                        </div>
+                    </thead>
+                    <tbody id="rowsActivePresent"> </table>
+
+                <td id="tdActivePast"> <table>
+                    <thead>
+                        <div class="tHeadBlock">
+                        <tr> <th>Active Past (Perfect)</th> </tr>
+                        <tr> <th>اسم الماصي</th> </tr>
+                        <tr> <th>he did</th> </tr>
+                        </div>
+                    </thead>
+                    <tbody id="rowsActivePast"> </tbody>
+                </table> </td>
+
+            </tr> </tbody>
             </table> </div>
 
-        <div id="tabs-3">
+        <div id="tabsC-3">
             <table><tr><td>Coming Soon! (hand wavy jQuery to re-create Noun + Verb tabs here?)</td></tr></table>
         </div>
-    </td> <!-- end td containing all tabs --> </div>  <!-- end of tabs -->
 
-    <td> <table id="metaTable">
-<!--
-        <div class="tHeader"> <thead> <tr> <th colspan="2" '>Metadata</th> </tr> </thead> </div>
- -->
-        <tbody>
-            <tr> <td> <table id="metaSubTable">
-                    <thead>
-                        <tr> <th> &nbsp </th> <th> &nbsp </th> </tr>
-                        <tr>
-                            <th>Form</th>
-                            <th>Meaning, Use, and Relationship</th>
-                        </tr>
-                        <tr>
-                            <th>الوزن</th>
-                            <th>المعنى والاستعمال والعلاقة</th>
-                        </tr>
-                        <tr>
-                            <th> </th>
-                            <th> </th>
-                        </tr>
-                     </thead>
+        </td> <!-- end td containing all tabs -->
 
-                     <tbody>
-                        <tr>
-                            <td>I </td>
-                            <td>Regular </td>
-                        </tr>
-                        <tr>
-                            <td>II </td>
-                            <td>Causative </td>
-                        </tr>
-                        <tr>
-                            <td>III </td>
-                            <td>Participation, Reciprocal </td>
-                        </tr>
-                        <tr>
-                            <td>IV </td>
-                            <td>Causative </td>
-                        </tr>
-                        <tr>
-                            <td>V </td>
-                            <td>Reflexive </td>
-                        </tr>
-                        <tr>
-                            <td>VI </td>
-                            <td>Reciprocal, Pretension </td>
-                        </tr>
-                        <tr>
-                            <td>VII </td>
-                            <td>Passive, Responsive </td>
-                        </tr>
-                        <tr>
-                            <td>VIII </td>
-                            <td>Participative, Reflexive </td>
-                        </tr>
-                        <tr>
-                            <td>IX </td>
-                            <td>Colors, Defects </td>
-                        </tr>
-                        <tr>
-                            <td>X </td>
-                            <td>Pretending, Requesting Change, Usage </td>
-                        </tr>
+        <td>
+            <table id="formColsTable">
+                <tr>
+                    <td>
+                        <table id="formNumberTable">
+                            <div class="tHeadBlock">
+                            <thead>
+                                <tr> <th>Form Number</th> </tr>
+                                <tr> <th>الوزن</th> </tr>
+                                <tr> <th>&nbsp</th> </tr>
+                            </thead>
+                            </div>
 
-                     </tbody>
-            </table> </td> </tr>
-        </tbody>
-    </table> </td>
+                            <tbody>
+                                <tr> <td>I </td> </tr>
+                                <tr> <td>II </td> </tr>
+                                <tr> <td>III </td> </tr>
+                                <tr> <td>IV </td> </tr>
+                                <tr> <td>V </td> </tr>
+                                <tr> <td>VI </td> </tr>
+                                <tr> <td>VII </td> </tr>
+                                <tr> <td>VIII </td> </tr>
+                                <tr> <td>IX </td> </tr>
+                                <tr> <td>X </td> </tr>
+                             </tbody>
+                        </table>
+                    </td>
 
-    <td> <table id="inputTable">
-<!--
-        <div class="tHeader"> <thead> <tr> <th id="activeRoot"> (root) </th> </tr> </thead> </div>
- -->
-        <tbody>
-            <tr> <td> <table id="inputSubTable">
-                <thead>
-                    <tr> <th> &nbsp </th> </tr>
-                    <tr> <th>Select a root below </th> </tr>
-                </thead>
+                    <td>
+                        <table id="formDescriptionTable">
+                        <div class="tHeadBlock">
+                        <thead>
+                            <tr> <th>Meaning, Use, and Relationship</th> <tr>
+                            <tr> <th>المعنى والاستعمال والعلاقة</th> <tr>
+                            <tr> <th>&nbsp</th> </tr>
+                        </thead>
+                        </div>
 
-                <tbody> <tr> <td>
-                    <ul id="menuOfRoots">
-                      <!-- ** Needs a better backend -->
-                      <li><div>فعل</div></li>
-                      <li><div>عمل</div></li>
-                      <li><div>قتل</div></li>
-                      <li><div>ثار</div></li>
-                      <li><div>عرف</div></li>
-                      <li><div>نظر</div></li>
-                      <li><div>عرض</div></li>
-                    </ul>
-                </tbody> </td> </tr>
-            </table> </td> </tr>
+                         <tbody>
+                            <tr> <td>Regular </td> </tr>
+                            <tr> <td>Causative </td> </tr>
+                            <tr> <td>Participation, Reciprocal </td> </tr>
+                            <tr> <td>Causative </td> </tr>
+                            <tr> <td>Reflexive </td> </tr>
+                            <tr> <td>Reciprocal, Pretension </td> </tr>
+                            <tr> <td>Passive, Responsive </td> </tr>
+                            <tr> <td>Participative, Reflexive </td> </tr>
+                            <tr> <td>Colors, Defects </td> </tr>
+                            <tr> <td>Pretending, Requesting Change, Usage </td> </tr>
+                         </tbody>
+                    </table>
+                    </td>
+            </tr>
+            </table>
+        </td>
 
-<!-- end of master table -->
-        </tbody>
+        <td>
+            <table id="inputTable">
+                <tbody>
+                <tr> <td>
+                     <table id="inputSubTable">
+                        <thead>
+                            <tr> <th>Select a root below </th> </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr> <td>
+                            <ul id="menuOfRoots">
+                              <!-- ** Needs a better backend -->
+                              <li><div>فعل</div></li>
+                              <li><div>عمل</div></li>
+                              <li><div>قتل</div></li>
+                              <li><div>ثار</div></li>
+                              <li><div>عرف</div></li>
+                              <li><div>نظر</div></li>
+                              <li><div>عرض</div></li>
+                            </ul>
+                        </td> </tr>
+                        </tbody>
+                    </table>
+                </td> </tr>
+                </tbody>
+            </table>
+        </td>
+
+
+    </tr> <!-- end of rows of masterTable -->
+    </tbody>
     </table>
+
+</div>  <!-- end of tabsC -->
 
 </body>
 </html>

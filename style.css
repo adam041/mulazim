@@ -1,35 +1,56 @@
 @import url(https://code.jquery.com/ui/1.12.1/themes/humanity/jquery-ui.css);
 
-#page td {
-   padding:0;
-   margin:0;
-}
-
-
 body {
     font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
-/*
-    font-size: 62.5%;
-    background-color: #c7d5de;
-*/
-    }
+}
+
+.ui-tabs .ui-tabs-panel {
+    padding: 0 0 0 0;
+/* over-ride default padding of jQuery tabs, so that tabs and non-tabs rows align better     */
+}
 
 table {
     border-collapse: collapse;
-    border: black 1px;
-    padding: 0;
-    margin:0;
+}
 
-    }
+div .tHeadBlock
+{
+/* worthless so far, setting min-height just creates a margin up top */
+    vertical-align: top;
+    min-height: 0px;
+}
+
+thead {
+/* thead can do border; can't do min-height  */
+}
 
 td td th {
 /* for sub-tables */
     text-align:center;
     vertical-align: top;
-    padding: 0;
     border-collapse: collapse;
     background-color: #adb6ff;
-    border-left: solid black 1px;
+}
+
+td {
+    vertical-align: top;
+    padding: 0px 0px 0px 0px;
+    border-collapse: collapse;
+    text-align: center;
+    border: solid black 1px;
+/*  setting td to '40px height' prevents row heights from getting dorked up */
+}
+
+#formNumberTable td  {
+}
+
+#formDescriptionTable td  {
+    text-align: left;
+    /* b/c text is English LTR */
+}
+
+.ui-menu {
+    text-align: right;
 }
 
 #activeRoot {
@@ -37,20 +58,6 @@ td td th {
     font-size: xx-large;
     background-color: #f4ce42;
     border: solid black 1px;
-}
-
-td {
-    vertical-align: top;
-    padding: 0;
-    border-collapse: collapse;
-}
-
-td td {
-    border: solid black 1px;
-/*
-    height: 40px;
- */
-/*     40px height keeps row heights from getting dorked up */
 }
 
 /* tri-color shade rows */
@@ -63,9 +70,4 @@ tr tr tr:nth-child(3n+2) {
 }
 tr tr tr:nth-child(3n+3) {
     background-color: #ff7f7f;
-}
-
-.ui-menu {
-/*     width: 30px; */
-    text-align: right;
 }

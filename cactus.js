@@ -2,11 +2,7 @@
 Work list
 
 - styling
-    - double-check table nesting...
-    - ...jQuery tabs mostly working, but need to remove padding/margins around table/divs within tabs
-    - reduce font size of english lang text? (make class for <td> first?)
-    - theader class - is it needed?
-    - remove commented out headers from HTML?
+    - tHeadBlock class - is it needed - maybe?
 
 -core logic
     -add all tab with nouns+verbs?
@@ -92,12 +88,9 @@ function conjugateUpdate( root ) {
 
 $( function() {
     $( "#menuOfRoots" ).menu();
+    $( "#tabsC" ).tabs();
 } );
 
-$( function() {
-    $( "#tabs" ).tabs();
-//     conjugateUpdate( $( "#activeRoot" ).text() );
-  } );
 
 arRoot = {
 //** is there a better way to declare object?
