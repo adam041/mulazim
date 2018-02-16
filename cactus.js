@@ -2,7 +2,8 @@
 Work list
 
 - styling
-    - tHeadBlock class - is it needed - maybe?
+    - tHeadBlock class - Is it needed : Maybe?  Does it work? : No
+    - jQuery ok for desktop safari, tabs don't display correctly on ios safari
 
 -core logic
     -add all tab with nouns+verbs?
