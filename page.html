@@ -20,13 +20,14 @@
 
 
 <body>
+    <div id="tabsC"> <!--  moving div to within table breaks tabs on OSX\safari -->
+
     <table id="masterTable">
-    <div id="tabsC">
     <thead> <tr>
         <th>
             <ul>
-                <li><a href="#tabsC-1">Nouns</a></li>
-                <li><a href="#tabsC-2">Verbs</a></li>
+                <li><a href="#tabsC-1">Verbs</a></li>
+                <li><a href="#tabsC-2">Nouns</a></li>
                 <li><a href="#tabsC-3">Nouns + Verbs</a></li>
             </ul>
         </th>
@@ -39,58 +40,8 @@
 
         <td>  <!-- This td holds all tabs -->
 
-        <div id="tabsC-1"> <table id="nounTable">
-
-            <tbody> <tr>
-                <td id="tdNounTimePlace"> <table>
-                    <div class="tHeadBlock">
-                    <thead>
-                        <tr> <th>Noun of Time and Place</th> </tr>
-                        <tr> <th>اسم المكان و الزمان</th> </tr>
-                        <tr> <th> &nbsp </th> </tr>
-                    </thead>
-                    </div>
-                    <tbody id="rowsNounTimePlace"> </tbody>
-                </table> </td>
-
-                <td id="tdPassiveParticiple"> <table>
-                    <thead>
-                        <div class="tHeadBlock">
-                        <tr> <th>Recipient (Passive Participle)</th> </tr>
-                        <tr> <th>اسم المفعول</th> </tr>
-                        <tr> <th>done</th> </tr>
-                        </div>
-                    </thead>
-                    <tbody id="rowsPassiveParticiple"> </tbody>
-                </table> </td>
-
-                <td id="tdPassiveParticiple"> <table>
-                    <thead>
-                    <div class="tHeadBlock">
-                        <tr> <th>Agent (Active Participle)</th> </tr>
-                        <tr> <th>اسم الفاعل</th> </tr>
-                        <tr> <th>doer</th> </tr>
-                    </div>
-                    </thead>
-                    <tbody id="rowsActiveParticiple"> </tbody>
-                </table> </td>
-
-                <td id="tdMasdar"> <table>
-                    <thead>
-                        <div class="tHeadBlock">
-                        <tr> <th>Verbal Noun (Masdar)</th> </tr>
-                        <tr> <th>المصدر</th> </tr>
-                        <tr> <th>doing</th> </tr>
-                        </div>
-                    </thead>
-                    <tbody id="rowsMasdar"> </tbody>
-                </table> </td>
-
-            </tr> </tbody>
-
-        </table> </div>
-
-        <div id="tabsC-2"> <table id="verbTable">
+        <div id="tabsC-1">
+        <table id="verbTable">
 
             <tbody> <tr>
                 <td id="tdPassivePresent"> <table>
@@ -150,11 +101,65 @@
             </tr> </tbody>
             </table> </div>
 
+        <div id="tabsC-2">
+        <table id="nounTable">
+
+            <tbody> <tr>
+                <td id="tdNounTimePlace"> <table>
+                    <div class="tHeadBlock">
+                    <thead>
+                        <tr> <th>Noun of Time and Place</th> </tr>
+                        <tr> <th>اسم المكان و الزمان</th> </tr>
+                        <tr> <th> &nbsp </th> </tr>
+                    </thead>
+                    </div>
+                    <tbody id="rowsNounTimePlace"> </tbody>
+                </table> </td>
+
+                <td id="tdPassiveParticiple"> <table>
+                    <thead>
+                        <div class="tHeadBlock">
+                        <tr> <th>Recipient (Passive Participle)</th> </tr>
+                        <tr> <th>اسم المفعول</th> </tr>
+                        <tr> <th>done</th> </tr>
+                        </div>
+                    </thead>
+                    <tbody id="rowsPassiveParticiple"> </tbody>
+                </table> </td>
+
+                <td id="tdPassiveParticiple"> <table>
+                    <thead>
+                    <div class="tHeadBlock">
+                        <tr> <th>Agent (Active Participle)</th> </tr>
+                        <tr> <th>اسم الفاعل</th> </tr>
+                        <tr> <th>doer</th> </tr>
+                    </div>
+                    </thead>
+                    <tbody id="rowsActiveParticiple"> </tbody>
+                </table> </td>
+
+                <td id="tdMasdar"> <table>
+                    <thead>
+                        <div class="tHeadBlock">
+                        <tr> <th>Verbal Noun (Masdar)</th> </tr>
+                        <tr> <th>المصدر</th> </tr>
+                        <tr> <th>doing</th> </tr>
+                        </div>
+                    </thead>
+                    <tbody id="rowsMasdar"> </tbody>
+                </table> </td>
+
+            </tr> </tbody>
+
+        </table>
+        </div>
+
         <div id="tabsC-3">
             <table><tr><td>Coming Soon! (hand wavy jQuery to re-create Noun + Verb tabs here?)</td></tr></table>
         </div>
 
         </td> <!-- end td containing all tabs -->
+
 </div>  <!~~ end of tabsC ~~>
 
         <td>
@@ -248,7 +253,7 @@
     </table>
 
 <!--
-</div>  <!~~ end of tabsC ~~>
+</div>  <!~~ end of tabsC - closing div at end breaks tabs on IOS\Safari ~~>
  -->
 
 </body>

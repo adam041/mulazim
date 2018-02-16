@@ -3,7 +3,7 @@ Work list
 
 - styling
     - tHeadBlock class - Is it needed : Maybe?  Does it work? : No
-    - jQuery ok for desktop safari, tabs don't display correctly on ios safari
+    - jQuery ok for desktop safari, tabs don't display correctly on ios safari -- fixed
 
 -core logic
     -add all tab with nouns+verbs?
@@ -62,7 +62,11 @@ function conjugateUpdate( root ) {
     jQuery("#rowsMasdar").html( htmlTableRows );
 
 //PassivePresent
-    //tbd
+    htmlTableRows = "";
+    for (var i = 1; i <= 10; ++ i) {
+        htmlTableRows += "<tr> <td> " + arRoot.verb("PassivePresent", i) + " </td> </tr> ";
+        }
+    jQuery("#rowsPassivePresent").html( htmlTableRows );
 
 //PassivePast
     //tbd
