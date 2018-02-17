@@ -2,12 +2,9 @@
 Work list
 
 - styling
-    - tHeadBlock class - Is it needed : Maybe?  Does it work? : No
-    - jQuery ok for desktop safari, tabs don't display correctly on ios safari -- fixed
 
 -core logic
     -add all tab with nouns+verbs?
-    -scripts for other columns verbs(3), nouns(3)
     -handling irregular verbs
 
 -backend / data quality
@@ -44,50 +41,38 @@ function conjugateUpdate( root ) {
     document.title = "LtCactus Conjugates " + arRoot.root;
     jQuery("#activeRoot").html( arRoot.root );
 
-//Nouns
     var htmlTableRows = "";
 
-//Nouns
-    //tbd
+    var arrNouns = [
+        "NounTimePlace",
+        "PassiveParticiple",
+        "ActiveParticiple",
+        "Masdar"
+    ];
 
-//Nouns
-    //tbd
+    var arrVerbs = [
+        "PassivePresent",
+        "PassivePast",
+        "Imperative",
+        "ActivePresent",
+        "ActivePast"
+    ];
 
-//Nouns - Masdar
+    arrNouns.forEach(function(element) {
+        htmlTableRows = "";
+        for (var i = 1; i <= 10; ++ i) {
+            htmlTableRows += "<tr> <td> " + arRoot.noun(element, i) + " </td> </tr> ";
+            }
+        jQuery("#rows"+element).html( htmlTableRows );
+    });
 
-    htmlTableRows = "";
-    for (var i = 1; i <= 10; ++ i) {
-        htmlTableRows += "<tr> <td> " + arRoot.noun("Masdar", i) + " </td> </tr> ";
-        }
-    jQuery("#rowsMasdar").html( htmlTableRows );
-
-//PassivePresent
-    htmlTableRows = "";
-    for (var i = 1; i <= 10; ++ i) {
-        htmlTableRows += "<tr> <td> " + arRoot.verb("PassivePresent", i) + " </td> </tr> ";
-        }
-    jQuery("#rowsPassivePresent").html( htmlTableRows );
-
-//PassivePast
-    //tbd
-
-//Imperative
-    //tbd
-
-//ActivePresent
-    htmlTableRows = "";
-    for (var i = 1; i <= 10; ++ i) {
-        htmlTableRows += "<tr> <td> " + arRoot.verb("ActivePresent", i) + " </td> </tr> ";
-        }
-    jQuery("#rowsActivePresent").html( htmlTableRows );
-
-//ActivePast
-    htmlTableRows = "";
-    for (var i = 1; i <= 10; ++ i) {
-        htmlTableRows += "<tr> <td> " + arRoot.verb("ActivePast", i) + " </td> </tr> ";
-        }
-    jQuery("#rowsActivePast").html( htmlTableRows );
-
+    arrVerbs.forEach(function(element) {
+        htmlTableRows = "";
+        for (var i = 1; i <= 10; ++ i) {
+            htmlTableRows += "<tr> <td> " + arRoot.verb(element, i) + " </td> </tr> ";
+            }
+        jQuery("#rows"+element).html( htmlTableRows );
+    });
 };
 
 

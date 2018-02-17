@@ -13,15 +13,8 @@ table {
     border-collapse: collapse;
 }
 
-div .tHeadBlock
-{
-/* worthless so far, setting min-height just creates a margin up top */
-    vertical-align: top;
-    min-height: 0px;
-}
-
-thead {
-/* thead can do border; can't do min-height  */
+.arHead {
+    font-weight: bold;
 }
 
 td td th {
@@ -30,6 +23,7 @@ td td th {
     vertical-align: top;
     border-collapse: collapse;
     background-color: #adb6ff;
+    height: 110px;
 }
 
 td {
@@ -38,7 +32,7 @@ td {
     border-collapse: collapse;
     text-align: center;
     border: solid black 1px;
-/*  setting td to '40px height' prevents row heights from getting dorked up */
+    height: 26px;
 }
 
 #formNumberTable td  {
