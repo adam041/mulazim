@@ -25,11 +25,37 @@ Work list
 jQuery( document ).ready(function() {
 
 //Pull menu data from backend
-var gSheetID = "1A5YkYEKrReJ3jjAraR4ycbLIOHf3a_k6-3FM6uh-7Gw",
-    jsonURL = "https://spreadsheets.google.com/feeds/list/" + gSheetID + "/od6/public/values?alt=json-in-script";
-    //  jsonURL = "http://cors.io/spreadsheets.google.com/feeds/list/" + gSheetID + "/od6/public/values?alt=json";
 
-var jsonCactus = {};
+var gURL = 'https://docs.google.com/spreadsheets/d/1A5YkYEKrReJ3jjAraR4ycbLIOHf3a_k6-3FM6uh-7Gw/edit#gid=0';
+
+
+$('#demoTable').sheetrock({
+  url: gURL,
+  query: "select A,B,C,D,E,F where A = 1 order by A desc"
+});
+
+//Implement click controls for menu
+    $( "#menuOfRoots li" ).click(function() {
+        conjugateUpdate( $(this).text() );
+    });
+
+});
+
+// var gSheetID = "1A5YkYEKrReJ3jjAraR4ycbLIOHf3a_k6-3FM6uh-7Gw",
+//     gURL = "'https://docs.google.com/spreadsheets/d/" + gSheetID + "/edit#gid=0";
+
+//
+//
+
+
+
+
+//garbage ...
+//garbage ...
+//garbage ...
+//garbage ...
+
+// var jsonCactus = {};
 
 // gapi.client.sheets.spreadsheets.values.get({
 //   spreadsheetId: "1A5YkYEKrReJ3jjAraR4ycbLIOHf3a_k6-3FM6uh-7Gw",
@@ -68,13 +94,7 @@ var jsonCactus = {};
 // console says XHR for json works, but can't manipulate or read object =( **** callback not firing
 //     console.log( jsonCactus );
 
-//Implement click controls for menu
-    $( "#menuOfRoots li" ).click(function() {
-        conjugateUpdate( $(this).text() );
-        console.log("jc:" + jsonCactus.length);
-    });
-
-});
+//^^ end garbage
 
 
 function conjugateUpdate( root ) {
