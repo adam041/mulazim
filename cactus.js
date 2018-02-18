@@ -8,9 +8,12 @@ Work list
     -handling irregular verbs
 
 -backend / data quality
-    -get more verbs n=5 >>> n=50 >>> n=500
     -pull jQuery menu inputs (from google sheet?)
-    -handling of prepositions related to verb forms
+        -- try gAPI from github.io (prohibited from local host)
+
+        -- read backend and apply correct masdar pattern (i.e. 1..., 2..., null gets both)
+        -- dynamic highlighting to show known words and/or suppress unknown (missing) words
+    -handling of prepositions related to verb forms?
     -english translations (mouseover?)
 
 -secondary features
@@ -21,13 +24,54 @@ Work list
 
 jQuery( document ).ready(function() {
 
-// Load Menu Control from backend
-// ** tbd
+//Pull menu data from backend
+var gSheetID = "1A5YkYEKrReJ3jjAraR4ycbLIOHf3a_k6-3FM6uh-7Gw",
+    jsonURL = "https://spreadsheets.google.com/feeds/list/" + gSheetID + "/od6/public/values?alt=json-in-script";
+    //  jsonURL = "http://cors.io/spreadsheets.google.com/feeds/list/" + gSheetID + "/od6/public/values?alt=json";
 
+var jsonCactus = {};
+
+// gapi.client.sheets.spreadsheets.values.get({
+//   spreadsheetId: "1A5YkYEKrReJ3jjAraR4ycbLIOHf3a_k6-3FM6uh-7Gw",
+//   range: "roots"
+// }).then((response) => {
+//   var result = response.result;
+//   var numRows = result.values ? result.values.length : 0;
+//   console.log(`${numRows} rows retrieved.`);
+//
+// });
+//
+
+ //    $.getJSON(jsonURL, function (data) {
+//
+//         jQuery("#taDump").val( "xhr is done" );
+//
+//         jQuery("#taDump").val( data );
+//
+//     // Iterate the groups first.
+//     $.each(data.response.venue.tips.groups, function (index, value) {
+//
+//         // Get the items
+//
+//         //entry.id[#].content[]
+//
+//         var items = this.items; // Here 'this' points to a 'group' in 'groups'
+//
+//         // Iterate through items.
+//         $.each(items, function () {
+//             console.log(this.text); // Here 'this' points to an 'item' in 'items'
+//         });
+
+//     jsonCactus = data;
+//     });
+
+// console says XHR for json works, but can't manipulate or read object =( **** callback not firing
+//     console.log( jsonCactus );
 
 //Implement click controls for menu
     $( "#menuOfRoots li" ).click(function() {
         conjugateUpdate( $(this).text() );
+        console.log("jc:" + jsonCactus.length);
     });
 
 });
