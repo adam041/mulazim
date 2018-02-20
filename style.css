@@ -4,6 +4,16 @@ body {
     font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
 }
 
+.hideMe {
+    display: none;
+}
+
+button {
+    background-color: #fff8dc;
+    font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
+    font-size: small;
+}
+
 .ui-tabs .ui-tabs-panel {
     padding: 0 0 0 0;
 /* over-ride default padding of jQuery tabs, so that tabs and non-tabs rows align better     */
