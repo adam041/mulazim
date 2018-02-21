@@ -9,14 +9,12 @@ Work list
         -- read backend and apply correct masdar pattern (i.e. 1..., 2..., null gets both)
         -- dynamic highlighting to show known words and/or suppress unknown (missing) words
         -- handling of prepositions related to verb forms?
-        -- english translations (mouseover?)
+        -- english translations via tool tip (or inject html into span in meaning column)
 
 -secondary features
     -within tense conjugation (i.e. for all subjects; add column on left)
     -translation by mouseover or appended column
 */
-
-
 
 
 function setupMenu(error, options, response){
@@ -59,8 +57,8 @@ $('#menuTable').sheetrock({
 $('#dataTable').sheetrock({
   url: gURL,
   query: "select A,B,C,D,E,F where A = 1 order by C desc",
-  labels: ['Form', 'Preposition', 'Root', 'PresentStem', 'Masdar', 'TransVerb']
-//callback:
+  labels: ['Form', 'Preposition', 'Root', 'PresentStem', 'Masdar', 'TransVerb'],
+  callback: setupData
 });
 
 
@@ -69,39 +67,18 @@ $( "#buttonA" ).click(function() {
     var targetElement = "table#formDescriptionTable";
     $( targetElement ).toggle();
 
-});
+
+//prototype of data access function
+    var foo = "فعل";
+    var objFoo = loadData();
+    console.log( "find me fayl 1 PresentStem" );
+    console.log( objFoo.query(foo, 1, "PresentStem") ); // works
+
+
 
 });
 
-
-function backendArray() {
-//returns array containing rows from backend data table, for more dynamic conjugating...
-
-//****
-//objectify data and dredge up getValue to get value(s) corresponding to field label?
-//or preserve google response object?
-
-var arrHeaders = new Array,
-    arrRows = new Array,
-    arrRow = new Array;
-
-    $( "#dataTable th" ).each(function(colIndex) {
-        arrHeaders.push( $(this).text() );
-    });
-
-    $( "#dataTable tbody tr" ).each(function(rowIndex) {
-
-        $(this).find("td").each (function(colIndex) {
-            arrRow.push( $(this).text() );
-        });
-
-        arrRows.push( arrRow );
-        arrRow = [];
-
-    });
-
-    return arrRows;
-}
+});
 
 
 function conjugateUpdate( root ) {
@@ -154,9 +131,68 @@ function conjugateUpdate( root ) {
 
 $( function() {
     $( "#tabsC" ).tabs();
+    $( document ).tooltip();
 } );
 
+var arRoot = new Object;
 
-arRoot = {
-//** is there a better way to declare object?
-};
+function setupData() {
+//callback function after google sheet query is complete
+
+//     var objData = new Object;
+//     objData = loadData();
+}
+
+$( loadData = function() {
+//returns object containing header labels and data rows from backend data table, for more dynamic conjugating...
+
+var arrRow = new Array;
+
+//make object objBackend to organize backend data for local re-use
+var objBackend = {
+
+    headers: new Array,
+    rows: new Array,
+    output: new String,
+
+        query(root, form, field) {
+
+            //locate column position of desired field in header
+            var rootPos = $.inArray( "Root", objBackend.headers ),
+                formPos = $.inArray( "Form", objBackend.headers ),
+                fieldPos = $.inArray( field, objBackend.headers );
+
+            output = "0";
+
+            objBackend.rows.forEach(function( currentValue, index ) {
+                if (( currentValue[rootPos] === root ) && ( eval(currentValue[formPos]) === form )) {
+    //              console.log( "match! @ " + currentValue);
+                    output = currentValue[fieldPos];
+                }
+
+            });
+
+            return output;
+
+            }
+    }
+
+//scrape table to load objBackend
+    $( "#dataTable th" ).each(function(colIndex) {
+        objBackend.headers.push( $(this).text() );
+    });
+
+    $( "#dataTable tbody tr" ).each(function(rowIndex) {
+
+        $(this).find("td").each (function(colIndex) {
+            arrRow.push( $(this).text() );
+        });
+
+        objBackend.rows.push( arrRow );
+        arrRow = [];
+
+    });
+
+    return objBackend;
+
+} );

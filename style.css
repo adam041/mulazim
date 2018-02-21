@@ -8,6 +8,11 @@ body {
     display: none;
 }
 
+label {
+    display: inline-block;
+    width: 5em;
+  }
+
 button {
     background-color: #fff8dc;
     font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";

@@ -145,9 +145,19 @@ function conjMasdar(root, formNum) {
     switch (formNum) {
 
         case 1:
-          // pull non-programmatic value from backend? **
-          return "TBD";
-          break;
+          // pull non-programmatic value from backend
+          //** resume work here
+          // * masdar search not working when western numbers and arabic text are in the same column
+          // * gracefully note when objData.query fails...include fail_txt as 4th param?
+
+            objData = loadData();
+
+            if ( (objData.rows.length !== undefined) && (objData.rows.length > 0) ) {
+                return objData.query(root, formNum, "Masdar");
+            } else {
+                return "unknown";
+            }
+            break;
 
         case 2:
           return ar_t + ar_a + root[0] + ar_0 + root[1] + ar_i + ar_Y + root[2] + ar_un + " | " + ar_t + ar_a + root[0] + ar_0 + root[1] + ar_i + root[2] + ar_a + ar_tb + ar_un;

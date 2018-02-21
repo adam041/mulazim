@@ -91,8 +91,15 @@ function conjActivePresent(root, formNum) {
     switch (formNum) {
 
         case 1:
-          // pull non-programmatic value from backend? **
-          return "TBD";
+        //resume work here *****
+            objData = loadData();
+
+            if ( (objData.rows.length !== undefined) && (objData.rows.length > 0) ) {
+                return objData.query(root, formNum, "PresentStem");
+            } else {
+                return "unknown";
+            }
+
           break;
 
         case 2:
