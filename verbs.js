@@ -1,37 +1,5 @@
 //Verb Conjugation Scripts
 
-// arRoot.verb = function(tense, formNum) {
-//
-//   switch (tense) {
-//
-//     //Active Tense
-//     case "ActivePast":
-//         return conjActivePast(arRoot.root, formNum);
-//         break;
-//
-//     case "ActivePresent":
-//         return conjActivePresent(arRoot.root, formNum);
-//         break;
-//
-//     case "Imperative":
-//         return conjImperative(arRoot.root, formNum);
-//         break;
-//
-//     case "PassivePast":
-//         return conjPassivePast(arRoot.root, formNum);
-//         break;
-//
-//     case "PassivePresent":
-//         return conjPassivePresent(arRoot.root, formNum);
-//         break;
-//
-//     default:
-//       console.log("error, invalid tense entered");
-//       break;
-//       }
-// };
-//
-
 function conjActivePast(root, formNum) {
 //returns conjugated trilateral verb in Past Perfect (active)
 

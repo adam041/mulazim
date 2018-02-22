@@ -23,6 +23,6 @@ ar_s="س";           //sin
 ar_m="م";           //mim
 ar_l="ل";           //lam
 
-ar_mu="مٌ";           //mim + damma
+ar_mu="مٌ";         //mim + damma
 
-ar_Do="فعل";           //verb for debugging
+ar_Do="فعل";        //verb for debugging

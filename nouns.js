@@ -1,33 +1,5 @@
 //Noun Conjugation Scripts
 
-// arRoot.noun = function(tense, formNum) {
-//
-//   switch (tense) {
-//
-//     case "Masdar":
-//         return conjMasdar(arRoot.root, formNum);
-//         break;
-//
-//     case "ActiveParticiple":
-//         return conjActiveParticiple(arRoot.root, formNum);
-//         break;
-//
-//     case "PassiveParticiple":
-//         return conjPassiveParticiple(arRoot.root, formNum);;
-//         break;
-//
-//     case "NounTimePlace":
-//         return conjNounTimePlace(arRoot.root, formNum);
-//         break;
-//
-//     default:
-//       return "error"
-//       break;
-//     }
-//
-// };
-
-
 function conjNounTimePlace(root, formNum) {
 
     switch (formNum) {

@@ -22,6 +22,90 @@
 
 
 <body>
+
+
+    <table id="masterTable">
+    <thead> <tr>
+        <th id="thButtons">
+            <button id="btnVerbs" title="show/hide Verb conjugations">Nouns</button>
+            <button id="btnNouns" title="show/hide Noun conjugations">Verbs</button>
+            <button id="btnMeaning" title="show/hide Meaning, Use and Relationship column">Meaning</button>
+            <button id="btnTranslation" title="show/hide translation column">Translation</button>
+        </th>
+        <th id="activeRoot"> </th>
+      </tr> </thead>
+
+    <tbody>
+    <tr>
+        <td>
+        <!-- This td holds the sub-table containing all conjugations and meta-data.  The next td holds the inputs menu -->
+        <table id="contentTable">
+            <thead>
+            <tr>
+                <th class='thNoun' >Noun of Time and Place<br> <span class="arHead">اسم المكان و الزمان</span> </th>
+                <th class='thNoun' >Recipient (Passive Participle)<br> <span class="arHead">اسم المفعول</span> <br> done</th>
+                <th class='thNoun' >Agent (Active Participle)<br> <span class="arHead">اسم الفاعل</span> <br> doer</th>
+                <th class='thNoun' >Verbal Noun (Masdar)<br> <span class="arHead">المصدر</span> <br> doing</th>
+
+                <th>Passive Present (Imperfect)<br>المضارع<br>is done</th>
+                <th>Passive Past (Perfect)<br>اسم الماصي<br>was done</th>
+                <th>Imperative (Command)<br>الأمر<br>do!</th>
+                <th>Active Present (Imperfect)<br>اسم المضارع<br>he does</th>
+                <th>Active Past (Perfect)<br>اسم الماصي<br>he did</th>
+
+                <th>Form Number<br> <span class="arHead">الوزن</span></th>
+                <th>Meaning, Use, and Relationship <br> <span class="arHead">المعنى والاستعمال والعلاقة</span></th>
+                <th>English Translation</th>
+            </thead>
+
+             <tbody>
+                <!-- programatically fill in           -->
+             </tbody>
+         </table>
+         </td>
+
+         <td>
+        <!--this table holds the inputs menu           -->
+        <table id="inputTable">
+            <tbody>
+            <tr> <td>
+                 <table id="inputSubTable">
+                    <thead>
+                        <tr> <th>Select a root below </th> </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr> <td>
+                        <ul id="menuOfRoots">
+                          <!-- on load, fill in from backend -->
+                        </ul>
+                    </td> </tr>
+                    </tbody>
+                </table>
+            </td> </tr>
+            </tbody>
+        </table>
+        </td>
+
+
+    </tr> <!-- end of rows of masterTable -->
+    </tbody>
+    </table>
+
+
+
+
+
+<!-- ////////////////////// -->
+<!-- ////////////////////// -->
+<!-- ////////////////////// -->
+<!-- ////////////////////// -->
+<!-- ////////////////////// -->
+<!-- ////////////////////// -->
+<!-- ////////////////////// -->
+<!-- ////////////////////// -->
+<!-- ////////////////////// -->
+
     <div id="tabsC"> <!--  moving div to within table breaks tabs on OSX\safari -->
 
     <table id="masterTable">
@@ -227,7 +311,7 @@
 <div class="hideMe">
     <table id="menuTable" class="table table-condensed table-striped"></table>
     <table id="dataTable" class="table table-condensed table-striped">
-        <!--load some data so initial loading doesn't get dorked up before XHR returned-->
+        <!--here is some data so initial loading doesn't get dorked up before XHR returned-->
         <thead>
             <tr><th>Form</th><th>Preposition</th><th>Root</th><th>PresentStem</th><th>Masdar</th><th>TransVerb</th></tr>
         </thead>

@@ -2,18 +2,21 @@
 Work list
 - styling
     - re-org html tables into One Big Table.  Nix tabs in favor of buttons to drive jQuery toggles (verbs, nouns, verbs+nouns, meaning, translation)
+        >> buttons hide tbody TDs, but not TH
 
 -core logic
     -handling irregular verbs
-     -handling binary masdar in form 2/3 - encode as letter or arabic/arabic number?
+    -handling binary masdar in form 2/3 - encode as letter or arabic/arabic number?
 
 -backend / data quality
     -pull jQuery menu inputs (sheetrock.js from gSheet!)
         -- dynamic highlighting to show known words and/or suppress unknown (missing) words
         -- handling of prepositions related to verb forms?
+        -- record active past tense for form 1.  Maybe use active-past as basic form, and derive vowel-less root?
 
 -secondary features
-    -within tense conjugation (i.e. for all subjects; add column on left)
+    - display translation per row
+    - within tense conjugation (i.e. for all subjects; add column on left)
     - english translations of masdar via tool tip <title>, pull from dataTable
 */
 
@@ -62,13 +65,30 @@ $('#dataTable').sheetrock({
   callback: setupData
 });
 
-
 $( "#buttonA" ).click(function() {
-
     var targetElement = "table#formDescriptionTable";
     $( targetElement ).toggle();
-
 });
+
+$( "#btnVerbs" ).click(function() {
+    $( ".cellVerb" ).toggle();
+    //corresponding th/headers not getting toggled =(
+});
+
+$( "#btnNouns" ).click(function() {
+    $( ".cellNoun" ).toggle();
+    $( ".thNoun" ).toggle();
+    //corresponding th/headers not getting toggled =(
+});
+
+$( "#btnMeaning" ).click(function() {
+    $( ".cellMeaning" ).toggle();
+});
+
+$( "#btnTranslation" ).click(function() {
+    $( ".cellTranslation" ).toggle();
+});
+
 
 });
 
@@ -116,6 +136,14 @@ function makeReferenceObject() {
 function conjugateUpdate( root ) {
 //Updates data tables with conjugated verbs/nouns
 
+//Display active root on table and in title
+    document.title = "LtCactus Conjugates " + root;
+    jQuery("#activeRoot").html( root );
+
+//Draw table rows
+    jQuery("#contentTable tbody").html( drawRows(root) );
+
+/*
 objRoot = {
     root: root,
 
@@ -181,58 +209,7 @@ objRoot = {
 
 
 };  // arRoot
-
-
-//Once objects set up, update web page
-    document.title = "LtCactus Conjugates " + objRoot.root;
-    jQuery("#activeRoot").html( objRoot.root );
-
-    var htmlTableRows = "";
-
-
-////////////////////
-//  drawRow
-// <tr> unspoolTDs!
-////////////////////
-
-
-//deprecate?
-    var arrNouns = [
-        "NounTimePlace",
-        "PassiveParticiple",
-        "ActiveParticiple",
-        "Masdar"
-    ];
-//deprecate?
-    var arrVerbs = [
-        "PassivePresent",
-        "PassivePast",
-        "Imperative",
-        "ActivePresent",
-        "ActivePast"
-    ];
-//deprecate?
-
-
-    arrNouns.forEach(function(element) {
-        htmlTableRows = "";
-        for (var i = 1; i <= 10; ++ i) {
-            htmlTableRows += "<tr> <td> " + objRoot.noun(element, i) + " </td> </tr> ";
-            }
-        jQuery("#rows"+element).html( htmlTableRows );
-    });
-
-    arrVerbs.forEach(function(element) {
-        htmlTableRows = "";
-        for (var i = 1; i <= 10; ++ i) {
-            htmlTableRows += "<tr> <td> " + objRoot.verb(element, i) + " </td> </tr> ";
-            }
-        jQuery("#rows"+element).html( htmlTableRows );
-    });
-
-//mirror noun/verb tables to combined tab
-    jQuery("#nounTableMirror").html( $("#nounTable").clone() );
-    jQuery("#verbTableMirror").html( $("#verbTable").clone() );
+*/
 
 };
 
@@ -275,5 +252,69 @@ function scrapeReference( blnRowsNotHeader ) {
 function setupData() {
 //callback function after google sheet query is complete
 
-
 }
+
+
+function drawRows(root){
+//controller function for writing out each row
+
+var objRefs = makeReferenceObject();
+var htmlOut = "";
+
+//Declare data arrays
+var arrFormNum = [
+        "ignore#FormNums",
+        "I ",
+        "II ",
+        "III ",
+        "IV ",
+        "V ",
+        "VI ",
+        "VII ",
+        "VIII ",
+        "IX ",
+        "X "];
+
+var arrMeaning = [
+    "ignore#Meanings",
+    "Regular ",
+    "Causative ",
+    "Participation, Reciprocal ",
+    "Causative ",
+    "Reflexive ",
+    "Reciprocal, Pretension ",
+    "Passive, Responsive ",
+    "Participative, Reflexive ",
+    "Colors, Defects ",
+    "Pretending, Requesting Change, Usage "];
+
+//Write out rows, one td at a time
+
+for (var formNum = 1; formNum <= 10; ++formNum ) {
+
+//add checks to re-style row text (color) if verb / noun(s) found
+
+//write noun columns
+    htmlOut += "<tr> ";
+    htmlOut += conjActiveParticiple(root, formNum).replace(/.*/,"<td class='cellNoun'>"+ '$&' +"</td>");
+    htmlOut += conjPassiveParticiple(root, formNum).replace(/.*/,"<td class='cellNoun'>"+ '$&' +"</td>");
+    htmlOut += conjNounTimePlace(root, formNum).replace(/.*/,"<td class='cellNoun'>"+ '$&' +"</td>");
+    htmlOut += conjMasdar(root, formNum, objRefs).replace(/.*/,"<td class='cellNoun'>"+ '$&' +"</td>");
+
+//write verb columns
+    htmlOut += conjPassivePresent(root, formNum).replace(/.*/,"<td class='cellVerb'>"+ '$&' +"</td>");
+    htmlOut += conjPassivePast(root, formNum).replace(/.*/,"<td class='cellVerb'>"+ '$&' +"</td>");
+    htmlOut += conjImperative(root, formNum, objRefs).replace(/.*/,"<td class='cellVerb'>"+ '$&' +"</td>");
+    htmlOut += conjActivePresent(root, formNum, objRefs).replace(/.*/,"<td class='cellVerb'>"+ '$&' +"</td>");
+    htmlOut += conjActivePast(root, formNum, objRefs).replace(/.*/,"<td class='cellVerb'>"+ '$&' +"</td>");
+
+//write out meta columns
+    htmlOut += arrFormNum[formNum].replace(/.*/,"<td class='cellFormNum'>"+ '$&' +"</td>");;
+    htmlOut += arrMeaning[formNum].replace(/.*/,"<td class='cellMeaning'>"+ '$&' +"</td>");;
+    htmlOut += "translation".replace(/.*/,"<td class='cellTranslation'>"+ '$&' +"</td>");;
+    htmlOut += " </tr>";
+}
+
+return htmlOut;
+
+};
