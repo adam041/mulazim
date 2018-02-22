@@ -1,31 +1,31 @@
 //Noun Conjugation Scripts
 
-arRoot.noun = function(tense, formNum) {
-
-  switch (tense) {
-
-    case "Masdar":
-        return conjMasdar(arRoot.root, formNum);
-        break;
-
-    case "ActiveParticiple":
-        return conjActiveParticiple(arRoot.root, formNum);
-        break;
-
-    case "PassiveParticiple":
-        return conjPassiveParticiple(arRoot.root, formNum);;
-        break;
-
-    case "NounTimePlace":
-        return conjNounTimePlace(arRoot.root, formNum);
-        break;
-
-    default:
-      return "error"
-      break;
-    }
-
-};
+// arRoot.noun = function(tense, formNum) {
+//
+//   switch (tense) {
+//
+//     case "Masdar":
+//         return conjMasdar(arRoot.root, formNum);
+//         break;
+//
+//     case "ActiveParticiple":
+//         return conjActiveParticiple(arRoot.root, formNum);
+//         break;
+//
+//     case "PassiveParticiple":
+//         return conjPassiveParticiple(arRoot.root, formNum);;
+//         break;
+//
+//     case "NounTimePlace":
+//         return conjNounTimePlace(arRoot.root, formNum);
+//         break;
+//
+//     default:
+//       return "error"
+//       break;
+//     }
+//
+// };
 
 
 function conjNounTimePlace(root, formNum) {
@@ -139,24 +139,13 @@ function conjActiveParticiple(root, formNum) {
 }
 
 
-function conjMasdar(root, formNum) {
+function conjMasdar(root, formNum, objRefs) {
 //returns conjugated trilateral noun as Verbal Noun (masdar)
 
     switch (formNum) {
 
         case 1:
-          // pull non-programmatic value from backend
-          //** resume work here
-          // * masdar search not working when western numbers and arabic text are in the same column
-          // * gracefully note when objData.query fails...include fail_txt as 4th param?
-
-            objData = loadData();
-
-            if ( (objData.rows.length !== undefined) && (objData.rows.length > 0) ) {
-                return objData.query(root, formNum, "Masdar");
-            } else {
-                return "unknown";
-            }
+           return objRefs.query(root, formNum, "Masdar");
             break;
 
         case 2:

@@ -1,19 +1,20 @@
 /*
 Work list
+- styling
+    - re-org html tables into One Big Table.  Nix tabs in favor of buttons to drive jQuery toggles (verbs, nouns, verbs+nouns, meaning, translation)
 
 -core logic
     -handling irregular verbs
+     -handling binary masdar in form 2/3 - encode as letter or arabic/arabic number?
 
 -backend / data quality
     -pull jQuery menu inputs (sheetrock.js from gSheet!)
-        -- read backend and apply correct masdar pattern (i.e. 1..., 2..., null gets both)
         -- dynamic highlighting to show known words and/or suppress unknown (missing) words
         -- handling of prepositions related to verb forms?
-        -- english translations via tool tip (or inject html into span in meaning column)
 
 -secondary features
     -within tense conjugation (i.e. for all subjects; add column on left)
-    -translation by mouseover or appended column
+    - english translations of masdar via tool tip <title>, pull from dataTable
 */
 
 
@@ -39,7 +40,7 @@ jQuery( document ).ready(function() {
 
 //set up tabs and default conjugation
     $( "#tabsC" ).tabs();
-    conjugateUpdate( "فعل" );
+    conjugateUpdate( ar_Do );
 
 
 //Pull menu data from backend
@@ -67,37 +68,142 @@ $( "#buttonA" ).click(function() {
     var targetElement = "table#formDescriptionTable";
     $( targetElement ).toggle();
 
-
-//prototype of data access function
-    var foo = "فعل";
-    var objFoo = loadData();
-    console.log( "find me fayl 1 PresentStem" );
-    console.log( objFoo.query(foo, 1, "PresentStem") ); // works
-
-
-
 });
 
 });
 
+
+function makeReferenceObject() {
+
+    refs = {
+    //contains reference data downloaded from backend
+        headers: scrapeReference(false),
+        rows: scrapeReference(true),
+
+        indexRow: function( root, form) {
+
+            var rootPos = $.inArray( "Root", refs.headers ),
+            formPos = $.inArray( "Form", refs.headers ),
+            rowIndex = -1;
+            //rowIndex default is -1, to avoid returning null and match behavior of array.indexOf
+
+            refs.rows.forEach(function( currentValue, index ) {
+                if (( currentValue[rootPos] === root ) && ( eval(currentValue[formPos]) === form )) {
+                    rowIndex = index;
+                }
+            })
+
+            return rowIndex;
+
+        }, //end of indexRow
+
+        query: function(root, form, field) {
+        //returns value from field in corresponding row
+
+            var fieldPos = $.inArray( field, refs.headers ),
+                rowIndex = refs.indexRow(root, form);
+
+                output = refs.rows[rowIndex][fieldPos];
+
+            return output;
+        }
+
+    } //end of Refs
+
+    return refs;
+}
 
 function conjugateUpdate( root ) {
 //Updates data tables with conjugated verbs/nouns
 
-    arRoot.root = root;
+objRoot = {
+    root: root,
 
-    document.title = "LtCactus Conjugates " + arRoot.root;
-    jQuery("#activeRoot").html( arRoot.root );
+    verb: function(tense, formNum) {
+        var objRefs = makeReferenceObject();
+
+          switch (tense) {
+
+            //Active Tense
+            case "ActivePast":
+                return conjActivePast(objRoot.root, formNum, objRefs);
+                break;
+
+            case "ActivePresent":
+                return conjActivePresent(objRoot.root, formNum, objRefs );
+                break;
+
+            case "Imperative":
+                return conjImperative(objRoot.root, formNum, objRefs);
+                break;
+
+            case "PassivePast":
+                return conjPassivePast(objRoot.root, formNum);
+                break;
+
+            case "PassivePresent":
+                return conjPassivePresent(objRoot.root, formNum);
+                break;
+
+            default:
+              console.log("error, invalid tense entered");
+              break;
+              }
+        }, // verb switch
+
+    noun: function(tense, formNum) {
+      var objRefs = makeReferenceObject();
+
+      switch (tense) {
+
+        case "Masdar":
+            return conjMasdar(objRoot.root, formNum, objRefs);
+            break;
+
+        case "ActiveParticiple":
+            return conjActiveParticiple(objRoot.root, formNum);
+            break;
+
+        case "PassiveParticiple":
+            return conjPassiveParticiple(objRoot.root, formNum);;
+            break;
+
+        case "NounTimePlace":
+            return conjNounTimePlace(objRoot.root, formNum);
+            break;
+
+        default:
+          return "error"
+          break;
+        }
+
+    } //noun switch
+
+
+};  // arRoot
+
+
+//Once objects set up, update web page
+    document.title = "LtCactus Conjugates " + objRoot.root;
+    jQuery("#activeRoot").html( objRoot.root );
 
     var htmlTableRows = "";
 
+
+////////////////////
+//  drawRow
+// <tr> unspoolTDs!
+////////////////////
+
+
+//deprecate?
     var arrNouns = [
         "NounTimePlace",
         "PassiveParticiple",
         "ActiveParticiple",
         "Masdar"
     ];
-
+//deprecate?
     var arrVerbs = [
         "PassivePresent",
         "PassivePast",
@@ -105,11 +211,13 @@ function conjugateUpdate( root ) {
         "ActivePresent",
         "ActivePast"
     ];
+//deprecate?
+
 
     arrNouns.forEach(function(element) {
         htmlTableRows = "";
         for (var i = 1; i <= 10; ++ i) {
-            htmlTableRows += "<tr> <td> " + arRoot.noun(element, i) + " </td> </tr> ";
+            htmlTableRows += "<tr> <td> " + objRoot.noun(element, i) + " </td> </tr> ";
             }
         jQuery("#rows"+element).html( htmlTableRows );
     });
@@ -117,7 +225,7 @@ function conjugateUpdate( root ) {
     arrVerbs.forEach(function(element) {
         htmlTableRows = "";
         for (var i = 1; i <= 10; ++ i) {
-            htmlTableRows += "<tr> <td> " + arRoot.verb(element, i) + " </td> </tr> ";
+            htmlTableRows += "<tr> <td> " + objRoot.verb(element, i) + " </td> </tr> ";
             }
         jQuery("#rows"+element).html( htmlTableRows );
     });
@@ -134,65 +242,38 @@ $( function() {
     $( document ).tooltip();
 } );
 
-var arRoot = new Object;
+
+function scrapeReference( blnRowsNotHeader ) {
+//scrapes reference table downloaded from backend into arrays
+    var arrRow = [],
+        arrRows = [];
+
+   if ( blnRowsNotHeader === false ) {
+        $( "#dataTable th" ).each(function(colIndex) {
+            arrRow.push( $(this).text() );
+        })
+        return arrRow; //1D array of header (ths)
+
+    } else {
+
+        $( "#dataTable tbody tr" ).each(function(rowIndex) {
+
+            $(this).find("td").each (function(colIndex) {
+                arrRow.push( $(this).text() );
+            });
+
+            arrRows.push( arrRow );
+            arrRow = [];
+        });
+
+        return arrRows; //2D array of arrays (rows + tds)
+    }
+
+};
+
 
 function setupData() {
 //callback function after google sheet query is complete
 
-//     var objData = new Object;
-//     objData = loadData();
+
 }
-
-$( loadData = function() {
-//returns object containing header labels and data rows from backend data table, for more dynamic conjugating...
-
-var arrRow = new Array;
-
-//make object objBackend to organize backend data for local re-use
-var objBackend = {
-
-    headers: new Array,
-    rows: new Array,
-    output: new String,
-
-        query(root, form, field) {
-
-            //locate column position of desired field in header
-            var rootPos = $.inArray( "Root", objBackend.headers ),
-                formPos = $.inArray( "Form", objBackend.headers ),
-                fieldPos = $.inArray( field, objBackend.headers );
-
-            output = "0";
-
-            objBackend.rows.forEach(function( currentValue, index ) {
-                if (( currentValue[rootPos] === root ) && ( eval(currentValue[formPos]) === form )) {
-    //              console.log( "match! @ " + currentValue);
-                    output = currentValue[fieldPos];
-                }
-
-            });
-
-            return output;
-
-            }
-    }
-
-//scrape table to load objBackend
-    $( "#dataTable th" ).each(function(colIndex) {
-        objBackend.headers.push( $(this).text() );
-    });
-
-    $( "#dataTable tbody tr" ).each(function(rowIndex) {
-
-        $(this).find("td").each (function(colIndex) {
-            arrRow.push( $(this).text() );
-        });
-
-        objBackend.rows.push( arrRow );
-        arrRow = [];
-
-    });
-
-    return objBackend;
-
-} );

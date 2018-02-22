@@ -1,36 +1,36 @@
 //Verb Conjugation Scripts
 
-arRoot.verb = function(tense, formNum) {
-
-  switch (tense) {
-
-    //Active Tense
-    case "ActivePast":
-        return conjActivePast(arRoot.root, formNum);
-        break;
-
-    case "ActivePresent":
-        return conjActivePresent(arRoot.root, formNum);
-        break;
-
-    case "Imperative":
-        return conjImperative(arRoot.root, formNum);
-        break;
-
-    case "PassivePast":
-        return conjPassivePast(arRoot.root, formNum);
-        break;
-
-    case "PassivePresent":
-        return conjPassivePresent(arRoot.root, formNum);
-        break;
-
-    default:
-      console.log("error, invalid tense entered");
-      break;
-      }
-};
-
+// arRoot.verb = function(tense, formNum) {
+//
+//   switch (tense) {
+//
+//     //Active Tense
+//     case "ActivePast":
+//         return conjActivePast(arRoot.root, formNum);
+//         break;
+//
+//     case "ActivePresent":
+//         return conjActivePresent(arRoot.root, formNum);
+//         break;
+//
+//     case "Imperative":
+//         return conjImperative(arRoot.root, formNum);
+//         break;
+//
+//     case "PassivePast":
+//         return conjPassivePast(arRoot.root, formNum);
+//         break;
+//
+//     case "PassivePresent":
+//         return conjPassivePresent(arRoot.root, formNum);
+//         break;
+//
+//     default:
+//       console.log("error, invalid tense entered");
+//       break;
+//       }
+// };
+//
 
 function conjActivePast(root, formNum) {
 //returns conjugated trilateral verb in Past Perfect (active)
@@ -85,21 +85,13 @@ function conjActivePast(root, formNum) {
 }
 
 
-function conjActivePresent(root, formNum) {
+function conjActivePresent(root, formNum, objRefs) {
 //returns conjugated trilateral verb in Present Imperfect (active)
 
     switch (formNum) {
 
         case 1:
-        //resume work here *****
-            objData = loadData();
-
-            if ( (objData.rows.length !== undefined) && (objData.rows.length > 0) ) {
-                return objData.query(root, formNum, "PresentStem");
-            } else {
-                return "unknown";
-            }
-
+          return objRefs.query(root, formNum, "PresentStem");
           break;
 
         case 2:
