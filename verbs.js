@@ -1,13 +1,13 @@
 //Verb Conjugation Scripts
 
-function conjActivePast(root, formNum) {
+function conjActivePast(root, formNum, objRefs) {
 //returns conjugated trilateral verb in Past Perfect (active)
 
     switch (formNum) {
 
         case 1:
-          // pull non-programmatic value from backend? **
-          return "TBD";
+          var rad2vowel = vowelMe(objRefs.query(root, formNum, "f1ActivePastRad2"));
+          return root[0] + ar_a + root[1] + rad2vowel + root[2] + ar_a;
           break;
 
         case 2:
@@ -59,7 +59,8 @@ function conjActivePresent(root, formNum, objRefs) {
     switch (formNum) {
 
         case 1:
-          return objRefs.query(root, formNum, "PresentStem");
+          var rad2vowel = vowelMe(objRefs.query(root, formNum, "f1ActivePresentRad2"));
+          return ar_Y + ar_u + root[0] + ar_0 + root[1] + rad2vowel + root[2] + ar_a;
           break;
 
         case 2:
@@ -106,14 +107,19 @@ function conjActivePresent(root, formNum, objRefs) {
 }
 
 
-function conjImperative(root, formNum) {
+function conjImperative(root, formNum, objRefs) {
 //returns conjugated trilateral verb in Imperative
 
     switch (formNum) {
 
         case 1:
-          // pull non-programmatic value from backend? **
-          return "TBD";
+          var vowelCode = objRefs.query(root, formNum, "f1Imperative0R2"); //split(**)
+          var alifvowel = vowelMe(vowelCode);
+
+          vowelCode = objRefs.query(root, formNum, "f1Imperative0R2"); //split(**)
+          var rad2vowel = vowelMe(vowelCode);
+
+          return ar_hA + alifvowel + root[0] + ar_0 + root[1] + rad2vowel + root[2] + ar_0;
           break;
 
         case 2:

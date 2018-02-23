@@ -57,11 +57,6 @@ button {
     color: black;
 }
 
-td.colTranslation {
-   color: blue;
-}
-
-
 td.colNoun, td.colVerb  {
     font-size: x-large;
     color: dimgrey;

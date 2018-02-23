@@ -1,27 +1,3 @@
-/*
-Work list
-
-- styling
-    - set defaults for hidden columns, preserve shown/hidden columns after new root selected
-        >> works ok if root re-selected when toggle set to show
-
--core logic
-    -handling irregular verbs
-    - * handling binary masdar in form 2/3 - encode as letter or arabic/arabic number?
-
--backend / data quality
-    -pull jQuery menu inputs (sheetrock.js from gSheet!)
-        -- ** dynamic highlighting to show known words and/or suppress unknown (missing) words
-        -- handling of prepositions related to verb forms?
-        -- record active past tense for form 1.  Maybe use active-past as basic form, and derive vowel-less root?
-
--secondary features
-    - display translation per row
-    - within tense conjugation (i.e. for all subjects; add column on left)
-    - english translations of masdar via tool tip <title>, pull from dataTable
-*/
-
-
 function setupMenu(error, options, response){
 //callback function once menu data loaded from backend
 
@@ -46,25 +22,8 @@ jQuery( document ).ready(function() {
     conjugateUpdate( ar_Do );
 
     $( document ).tooltip();
-//     $( ".colNoun" ).toggle();
-//     $( ".colTranslation" ).toggle();
-
-//     $( "#btnNouns" ).click(function() {
-//         $( ".colNoun" ).toggle();
-//     });
-//
-//     $( "#btnVerbs" ).click(function() {
-//         $( ".colVerb" ).toggle();
-//     });
-//
-//     $( "#btnMeaning" ).click(function() {
-//         $( ".colMeaning" ).toggle();
-//     });
-//
-//     $( "#btnTranslation" ).click(function() {
-//         $( ".colTranslation" ).toggle();
-//     });
-
+    $( ".colNoun" ).toggle();
+    $( ".colTranslation" ).toggle();
 
 //Pull menu data from backend
     var gSheetID = "1A5YkYEKrReJ3jjAraR4ycbLIOHf3a_k6-3FM6uh-7Gw",
@@ -80,11 +39,12 @@ $('#menuTable').sheetrock({
 
 $('#dataTable').sheetrock({
   url: gURL,
-  query: "select A,B,C,D,E,F where A = 1 order by C desc",
-  labels: ['Form', 'Preposition', 'Root', 'PresentStem', 'Masdar', 'TransVerb'],
+  query: "select A,B,C,D,E,F,G order by C desc",
+  labels: ['Form', 'Preposition', 'Root', 'Masdar', 'f1ActivePresentRad2', 'f1ActivePastRad2', 'TransVerb'],
   callback: setupData
-});
 
+  //where A = 1
+});
 
 //set up buttons to toggle columns
     $( "#btnVerbs" ).click(function() {
@@ -105,6 +65,9 @@ $('#dataTable').sheetrock({
 
 });
 
+//***
+var ar_Exit = "خرج";
+//***
 
 function makeReferenceObject() {
 
@@ -134,9 +97,16 @@ function makeReferenceObject() {
         //returns value from field in corresponding row
 
             var fieldPos = $.inArray( field, refs.headers ),
-                rowIndex = refs.indexRow(root, form);
+                rowIndex = refs.indexRow(root, form),
+                output;
 
+            if (rowIndex > -1) {
                 output = refs.rows[rowIndex][fieldPos];
+            }
+
+            if (output === undefined) {
+                output = "";
+            }
 
             return output;
         }
@@ -145,6 +115,7 @@ function makeReferenceObject() {
 
     return refs;
 }
+
 
 function conjugateUpdate( root ) {
 //Updates data tables with conjugated verbs/nouns
@@ -155,6 +126,20 @@ function conjugateUpdate( root ) {
 
 //Draw table rows
     jQuery("#contentTable tbody").html( drawRows(root) );
+
+//Update formatting of rows with known-good forms
+
+    var objRefs = makeReferenceObject();
+
+    for (var formNum = 1; formNum <= 10; ++formNum ) {
+
+        if ( objRefs.indexRow(root, formNum) > -1) {
+            jQuery( "#contentTable tr:nth-child("+formNum+") td").css({"color": "black"});
+        } else {
+            jQuery( "#contentTable tr:nth-child("+formNum+") td").css({"color": "dimgrey"});
+        }
+    }
+
 };
 
 
@@ -244,18 +229,49 @@ for (var formNum = 1; formNum <= 10; ++formNum ) {
     htmlOut += conjPassivePast(root, formNum).replace(/.*/,"<td class='colVerb'>"+ '$&' +"</td>");
     htmlOut += conjImperative(root, formNum, objRefs).replace(/.*/,"<td class='colVerb'>"+ '$&' +"</td>");
     htmlOut += conjActivePresent(root, formNum, objRefs).replace(/.*/,"<td class='colVerb'>"+ '$&' +"</td>");
-    htmlOut += conjActivePast(root, formNum, objRefs).replace(/.*/,"<td class='colVerb'>"+ '$&' +"</td>");
+    htmlOut += "<td class='colVerb'><span>"+ conjActivePast(root, formNum, objRefs);
+        htmlOut += "</span> <span class='spnPreposition class=inherit'> "+ objRefs.query(root, formNum, "Preposition") + "</span>";
 
 //write out meta columns
-    htmlOut += arrFormNum[formNum].replace(/.*/,"<td class='colFormNum'>"+ '$&' +"</td>");;
-    htmlOut += arrMeaning[formNum].replace(/.*/,"<td class='colMeaning'>"+ '$&' +"</td>");;
-    htmlOut += "translation".replace(/.*/,"<td class='colTranslation'>"+ '$&' +"</td>");;
+    htmlOut += arrFormNum[formNum].replace(/.*/,"<td class='colFormNum'>"+ '$&' +"</td>");
+    htmlOut += arrMeaning[formNum].replace(/.*/,"<td class='colMeaning'>"+ '$&' +"</td>");
+    htmlOut += objRefs.query(root, formNum, "TransVerb").replace(/.*/,"<td class='colTranslation'>"+ '$&' +"</td>");
     htmlOut += " </tr>";
 }
 
 return htmlOut;
 
 };
+
+
+function vowelMe(enText) {
+//generates Arabic (short) vowels corresponding to English text input
+
+var vowelOut = "";
+
+    if (( enText === undefined) || (enText === "") ) {
+        vowelOut = "؟";
+    } else if (enText === "a") {
+        vowelOut = ar_a;
+    } else if (enText === "i") {
+        vowelOut = ar_i;
+    } else if (enText === "u") {
+        vowelOut = ar_u;
+    } else if (enText === "A") {
+        vowelOut = ar_A;
+    } else if (enText === "Y") {
+        vowelOut = ar_Y;
+    } else if (enText === "U") {
+        vowelOut = ar_U;
+    } else {
+        //** how to handle long vowels in irregular verbs?
+        vowelOut = "؟";
+    }
+
+return vowelOut;
+
+}
+
 
 
 

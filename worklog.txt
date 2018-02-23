@@ -1,0 +1,19 @@
+Work list
+
+- styling
+    - preserve shown/hidden columns after new root selected
+        >> works ok if root re-selected when toggle set to show
+
+-core logic
+    -handling semi-regular verbs (i.e. OK - Active Present, OK - Active Past, OK/2 - Imperative for Form 1;
+        >>>>>>>> *** Masdar for forms 2 & 3) << backend encoding - pattern, coding a single character?
+        > extract root from masdar? too complex...only makes sense for forms 1-3...makework for forms 4-10
+    -handling irregular verbs
+
+-backend / data quality
+    - encode masdar for form 2/3
+    - data entry for imperative
+
+-secondary features
+    - within tense conjugation (i.e. for all subjects; add column on left)
+    - english translations of masdar via tool tip <title>, pull from dataTable
