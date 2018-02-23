@@ -65,30 +65,26 @@ $('#dataTable').sheetrock({
   callback: setupData
 });
 
-$( "#buttonA" ).click(function() {
-    var targetElement = "table#formDescriptionTable";
-    $( targetElement ).toggle();
-});
 
-$( "#btnVerbs" ).click(function() {
-    $( ".cellVerb" ).toggle();
-    //corresponding th/headers not getting toggled =(
-});
+//set up buttons to toggle columns
+    $( "#btnVerbs" ).click(function() {
+        $( ".colVerb" ).toggle();
+        //corresponding th/headers not getting toggled =(
+    });
 
-$( "#btnNouns" ).click(function() {
-    $( ".cellNoun" ).toggle();
-    $( ".thNoun" ).toggle();
-    //corresponding th/headers not getting toggled =(
-});
+    $( "#btnNouns" ).click(function() {
+        $( ".colNoun" ).toggle();
+    //     $( ".colNoun" ).toggle();
+        //corresponding th/headers not getting toggled =(
+    });
 
-$( "#btnMeaning" ).click(function() {
-    $( ".cellMeaning" ).toggle();
-});
+    $( "#btnMeaning" ).click(function() {
+        $( ".colMeaning" ).toggle();
+    });
 
-$( "#btnTranslation" ).click(function() {
-    $( ".cellTranslation" ).toggle();
-});
-
+    $( "#btnTranslation" ).click(function() {
+        $( ".colTranslation" ).toggle();
+    });
 
 });
 
@@ -296,22 +292,22 @@ for (var formNum = 1; formNum <= 10; ++formNum ) {
 
 //write noun columns
     htmlOut += "<tr> ";
-    htmlOut += conjActiveParticiple(root, formNum).replace(/.*/,"<td class='cellNoun'>"+ '$&' +"</td>");
-    htmlOut += conjPassiveParticiple(root, formNum).replace(/.*/,"<td class='cellNoun'>"+ '$&' +"</td>");
-    htmlOut += conjNounTimePlace(root, formNum).replace(/.*/,"<td class='cellNoun'>"+ '$&' +"</td>");
-    htmlOut += conjMasdar(root, formNum, objRefs).replace(/.*/,"<td class='cellNoun'>"+ '$&' +"</td>");
+    htmlOut += conjActiveParticiple(root, formNum).replace(/.*/,"<td class='colNoun'>"+ '$&' +"</td>");
+    htmlOut += conjPassiveParticiple(root, formNum).replace(/.*/,"<td class='colNoun'>"+ '$&' +"</td>");
+    htmlOut += conjNounTimePlace(root, formNum).replace(/.*/,"<td class='colNoun'>"+ '$&' +"</td>");
+    htmlOut += conjMasdar(root, formNum, objRefs).replace(/.*/,"<td class='colNoun'>"+ '$&' +"</td>");
 
 //write verb columns
-    htmlOut += conjPassivePresent(root, formNum).replace(/.*/,"<td class='cellVerb'>"+ '$&' +"</td>");
-    htmlOut += conjPassivePast(root, formNum).replace(/.*/,"<td class='cellVerb'>"+ '$&' +"</td>");
-    htmlOut += conjImperative(root, formNum, objRefs).replace(/.*/,"<td class='cellVerb'>"+ '$&' +"</td>");
-    htmlOut += conjActivePresent(root, formNum, objRefs).replace(/.*/,"<td class='cellVerb'>"+ '$&' +"</td>");
-    htmlOut += conjActivePast(root, formNum, objRefs).replace(/.*/,"<td class='cellVerb'>"+ '$&' +"</td>");
+    htmlOut += conjPassivePresent(root, formNum).replace(/.*/,"<td class='colVerb'>"+ '$&' +"</td>");
+    htmlOut += conjPassivePast(root, formNum).replace(/.*/,"<td class='colVerb'>"+ '$&' +"</td>");
+    htmlOut += conjImperative(root, formNum, objRefs).replace(/.*/,"<td class='colVerb'>"+ '$&' +"</td>");
+    htmlOut += conjActivePresent(root, formNum, objRefs).replace(/.*/,"<td class='colVerb'>"+ '$&' +"</td>");
+    htmlOut += conjActivePast(root, formNum, objRefs).replace(/.*/,"<td class='colVerb'>"+ '$&' +"</td>");
 
 //write out meta columns
-    htmlOut += arrFormNum[formNum].replace(/.*/,"<td class='cellFormNum'>"+ '$&' +"</td>");;
-    htmlOut += arrMeaning[formNum].replace(/.*/,"<td class='cellMeaning'>"+ '$&' +"</td>");;
-    htmlOut += "translation".replace(/.*/,"<td class='cellTranslation'>"+ '$&' +"</td>");;
+    htmlOut += arrFormNum[formNum].replace(/.*/,"<td class='colFormNum'>"+ '$&' +"</td>");;
+    htmlOut += arrMeaning[formNum].replace(/.*/,"<td class='colMeaning'>"+ '$&' +"</td>");;
+    htmlOut += "translation".replace(/.*/,"<td class='colTranslation'>"+ '$&' +"</td>");;
     htmlOut += " </tr>";
 }
 

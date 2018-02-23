@@ -42,20 +42,20 @@
         <table id="contentTable">
             <thead>
             <tr>
-                <th class='thNoun' >Noun of Time and Place<br> <span class="arHead">اسم المكان و الزمان</span> </th>
-                <th class='thNoun' >Recipient (Passive Participle)<br> <span class="arHead">اسم المفعول</span> <br> done</th>
-                <th class='thNoun' >Agent (Active Participle)<br> <span class="arHead">اسم الفاعل</span> <br> doer</th>
-                <th class='thNoun' >Verbal Noun (Masdar)<br> <span class="arHead">المصدر</span> <br> doing</th>
+                <th class='colNoun'>Noun of Time and Place<br> <span class="arHead">اسم المكان و الزمان</span> </th>
+                <th class='colNoun'>Recipient (Passive Participle)<br> <span class="arHead">اسم المفعول</span> <br> done</th>
+                <th class='colNoun'>Agent (Active Participle)<br> <span class="arHead">اسم الفاعل</span> <br> doer</th>
+                <th class='colNoun'>Verbal Noun (Masdar)<br> <span class="arHead">المصدر</span> <br> doing</th>
 
-                <th>Passive Present (Imperfect)<br>المضارع<br>is done</th>
-                <th>Passive Past (Perfect)<br>اسم الماصي<br>was done</th>
-                <th>Imperative (Command)<br>الأمر<br>do!</th>
-                <th>Active Present (Imperfect)<br>اسم المضارع<br>he does</th>
-                <th>Active Past (Perfect)<br>اسم الماصي<br>he did</th>
+                <th class='colVerb'>Passive Present (Imperfect)<br>المضارع<br>is done</th>
+                <th class='colVerb'>Passive Past (Perfect)<br>اسم الماصي<br>was done</th>
+                <th class='colVerb'>Imperative (Command)<br>الأمر<br>do!</th>
+                <th class='colVerb'>Active Present (Imperfect)<br>اسم المضارع<br>he does</th>
+                <th class='colVerb'>Active Past (Perfect)<br>اسم الماصي<br>he did</th>
 
-                <th>Form Number<br> <span class="arHead">الوزن</span></th>
-                <th>Meaning, Use, and Relationship <br> <span class="arHead">المعنى والاستعمال والعلاقة</span></th>
-                <th>English Translation</th>
+                <th class='colForm'>Form Number<br> <span class="arHead">الوزن</span></th>
+                <th class='colMeaning'>Meaning, Use, and Relationship <br> <span class="arHead">المعنى والاستعمال والعلاقة</span></th>
+                <th class='colTranslation'>English Translation</th>
             </thead>
 
              <tbody>
@@ -65,7 +65,7 @@
          </td>
 
          <td>
-        <!--this table holds the inputs menu           -->
+        <!--this td/table holds the inputs menu           -->
         <table id="inputTable">
             <tbody>
             <tr> <td>
@@ -93,222 +93,8 @@
     </table>
 
 
-
-
-
-<!-- ////////////////////// -->
-<!-- ////////////////////// -->
-<!-- ////////////////////// -->
-<!-- ////////////////////// -->
-<!-- ////////////////////// -->
-<!-- ////////////////////// -->
-<!-- ////////////////////// -->
-<!-- ////////////////////// -->
-<!-- ////////////////////// -->
-
-    <div id="tabsC"> <!--  moving div to within table breaks tabs on OSX\safari -->
-
-    <table id="masterTable">
-    <thead> <tr>
-        <th>
-            <ul>
-                <li><a href="#tabsC-1">Verbs</a></li>
-                <li><a href="#tabsC-2">Nouns</a></li>
-                <li><a href="#tabsC-3">Nouns + Verbs</a></li>
-            </ul>
-        </th>
-        <th>  <button id="buttonA" title="helpful for prototyping javascript">Hide Meaning Col</button> </th>
-        <th id="activeRoot"> </th>
-      </tr> </thead>
-
-    <tbody>
-    <tr> <!-- this row holds all sub-tables -->
-
-        <td>  <!-- This td holds all tabs -->
-
-        <div id="tabsC-1">
-        <table id="verbTable">
-
-            <tbody> <tr>
-                <td id="tdPassivePresent"> <table>
-                    <thead>
-                        <tr> <th>Passive Present (Imperfect)<br>المضارع<br>is done</th> </tr>
-                    </thead>
-                    <tbody id="rowsPassivePresent"> </tbody>
-                </table> </td>
-
-                <td id="tdPassivePast"> <table>
-                    <thead>
-                        <tr> <th>Passive Past (Perfect)<br>اسم الماصي<br>was done</th> </tr>
-                    </thead>
-                    <tbody id="rowsPassivePast"> </tbody>
-                </table> </td>
-
-                <td id="tdImperative"> <table>
-                    <thead>
-                        <tr> <th>Imperative (Command)<br>الأمر<br>do!</th> </tr>
-                    </thead>
-                    <tbody id="rowsImperative"> </tbody>
-                </table> </td>
-
-                <td id="tdActivePresent"> <table>
-                    <thead>
-                        <tr> <th>Active Present (Imperfect)<br>اسم المضارع<br>he does</th> </tr>
-                    </thead>
-                    <tbody id="rowsActivePresent"> </table>
-
-                <td id="tdActivePast"> <table>
-                    <thead>
-                        <tr> <th>Active Past (Perfect)<br>اسم الماصي<br>he did</th> </tr>
-                    </thead>
-                    <tbody id="rowsActivePast"> </tbody>
-                </table> </td>
-
-            </tr> </tbody>
-            </table> </div>
-
-        <div id="tabsC-2">
-        <table id="nounTable">
-
-            <tbody> <tr>
-                <td id="tdNounTimePlace"> <table>
-                    <thead>
-                        <tr> <th>Noun of Time and Place<br>
-                            <span class="arHead">اسم المكان و الزمان</span>
-                            </th> </tr>
-                    </thead>
-                    <tbody id="rowsNounTimePlace"> </tbody>
-                </table> </td>
-
-                <td id="tdPassiveParticiple"> <table>
-                    <thead>
-                        <tr> <th>Recipient (Passive Participle)<br>
-                            <span class="arHead">اسم المفعول</span> <br>
-                            done</th> </tr>
-                    </thead>
-                    <tbody id="rowsPassiveParticiple"> </tbody>
-                </table> </td>
-
-                <td id="tdPassiveParticiple"> <table>
-                    <thead>
-                        <tr> <th>Agent (Active Participle)<br>
-                            <span class="arHead">اسم الفاعل</span> <br>
-                            doer</th> </tr>
-                    </thead>
-                    <tbody id="rowsActiveParticiple"> </tbody>
-                </table> </td>
-
-                <td id="tdMasdar"> <table>
-                    <thead>
-                        <tr> <th>Verbal Noun (Masdar)<br>
-                        <span class="arHead">المصدر</span> <br>
-                        doing</th> </tr>
-                    </thead>
-                    <tbody id="rowsMasdar"> </tbody>
-                </table> </td>
-
-            </tr> </tbody>
-
-        </table>
-        </div>
-
-        <div id="tabsC-3">
-            <table><tr>
-                <td id="nounTableMirror">Nouns</td>
-                <td id="verbTableMirror">Verbs</td>
-                </tr></table>
-        </div>
-
-        </td> <!-- end td containing all tabs -->
-
-</div>  <!~~ end of tabsC ~~>
-
-        <td>
-            <table id="formColsTable">
-                <tr>
-                    <td>
-                        <table id="formNumberTable">
-                            <div class="tHeadBlock">
-                            <thead>
-                                <tr> <th>Form Number<br>
-                                    <span class="arHead">الوزن</span></th> </tr>
-                            </thead>
-                            </div>
-
-                            <tbody>
-                                <tr> <td>I </td> </tr>
-                                <tr> <td>II </td> </tr>
-                                <tr> <td>III </td> </tr>
-                                <tr> <td>IV </td> </tr>
-                                <tr> <td>V </td> </tr>
-                                <tr> <td>VI </td> </tr>
-                                <tr> <td>VII </td> </tr>
-                                <tr> <td>VIII </td> </tr>
-                                <tr> <td>IX </td> </tr>
-                                <tr> <td>X </td> </tr>
-                             </tbody>
-                        </table>
-                    </td>
-
-                    <td>
-                        <table id="formDescriptionTable">
-                        <div class="tHeadBlock">
-                        <thead>
-                            <tr> <th>Meaning, Use, and Relationship <br>
-                                <span class="arHead">المعنى والاستعمال والعلاقة</span></th> <tr>
-                        </thead>
-                        </div>
-
-                         <tbody>
-                            <tr> <td>Regular </td> </tr>
-                            <tr> <td>Causative </td> </tr>
-                            <tr> <td>Participation, Reciprocal </td> </tr>
-                            <tr> <td>Causative </td> </tr>
-                            <tr> <td>Reflexive </td> </tr>
-                            <tr> <td>Reciprocal, Pretension </td> </tr>
-                            <tr> <td>Passive, Responsive </td> </tr>
-                            <tr> <td>Participative, Reflexive </td> </tr>
-                            <tr> <td>Colors, Defects </td> </tr>
-                            <tr> <td>Pretending, Requesting Change, Usage </td> </tr>
-                         </tbody>
-                    </table>
-                    </td>
-            </tr>
-            </table>
-        </td>
-
-        <td>
-            <table id="inputTable">
-                <tbody>
-                <tr> <td>
-                     <table id="inputSubTable">
-                        <thead>
-                            <tr> <th>Select a root below </th> </tr>
-                        </thead>
-
-                        <tbody>
-                        <tr> <td>
-                            <ul id="menuOfRoots">
-                              <!-- on load, fill in from backend -->
-                            </ul>
-                        </td> </tr>
-                        </tbody>
-                    </table>
-                </td> </tr>
-                </tbody>
-            </table>
-        </td>
-
-
-    </tr> <!-- end of rows of masterTable -->
-    </tbody>
-    </table>
-
-<!--
-</div>  <!~~ end of tabsC - closing div at end breaks tabs on IOS\Safari ~~>
- -->
-
 <div class="hideMe">
+
     <table id="menuTable" class="table table-condensed table-striped"></table>
     <table id="dataTable" class="table table-condensed table-striped">
         <!--here is some data so initial loading doesn't get dorked up before XHR returned-->
@@ -319,6 +105,7 @@
             <tr><td>1</td><td></td><td>فعل</td><td>يَفْعِل</td><td></td><td>do a process</td></tr>
         </tbody>
     </table>
+
 </div>
 
 </body>
