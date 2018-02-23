@@ -19,8 +19,8 @@ button {
     background-color: #fff8dc;
     font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
     font-size: medium;
-    height: 40px;
-    width: 120px;
+    height: 50px;
+    width: 100px;
 }
 /* end master table */
 
@@ -29,17 +29,14 @@ button {
 #contentTable th {
     text-align:center;
     vertical-align: top;
-    border-collapse: collapse;
     background-color: #adb6ff;
     min-width: 60px;
     min-height: 110px;
     border: solid black 1px;
 }
 
+
 #contentTable td {
-    vertical-align: top;
-    padding: 0px 0px 0px 0px;
-    border-collapse: collapse;
     border: solid black 1px;
     height: 26px;
 }
@@ -58,6 +55,10 @@ button {
 .colMeaning, .colTranslation {
     text-align: left;
     color: black;
+}
+
+td.colTranslation {
+   color: blue;
 }
 
 
@@ -91,27 +92,31 @@ td.colNoun, td.colVerb  {
     font-size: x-large;
 }
 
-#inputTable td {
-    background-color: #FFF8DC;
-/*
-    display: inline-block;
+#inputTable {
     vertical-align: top;
- */
 }
 /* end input menu */
 
+
 /* style everything else */
+
+table {
+    border-collapse: collapse;
+}
+
+td {
+    vertical-align: top;
+    font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
+}
+
 .hideMe {
     display: none;
 }
 
 body {
-    font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
+    background-color: #FFF8DC;
 }
 
-table {
-    border-collapse: collapse;
-}
 
 /*
 label {

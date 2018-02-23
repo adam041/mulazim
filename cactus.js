@@ -1,16 +1,17 @@
 /*
 Work list
+
 - styling
-    - re-org html tables into One Big Table.  Nix tabs in favor of buttons to drive jQuery toggles (verbs, nouns, verbs+nouns, meaning, translation)
-        >> buttons hide tbody TDs, but not TH
+    - set defaults for hidden columns, preserve shown/hidden columns after new root selected
+        >> works ok if root re-selected when toggle set to show
 
 -core logic
     -handling irregular verbs
-    -handling binary masdar in form 2/3 - encode as letter or arabic/arabic number?
+    - * handling binary masdar in form 2/3 - encode as letter or arabic/arabic number?
 
 -backend / data quality
     -pull jQuery menu inputs (sheetrock.js from gSheet!)
-        -- dynamic highlighting to show known words and/or suppress unknown (missing) words
+        -- ** dynamic highlighting to show known words and/or suppress unknown (missing) words
         -- handling of prepositions related to verb forms?
         -- record active past tense for form 1.  Maybe use active-past as basic form, and derive vowel-less root?
 
@@ -41,9 +42,28 @@ $( "#menuOfRoots li" ).click(function() {
 
 jQuery( document ).ready(function() {
 
-//set up tabs and default conjugation
-    $( "#tabsC" ).tabs();
+//set up jQuery UI and default conjugation
     conjugateUpdate( ar_Do );
+
+    $( document ).tooltip();
+//     $( ".colNoun" ).toggle();
+//     $( ".colTranslation" ).toggle();
+
+//     $( "#btnNouns" ).click(function() {
+//         $( ".colNoun" ).toggle();
+//     });
+//
+//     $( "#btnVerbs" ).click(function() {
+//         $( ".colVerb" ).toggle();
+//     });
+//
+//     $( "#btnMeaning" ).click(function() {
+//         $( ".colMeaning" ).toggle();
+//     });
+//
+//     $( "#btnTranslation" ).click(function() {
+//         $( ".colTranslation" ).toggle();
+//     });
 
 
 //Pull menu data from backend
@@ -69,13 +89,10 @@ $('#dataTable').sheetrock({
 //set up buttons to toggle columns
     $( "#btnVerbs" ).click(function() {
         $( ".colVerb" ).toggle();
-        //corresponding th/headers not getting toggled =(
     });
 
     $( "#btnNouns" ).click(function() {
         $( ".colNoun" ).toggle();
-    //     $( ".colNoun" ).toggle();
-        //corresponding th/headers not getting toggled =(
     });
 
     $( "#btnMeaning" ).click(function() {
@@ -138,82 +155,7 @@ function conjugateUpdate( root ) {
 
 //Draw table rows
     jQuery("#contentTable tbody").html( drawRows(root) );
-
-/*
-objRoot = {
-    root: root,
-
-    verb: function(tense, formNum) {
-        var objRefs = makeReferenceObject();
-
-          switch (tense) {
-
-            //Active Tense
-            case "ActivePast":
-                return conjActivePast(objRoot.root, formNum, objRefs);
-                break;
-
-            case "ActivePresent":
-                return conjActivePresent(objRoot.root, formNum, objRefs );
-                break;
-
-            case "Imperative":
-                return conjImperative(objRoot.root, formNum, objRefs);
-                break;
-
-            case "PassivePast":
-                return conjPassivePast(objRoot.root, formNum);
-                break;
-
-            case "PassivePresent":
-                return conjPassivePresent(objRoot.root, formNum);
-                break;
-
-            default:
-              console.log("error, invalid tense entered");
-              break;
-              }
-        }, // verb switch
-
-    noun: function(tense, formNum) {
-      var objRefs = makeReferenceObject();
-
-      switch (tense) {
-
-        case "Masdar":
-            return conjMasdar(objRoot.root, formNum, objRefs);
-            break;
-
-        case "ActiveParticiple":
-            return conjActiveParticiple(objRoot.root, formNum);
-            break;
-
-        case "PassiveParticiple":
-            return conjPassiveParticiple(objRoot.root, formNum);;
-            break;
-
-        case "NounTimePlace":
-            return conjNounTimePlace(objRoot.root, formNum);
-            break;
-
-        default:
-          return "error"
-          break;
-        }
-
-    } //noun switch
-
-
-};  // arRoot
-*/
-
 };
-
-
-$( function() {
-    $( "#tabsC" ).tabs();
-    $( document ).tooltip();
-} );
 
 
 function scrapeReference( blnRowsNotHeader ) {
@@ -314,3 +256,75 @@ for (var formNum = 1; formNum <= 10; ++formNum ) {
 return htmlOut;
 
 };
+
+
+
+//crap follows
+
+/*
+objRoot = {
+    root: root,
+
+    verb: function(tense, formNum) {
+        var objRefs = makeReferenceObject();
+
+          switch (tense) {
+
+            //Active Tense
+            case "ActivePast":
+                return conjActivePast(objRoot.root, formNum, objRefs);
+                break;
+
+            case "ActivePresent":
+                return conjActivePresent(objRoot.root, formNum, objRefs );
+                break;
+
+            case "Imperative":
+                return conjImperative(objRoot.root, formNum, objRefs);
+                break;
+
+            case "PassivePast":
+                return conjPassivePast(objRoot.root, formNum);
+                break;
+
+            case "PassivePresent":
+                return conjPassivePresent(objRoot.root, formNum);
+                break;
+
+            default:
+              console.log("error, invalid tense entered");
+              break;
+              }
+        }, // verb switch
+
+    noun: function(tense, formNum) {
+      var objRefs = makeReferenceObject();
+
+      switch (tense) {
+
+        case "Masdar":
+            return conjMasdar(objRoot.root, formNum, objRefs);
+            break;
+
+        case "ActiveParticiple":
+            return conjActiveParticiple(objRoot.root, formNum);
+            break;
+
+        case "PassiveParticiple":
+            return conjPassiveParticiple(objRoot.root, formNum);;
+            break;
+
+        case "NounTimePlace":
+            return conjNounTimePlace(objRoot.root, formNum);
+            break;
+
+        default:
+          return "error"
+          break;
+        }
+
+    } //noun switch
+
+
+};  // arRoot
+*/
