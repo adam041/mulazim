@@ -22,8 +22,6 @@ jQuery( document ).ready(function() {
     conjugateUpdate( ar_Do );
 
     $( document ).tooltip();
-    $( ".colNoun" ).toggle();
-    $( ".colTranslation" ).toggle();
 
 //Pull menu data from backend
     var gSheetID = "1A5YkYEKrReJ3jjAraR4ycbLIOHf3a_k6-3FM6uh-7Gw",
@@ -31,43 +29,64 @@ jQuery( document ).ready(function() {
 
 $('#menuTable').sheetrock({
 //query for distinct roots
-  url: gURL,
-  query: "select C, COUNT(C) group by C order by C",
-  labels: ['Root'],
-  callback: setupMenu
+    url: gURL,
+    query: "select C, COUNT(C) group by C order by C",
+    labels: ['Root'],
+    callback: setupMenu
 });
 
+//wipe dataTable in advance of XHR
+$('#dataTable').html("");
+
 $('#dataTable').sheetrock({
-  url: gURL,
-  query: "select A,B,C,D,E,F,G order by C desc",
-  labels: ['Form', 'Preposition', 'Root', 'Masdar', 'f1ActivePresentRad2', 'f1ActivePastRad2', 'TransVerb'],
-  callback: setupData
+    url: gURL,
+    query: "select A,B,C,D,E,F,G,H,I,J order by C desc",
+    labels: ['Form', 'Preposition', 'Root', 'Masdar', 'f1ActivePresentRad2', 'f1ActivePastRad2', 'f1Imperative0Rad2', 'Translation', 'TBD', 'Comment' ],
+    callback: setupData
 
   //where A = 1
 });
 
-//set up buttons to toggle columns
+//set up buttons to toggle column groups
     $( "#btnVerbs" ).click(function() {
-        $( ".colVerb" ).toggle();
+        $( "th.colVerb, td.colVerb" ).toggle("fast");
     });
 
     $( "#btnNouns" ).click(function() {
-        $( ".colNoun" ).toggle();
+        $( "th.colNoun, td.colNoun" ).toggle("fast");
     });
 
     $( "#btnMeaning" ).click(function() {
-        $( ".colMeaning" ).toggle();
+        $( ".colMeaning" ).toggle("fast");
     });
 
     $( "#btnTranslation" ).click(function() {
-        $( ".colTranslation" ).toggle();
+        $( "th.colTranslation, td.colTranslation" ).toggle("fast");
+    });
+
+    $( "#btnPrepositions" ).click(function() {
+        $( ".spnPreposition" ).toggle("fast");
+    });
+
+//set up double-click to focus on verbs/nouns
+    $( "#btnVerbs" ).dblclick(function() {
+        $( ".colVerb" ).show("fast");
+        $( ".colNoun" ).hide("fast");
+    });
+
+    $( "#btnNouns" ).dblclick(function() {
+        $( ".colVerb" ).hide("fast");
+        $( ".colNoun" ).show("fast");
+    });
+
+    $( "#btnFoo" ).dblclick(function() {
+    //** initially opaque button used for testing **
+        $( ".hideMe" ).toggle();
+        $( "#btnFoo" ).css({"opacity": "1"})
     });
 
 });
 
-//***
-var ar_Exit = "خرج";
-//***
 
 function makeReferenceObject() {
 
@@ -124,6 +143,9 @@ function conjugateUpdate( root ) {
     document.title = "LtCactus Conjugates " + root;
     jQuery("#activeRoot").html( root );
 
+//Force display of all header cells
+    $( "#contentTable thead th" ).show();
+
 //Draw table rows
     jQuery("#contentTable tbody").html( drawRows(root) );
 
@@ -136,7 +158,8 @@ function conjugateUpdate( root ) {
         if ( objRefs.indexRow(root, formNum) > -1) {
             jQuery( "#contentTable tr:nth-child("+formNum+") td").css({"color": "black"});
         } else {
-            jQuery( "#contentTable tr:nth-child("+formNum+") td").css({"color": "dimgrey"});
+            jQuery( "#contentTable tr:nth-child("+formNum+") td").css({"color": "dimgrey", "font-size": "medium"});
+
         }
     }
 
@@ -145,6 +168,7 @@ function conjugateUpdate( root ) {
 
 function scrapeReference( blnRowsNotHeader ) {
 //scrapes reference table downloaded from backend into arrays
+
     var arrRow = [],
         arrRows = [];
 
@@ -230,12 +254,12 @@ for (var formNum = 1; formNum <= 10; ++formNum ) {
     htmlOut += conjImperative(root, formNum, objRefs).replace(/.*/,"<td class='colVerb'>"+ '$&' +"</td>");
     htmlOut += conjActivePresent(root, formNum, objRefs).replace(/.*/,"<td class='colVerb'>"+ '$&' +"</td>");
     htmlOut += "<td class='colVerb'><span>"+ conjActivePast(root, formNum, objRefs);
-        htmlOut += "</span> <span class='spnPreposition class=inherit'> "+ objRefs.query(root, formNum, "Preposition") + "</span>";
+        htmlOut += "</span> <span class='spnPreposition'> "+ objRefs.query(root, formNum, "Preposition") + "</span>";
 
 //write out meta columns
     htmlOut += arrFormNum[formNum].replace(/.*/,"<td class='colFormNum'>"+ '$&' +"</td>");
     htmlOut += arrMeaning[formNum].replace(/.*/,"<td class='colMeaning'>"+ '$&' +"</td>");
-    htmlOut += objRefs.query(root, formNum, "TransVerb").replace(/.*/,"<td class='colTranslation'>"+ '$&' +"</td>");
+    htmlOut += objRefs.query(root, formNum, "Translation").replace(/.*/,"<td class='colTranslation'>"+ '$&' +"</td>");
     htmlOut += " </tr>";
 }
 
@@ -264,7 +288,6 @@ var vowelOut = "";
     } else if (enText === "U") {
         vowelOut = ar_U;
     } else {
-        //** how to handle long vowels in irregular verbs?
         vowelOut = "؟";
     }
 

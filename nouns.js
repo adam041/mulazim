@@ -117,16 +117,64 @@ function conjMasdar(root, formNum, objRefs) {
     switch (formNum) {
 
         case 1:
-           return objRefs.query(root, formNum, "Masdar");
+            //expects masdar will be fully written out
+            var masdarOut = objRefs.query(root, formNum, "Masdar");
+
+            if (masdarOut === "") {
+                //offers three common patterns if conjugated masdar not given
+                masdarOut = root[0] + ar_a + root[1] + ar_0 + root[2] + " | ";
+                masdarOut += root[0] + ar_u + root[1] + ar_u + ar_U + root[2] + " | ";
+                masdarOut += root[0] + ar_i + root[1] + ar_a + ar_A + root[2] + ar_a + ar_tb + ar_un;
+            }
+
+            return masdarOut;
             break;
 
         case 2:
-          return ar_t + ar_a + root[0] + ar_0 + root[1] + ar_i + ar_Y + root[2] + ar_un + " | " + ar_t + ar_a + root[0] + ar_0 + root[1] + ar_i + root[2] + ar_a + ar_tb + ar_un;
+          //expects a single character code representing masdar pattern
+          // ي = تفعيل / ar_Y
+          // ة = تفعلة / ar_tb
+          //if no code found, outputs both patterns
+
+          var masdarCode = objRefs.query(root, formNum, "Masdar");
+          var masdarOut = "";
+
+          if ( masdarCode === ar_Y ) {
+            masdarOut = ar_t + ar_a + root[0] + ar_0 + root[1] + ar_i + ar_Y + root[2] + ar_un;
+
+          } else if (masdarCode === ar_tb) {
+            masdarOut = ar_t + ar_a + root[0] + ar_0 + root[1] + ar_i + root[2] + ar_a + ar_tb + ar_un;
+
+          } else {
+            masdarOut = ar_t + ar_a + root[0] + ar_0 + root[1] + ar_i + ar_Y + root[2] + ar_un + " | ";
+            masdarOut +=  ar_t + ar_a + root[0] + ar_0 + root[1] + ar_i + root[2] + ar_a + ar_tb + ar_un;
+          }
+
+          return masdarOut;
           break;
 
         case 3:
-            return ar_m + ar_u + root[0] + ar_a + ar_A + root[1] + ar_a + root[2] + ar_a + ar_tb + ar_un + " | " + root[0] + ar_i + root[1] + ar_a + ar_A + root[2] + ar_un;
-            break;
+          //expects a single character code representing masdar pattern
+          // م = مفاعلة / ar_m
+          // ا = فعال / ar_A
+          //if no code found, outputs both patterns
+
+          var masdarCode = objRefs.query(root, formNum, "Masdar");
+          var masdarOut = "";
+
+          if ( masdarCode === ar_m ) {
+            masdarOut = ar_m + ar_u + root[0] + ar_a + ar_A + root[1] + ar_a + root[2] + ar_a + ar_tb + ar_un ;
+
+          } else if (masdarCode === ar_A) {
+            masdarOut = root[0] + ar_i + root[1] + ar_a + ar_A + root[2] + ar_un;
+
+          } else {
+            masdarOut = ar_m + ar_u + root[0] + ar_a + ar_A + root[1] + ar_a + root[2] + ar_a + ar_tb + ar_un + " | ";
+            masdarOut +=  root[0] + ar_i + root[1] + ar_a + ar_A + root[2] + ar_un;
+          }
+
+          return masdarOut;
+          break;
 
         case 4:
             return ar_lA + ar_i + root[0] + ar_0 + root[1] + ar_a + ar_A + root[2] + ar_un;

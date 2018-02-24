@@ -41,11 +41,6 @@ button {
     height: 26px;
 }
 
-#formDescriptionTable td  {
-    text-align: left;
-    /* b/c text is English LTR */
-}
-
 .colFormNum {
     min-width: 40px;
     color: black;
@@ -59,7 +54,6 @@ button {
 
 td.colNoun, td.colVerb  {
     font-size: x-large;
-    color: dimgrey;
     text-align: center;
 }
 
@@ -108,9 +102,17 @@ td {
     display: none;
 }
 
+.hideMe table td {
+    border: dashed blue 1px;
+}
+
 body {
     background-color: #FFF8DC;
 }
+
+#btnFoo {
+    opacity: .00;
+}/*
 
 
 /*
@@ -118,4 +120,5 @@ label {
     display: inline-block;
     width: 5em;
 }
+ */
  */

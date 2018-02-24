@@ -27,10 +27,14 @@
     <table id="masterTable">
     <thead> <tr>
         <th id="thButtons">
-            <button id="btnVerbs" title="show/hide Verb conjugations">Verbs</button>
-            <button id="btnNouns" title="show/hide Noun conjugations">Nouns</button>
-            <button id="btnMeaning" title="show/hide Meaning, Use & Relationship column">Meaning</button>
-            <button id="btnTranslation" title="show/hide translation column">Translation</button>
+            <button id="btnVerbs" title="click to toggle showing column group, click twice to focus on verbs only">Verbs</button>
+            <button id="btnNouns" title="click to toggle showing  column group, click twice to focus on nouns only">Nouns</button>
+            <button id="btnMeaning" title="click to toggle showing column">Meaning</button>
+            <button id="btnTranslation" title="click to toggle showing column">Translation</button>
+            <button id="btnPrepositions" title="click to toggle showing prepositions in Active Past column">Prepositions</button>
+
+            <button id="btnFoo" title="this is not a button">testing</button>
+
         </th>
         <th id="activeRoot"> </th>
       </tr> </thead>
@@ -95,16 +99,16 @@
 
 <div class="hideMe">
 
-    <table id="menuTable" class="table table-condensed table-striped"></table>
-    <table id="dataTable" class="table table-condensed table-striped">
+    <table id="menuTable"></table>
+    <table id="dataTable">
         <!--here is some data so initial loading doesn't get dorked up before XHR returned-->
-        <thead>
-            <tr><th>Form</th>               <th>Preposition</th>        <th>Root</th>   <th>Masdar</th>
-                <th>f1ActivePresentRad2</th><th>f1ActivePastRad2</th>   <th>TransVerb</th>  </tr>
+        <thead> <tr>
+            <th>Form</th>               <th>Preposition</th>        <th>Root</th>             <th>Masdar</th>
+            <th>f1ActivePresentRad2</th><th>f1ActivePastRad2</th>   <th>f1Imperative0Rad2</th> <th>Translation</th>    <th>TBD</th>    <th>Comment</th> </tr>
         </thead>
-        <tbody>
-            <tr><td>1</td>                  <td></td>                   <td>فعل</td>    <td></td>
-            <td>i</td>                       <td>a</td>       <td>do a process</td>       </tr>
+        <tbody><tr>
+            <td>1</td>                  <td></td>                   <td>فعل</td>            <td></td>
+            <td>i</td>                  <td>a</td>                  <td>do a process</td>   <td></td>       <td></td> </tr>
         </tbody>
     </table>
 
