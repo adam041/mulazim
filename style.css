@@ -1,18 +1,21 @@
 @import url(https://code.jquery.com/ui/1.12.1/themes/humanity/jquery-ui.css);
 
 /* style master table */
+#masterTable tr:first-child th:first-child {
+    border-top-left-radius: 10px;
+}
+
 #thButtons {
     text-align: left;
     padding: 10px;
     background-color: #BF7F3F;
-/*  border: solid black 1px; */
 }
 
 #activeRoot {
     font-weight: boldest;
     font-size: xx-large;
     background-color: #f4ce42;
-    border: solid black 1px;
+    border-top-right-radius: 10px;
 }
 
 button {
@@ -21,11 +24,26 @@ button {
     font-size: medium;
     height: 50px;
     width: 100px;
+    border-radius: 5px;
 }
+
 /* end master table */
 
 
 /* style content table */
+
+#contentTable tr:first-child th:first-child {
+    border-top-left-radius: 0px;
+}
+
+#contentTable tr:last-child td:first-child {
+    border-bottom-left-radius: 10px;
+}
+
+#contentTable tr:last-child td:last-child {
+    border-bottom-right-radius:10px;
+}
+
 #contentTable th {
     text-align:center;
     vertical-align: top;
@@ -37,12 +55,13 @@ button {
 
 
 #contentTable td {
-    border: solid black 1px;
-    height: 26px;
+   border: solid black 1px;
 }
 
 .colFormNum {
+/*
     min-width: 40px;
+ */
     color: black;
     text-align: center;
 }
@@ -84,6 +103,11 @@ td.colNoun, td.colVerb  {
 #inputTable {
     vertical-align: top;
 }
+
+#inputTable ul {
+    border-radius: 10px;
+}
+
 /* end input menu */
 
 
@@ -112,13 +136,4 @@ body {
 
 #btnFoo {
     opacity: .00;
-}/*
-
-
-/*
-label {
-    display: inline-block;
-    width: 5em;
 }
- */
- */
