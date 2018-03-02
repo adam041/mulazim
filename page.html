@@ -33,10 +33,17 @@
             <button id="btnTranslation" title="click to toggle showing column">Translation</button>
             <button id="btnPrepositions" title="click to toggle showing prepositions in Active Past column">Prepositions</button>
 
-            <button id="btnFoo" title="this is not a button">testing</button>
+            <button id="btnFoo" title="<table> <tr> <td> A1 </td> <td> A2 </td> </tr> <tr> <td> B1 </td> <td> B2 </td> </tr> </table>">testing</button>
+
+            <span id="spanSelectRoot">
+            <label for="selectRoot">Select a root:  </label>
+            <select name="selectRoot" id="selectRoot">
+                <option selected="selected">فعل</option>
+            </select> </span>
 
         </th>
-        <th id="activeRoot"> </th>
+        <th id="activeRootOld" class="hideMe"> </th>
+        <th> </th>
       </tr> </thead>
 
     <tbody>
@@ -70,7 +77,7 @@
 
          <td>
         <!--this td/table holds the inputs menu           -->
-        <table id="inputTable">
+        <table id="inputTable" class="hideMe"   >
             <tbody>
             <tr> <td>
                  <table id="inputSubTable">
@@ -79,6 +86,14 @@
                     </thead>
 
                     <tbody>
+<!--
+                    <tr> <td>
+                            <label for="inputFilter"></label>
+                            <input type="text" name="inputFilterInput" id="inputFilter" placeholder="or enter text" value="">
+                            <button id="btnFilter">Filter</button>
+                        </td>
+                    </tr>
+ -->
                     <tr> <td>
                         <ul id="menuOfRoots">
                           <!-- on load, fill in from backend -->
@@ -86,11 +101,43 @@
                     </td> </tr>
                     </tbody>
                 </table>
-            </td> </tr>
+            </td>
+            </tr>
             </tbody>
         </table>
         </td>
 
+        <td>
+        <table id="tableConjBySubject">
+            <thead>
+                <tr> <th colspan="2" id="activeRoot">فعل</th> </tr>
+                <tr> <th colspan="2">Form
+                                        <span id="activeForm">1</span>
+                                                                        </th> </tr>
+                <tr> <th colspan="2">Conjugated</th> </tr>
+            </thead>
+            <tbody>
+                <tr> <td>I</td> <td id="subjI" class="arCell">انا </td> </tr>
+
+                <tr> <td>You (m)</td> <td id="subjYouM" class="arCell"> </td> </tr>
+                <tr> <td>You (f)</td> <td id="subjYouF" class="arCell"> </td> </tr>
+
+                <tr> <td>He</td> <td id="subjHe" class="arCell"> </td> </tr>
+                <tr> <td>She</td> <td id="subjShe" class="arCell"> </td> </tr>
+
+                <tr> <td>&nbsp</td> </tr>
+
+                <tr> <td>We</td> <td id="subjWe" class="arCell"> </td> </tr>
+
+                <tr> <td>Y'all (m)</td> <td id="subjVousM" class="arCell"> </td> </tr>
+                <tr> <td>Y'all (f)</td> <td id="subjVousF" class="arCell"> </td> </tr>
+
+                <tr> <td>They (m)</td> <td id="subjTheyM" class="arCell"> </td> </tr>
+                <tr> <td>They (f)</td> <td id="subjTheyF" class="arCell"> </td> </tr>
+
+            </tbody>
+        </table>
+        </td>
 
     </tr> <!-- end of rows of masterTable -->
     </tbody>

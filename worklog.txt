@@ -7,6 +7,7 @@ Work list
 
 -backend / data quality
     - data entry for imperative
+    - QA/QC conjugations for typos
 
 -secondary features
     - within tense conjugation (i.e. for all subjects; add column on left)

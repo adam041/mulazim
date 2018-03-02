@@ -18,6 +18,11 @@
     border-top-right-radius: 10px;
 }
 
+#spanSelectRoot {
+    float:right;
+    display:inline;
+}
+
 button {
     background-color: #fff8dc;
     font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
@@ -36,6 +41,7 @@ button {
     border-top-left-radius: 0px;
 }
 
+/*
 #contentTable tr:last-child td:first-child {
     border-bottom-left-radius: 10px;
 }
@@ -43,6 +49,7 @@ button {
 #contentTable tr:last-child td:last-child {
     border-bottom-right-radius:10px;
 }
+ */
 
 #contentTable th {
     text-align:center;
@@ -64,16 +71,19 @@ button {
  */
     color: black;
     text-align: center;
+    direction: ltr;
 }
 
 .colMeaning, .colTranslation {
     text-align: left;
+    direction: ltr;
     color: black;
 }
 
 td.colNoun, td.colVerb  {
     font-size: x-large;
     text-align: center;
+    direction: rtl;
 }
 
 /* tri-color shade rows */
@@ -90,14 +100,23 @@ td.colNoun, td.colVerb  {
 
 .arHead {
     font-weight: bold;
+    direction: rtl;
 }
 /* end content table */
 
 
 /* style input menu */
+
+option {
+    text-align: right;
+    font-size: x-large;
+    direction: rtl;
+}
+
 .ui-menu {
     text-align: right;
     font-size: x-large;
+    direction: rtl;
 }
 
 #inputTable {
@@ -108,7 +127,34 @@ td.colNoun, td.colVerb  {
     border-radius: 10px;
 }
 
+
+#inputFilter {
+    font-size: medium;
+    text-align: right;
+    width: 100px;
+}
+
+#btnFilter {
+    background-color: #fff8dc;
+    font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
+    font-size: small;
+    height: 26px;
+    width: 100px;
+    border-radius: 10px;
+    display: block;
+    margin: 0 auto;
+}
+
 /* end input menu */
+
+/* style subject conjugation table else */
+
+#tableConjBySubject td.arCell {
+    direction: rtl;
+    color: black;
+    border: solid black 1px;
+    font-size: large;
+}
 
 
 /* style everything else */
