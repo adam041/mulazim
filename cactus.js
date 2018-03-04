@@ -3,6 +3,21 @@ function setupMenu(error, options, response){
 
 // console.log(response);
 
+//version A
+$('#menuTable tbody td:first-child').each(function() {
+    $("#selectRoot").append("<option>" +  $(this).text() + "</option>");
+});
+
+$(function() {
+    $('#selectRoot').selectmenu({
+        change: function() {
+            conjugateUpdate( $(this).val() );
+        }
+    });
+});
+
+
+//version B
 $('#menuTable tbody td:first-child').each(function() {
     $("#menuOfRoots").append("<li><div>" +  $(this).text() + "</div></li>");
 });
@@ -14,6 +29,7 @@ $( "#menuOfRoots li" ).click(function() {
 });
 
 }
+
 
 
 jQuery( document ).ready(function() {
@@ -82,7 +98,14 @@ $('#dataTable').sheetrock({
     $( "#btnFoo" ).dblclick(function() {
     //** initially opaque button used for testing **
         $( ".hideMe" ).toggle();
-        $( "#btnFoo" ).css({"opacity": "1"})
+        $( "#btnFoo" ).css({"opacity": "1"});
+    });
+
+    $( "#btnFilter" ).click(function() {
+        console.log( $( "#inputFilter" ).val() ) ;
+        //** do some jQuery on list
+        // what about a select menu? http://jqueryui.com/selectmenu/
+        // what about auto-complete? http://jqueryui.com/autocomplete/
     });
 
 });
@@ -106,7 +129,7 @@ function makeReferenceObject() {
                 if (( currentValue[rootPos] === root ) && ( eval(currentValue[formPos]) === form )) {
                     rowIndex = index;
                 }
-            })
+            });
 
             return rowIndex;
 
@@ -130,7 +153,7 @@ function makeReferenceObject() {
             return output;
         }
 
-    } //end of Refs
+    }; //end of Refs
 
     return refs;
 }
@@ -163,7 +186,7 @@ function conjugateUpdate( root ) {
         }
     }
 
-};
+}
 
 
 function scrapeReference( blnRowsNotHeader ) {
@@ -175,7 +198,8 @@ function scrapeReference( blnRowsNotHeader ) {
    if ( blnRowsNotHeader === false ) {
         $( "#dataTable th" ).each(function(colIndex) {
             arrRow.push( $(this).text() );
-        })
+        });
+
         return arrRow; //1D array of header (ths)
 
     } else {
@@ -193,7 +217,7 @@ function scrapeReference( blnRowsNotHeader ) {
         return arrRows; //2D array of arrays (rows + tds)
     }
 
-};
+}
 
 
 function setupData() {
@@ -265,7 +289,7 @@ for (var formNum = 1; formNum <= 10; ++formNum ) {
 
 return htmlOut;
 
-};
+}
 
 
 function vowelMe(enText) {
@@ -294,8 +318,6 @@ var vowelOut = "";
 return vowelOut;
 
 }
-
-
 
 
 //crap follows

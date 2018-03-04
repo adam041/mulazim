@@ -114,11 +114,14 @@ function conjActiveParticiple(root, formNum) {
 function conjMasdar(root, formNum, objRefs) {
 //returns conjugated trilateral noun as Verbal Noun (masdar)
 
+    var masdarOut = "",
+        masdarCode = "";
+
     switch (formNum) {
 
         case 1:
             //expects masdar will be fully written out
-            var masdarOut = objRefs.query(root, formNum, "Masdar");
+            masdarOut = objRefs.query(root, formNum, "Masdar");
 
             if (masdarOut === "") {
                 //offers three common patterns if conjugated masdar not given
@@ -136,8 +139,8 @@ function conjMasdar(root, formNum, objRefs) {
           // ة = تفعلة / ar_tb
           //if no code found, outputs both patterns
 
-          var masdarCode = objRefs.query(root, formNum, "Masdar");
-          var masdarOut = "";
+          masdarCode = objRefs.query(root, formNum, "Masdar");
+          masdarOut = "";
 
           if ( masdarCode === ar_Y ) {
             masdarOut = ar_t + ar_a + root[0] + ar_0 + root[1] + ar_i + ar_Y + root[2] + ar_un;
