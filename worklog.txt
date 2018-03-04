@@ -3,10 +3,11 @@ Work list
 - styling
 
 -core logic
-    -* handling irregular verbs
+    -* handling irregular verbs - slip in pastIrregular / presentIrregular postprocessing
+    - remove unnecessary break following return statements
 
 -backend / data quality
-    - data entry for imperative
+    - data entry for imperative?
     - QA/QC conjugations for typos
 
 -secondary features
