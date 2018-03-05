@@ -1,36 +1,38 @@
 //Verb Conjugation Scripts
 
-//* new master function?
-function verbalize(root, formNum, tense, isActive, subject) {
+function verbalize(root, formNum, enTense, isActive, arSubject) {
 //finds stem of a verb, and then adds prefixes and suffixes appropriate to tense and subject
 
 //root and formNum are required parameters.  Active/Present/3rd person masculine single assumed if no param passed
-// tense parameter should be "present" or "past"
-// subject parameter should be lower case english*, with M/F as last character for you/vous */they
+// enTense parameter should be "present" or "past", english language string
+// isActive is boolean
+// arSubject parameter should be Arabic language string.  Omit short vowels except to distinguish singular forms of you
+
 
 //ensure optional variables are not null
-if ( tense === undefined ) {
-    tense = "present";
+if ( enTense === undefined ) {
+    enTense = "present";
 }
 
 if ( isActive === undefined ) {
     isActive = true;
 }
 
-if ( subject === undefined ) {
-    subject = "هو";
+if ( arSubject === undefined ) {
+    arSubject = "هو";
 }
 
-//Declare internal string variables
+//Declare string variables for internal use
 var stem = "";
 var prefix = "";
 var suffix = "";
-var objRefs = makeReferenceObject();
 
+//Build object holding reference info needed to fill in details for forms 1-3
+var objRefs = makeReferenceObject();
 
 //Get the stem
 
-if ( tense === "present" ) {
+if ( enTense === "present" ) {
 
     if ( isActive ) {
         stem = conjActivePresent(root, formNum, objRefs);
@@ -38,7 +40,7 @@ if ( tense === "present" ) {
         stem = conjPassivePresent(root, formNum, objRefs);
     }
 
-} else if ( tense === "past" ) {
+} else if ( enTense === "past" ) {
 
     if ( isActive ) {
         stem = conjActivePast(root, formNum, objRefs);
@@ -46,15 +48,15 @@ if ( tense === "present" ) {
         stem = conjPassivePast(root, formNum, objRefs);
     }
 
-} else if ( tense === "imperative" ) {
-    stem = conjImperative(root, formNum);
+} else if ( enTense === "imperative" ) {
+    stem = conjImperative(root, formNum, objRefs);
 }
 
 //Get Present Prefix/Suffix
-if ( tense === "present" ) {
+if ( enTense === "present" ) {
 
     //Present Prefixes
-    switch ( subject ) {
+    switch ( arSubject ) {
 
         case pro_i:
             prefix = ar_hA + prefixVowel(formNum, isActive);
@@ -80,7 +82,7 @@ if ( tense === "present" ) {
     }
 
     //Present Suffixes
-    switch ( subject ) {
+    switch ( arSubject ) {
 
         case pro_youF:
         case pro_theyM:
@@ -97,10 +99,10 @@ if ( tense === "present" ) {
             break;
     }
 
-} else if ( tense === "past" ) {
+} else if ( enTense === "past" ) {
 //Get Past Suffix
 
-    switch ( subject ) {
+    switch ( arSubject ) {
 
         case pro_i:
             suffix = ar_0 + ar_t + ar_u;
@@ -241,11 +243,8 @@ function conjActivePast(root, formNum, objRefs) {
           break;
       }
 
-        return pastIrregular(root, output, "he");
+        return output;
 }
-
-
-
 
 
 function conjActivePresent(root, formNum, objRefs) {
@@ -258,52 +257,52 @@ function conjActivePresent(root, formNum, objRefs) {
 
         case 1:
             rad2vowel = vowelMe(objRefs.query(root, formNum, "f1ActivePresentRad2"));
-            output = ar_Y + ar_u + root[0] + ar_0 + root[1] + rad2vowel + root[2] + ar_a;
+            output = root[0] + ar_0 + root[1] + rad2vowel + root[2] + ar_a;
             break;
 
         case 2:
-          output = ar_Y + ar_u + root[0] + ar_a + root[1] + ar_2v + ar_i + root[2] + ar_u;
-          break;
+            output = root[0] + ar_a + root[1] + ar_2v + ar_i + root[2] + ar_u;
+            break;
 
         case 3:
-            output = ar_Y + ar_u + root[0] + ar_a + ar_A + root[1] + ar_i + root[2] + ar_u;
+            output = root[0] + ar_a + ar_A + root[1] + ar_i + root[2] + ar_u;
             break;
 
         case 4:
-          output = ar_Y + ar_u + root[0] + ar_0 + root[1] + ar_i + root[2] + ar_u;
-          //* sukkun over 2nd radical assumed, not on chart
+            output = root[0] + ar_0 + root[1] + ar_i + root[2] + ar_u;
+            //* sukkun over 2nd radical assumed, not on chart
             break;
 
         case 5:
-          output = ar_Y + ar_a + ar_t + ar_a + conjActivePresent(root, 2).slice(2,-1).replace(ar_i, ar_a) + ar_u;
-          break;
+            output = ar_t + ar_a + conjActivePresent(root, 2).slice(2,-1).replace(ar_i, ar_a) + ar_u;
+            break;
 
         case 6:
-          output = ar_Y + ar_a + ar_t + ar_a + conjActivePresent(root, 3).slice(2,-1).replace(ar_i, ar_a) + ar_u;
-          break;
+            output = ar_t + ar_a + conjActivePresent(root, 3).slice(2,-1).replace(ar_i, ar_a) + ar_u;
+            break;
 
         case 7:
-          output = ar_Y + ar_a + ar_n + ar_0 + root[0] + ar_a + root[1] + ar_i + root[2] + ar_u;
-          break;
+            output = ar_n + ar_0 + root[0] + ar_a + root[1] + ar_i + root[2] + ar_u;
+            break;
 
         case 8:
-          output = ar_Y + ar_a + root[0] + ar_0 + ar_t + ar_a + root[1] + ar_i + root[2] + ar_u;
-          break;
+            output = root[0] + ar_0 + ar_t + ar_a + root[1] + ar_i + root[2] + ar_u;
+            break;
 
         case 9:
-          output = ar_Y + ar_a + root[0] + ar_0 + root[1] + ar_a + root[2] + ar_2v+ ar_u;
-          break;
+            output = root[0] + ar_0 + root[1] + ar_a + root[2] + ar_2v+ ar_u;
+            break;
 
         case 10:
-          output = ar_Y + ar_a + ar_s + ar_0 + ar_t + ar_a + root[0] + ar_0 + root[1] + ar_i + root[2] + ar_u;
-          break;
+            output = ar_s + ar_0 + ar_t + ar_a + root[0] + ar_0 + root[1] + ar_i + root[2] + ar_u;
+            break;
 
         default:
           output = "Error";
           break;
     }
 
-    return presentIrregular(root, output, "he");
+    return output;
 
 }
 
@@ -312,24 +311,24 @@ function conjImperative(root, formNum, objRefs) {
 //returns conjugated trilateral verb in Imperative
 
     var vowelCode = "",
-        alifvowel = "",
-        rad2vowel = "";
+        alifVowel = "",
+        rad2Vowel = "";
 
     switch (formNum) {
 
         case 1:
             vowelCode = objRefs.query(root, formNum, "f1Imperative0R2"); //split(**)
-            alifvowel = vowelMe(vowelCode);
+            alifVowel = vowelMe(vowelCode);
             vowelCode = objRefs.query(root, formNum, "f1Imperative0R2"); //split(**)
-            rad2vowel = vowelMe(vowelCode);
-            return ar_hA + alifvowel + root[0] + ar_0 + root[1] + rad2vowel + root[2] + ar_0;
+            rad2Vowel = vowelMe(vowelCode);
+            return ar_hA + alifVowel + root[0] + ar_0 + root[1] + rad2Vowel + root[2] + ar_0;
 
         case 2:
         case 3:
         case 7:
         case 8:
         case 10:
-            return conjActivePast(root, formNum).slice(0,-3) + ar_i + root[2] + ar_0;
+            return conjActivePast(root, formNum).slice(0,-2) + ar_i + root[2] + ar_0;
 
         case 4:
             return ar_hA + ar_a + root[0] + ar_a + root[1] + ar_i + root[2] + ar_0;
@@ -337,7 +336,7 @@ function conjImperative(root, formNum, objRefs) {
         case 5:
         case 6:
         case 9:
-            return conjActivePast(root, formNum).slice(0,-1);
+            return conjActivePast(root, formNum);
 
         default:
             return "Error";
@@ -353,19 +352,19 @@ function conjPassivePast(root, formNum) {
     switch (formNum) {
 
         case 1:
-          output =  root[0] + ar_u + root[1] + ar_i + root[2] + ar_a;
+          output =  root[0] + ar_u + root[1] + ar_i + root[2];
           break;
 
         case 2:
-          output =  root[0] + ar_u + root[1] + ar_2v + ar_i + root[2] + ar_a;
+          output =  root[0] + ar_u + root[1] + ar_2v + ar_i + root[2];
           break;
 
         case 3:
-          output =  root[0] + ar_u + ar_U + root[1] + ar_i + root[2] + ar_a;
+          output =  root[0] + ar_u + ar_U + root[1] + ar_i + root[2];
           break;
 
         case 4:
-          output =  ar_hA + ar_u + root[0] + ar_0 + root[1] + ar_i + root[2] + ar_a;
+          output =  ar_hA + ar_u + root[0] + ar_0 + root[1] + ar_i + root[2];
           break;
 
         case 5:
@@ -381,7 +380,7 @@ function conjPassivePast(root, formNum) {
           break;
 
         case 8:
-          output =  ar_A + ar_u + root[0] + ar_0 + ar_t + ar_u + root[1] + ar_i + root[2] + ar_a;
+          output =  ar_A + ar_u + root[0] + ar_0 + ar_t + ar_u + root[1] + ar_i + root[2];
           break;
 
         case 9:
@@ -389,7 +388,7 @@ function conjPassivePast(root, formNum) {
           break;
 
         case 10:
-          output =  ar_A + ar_u + ar_s + ar_0 + ar_t + ar_u + root[0] + ar_0 + root[1] + ar_i + root[2] + ar_a;
+          output =  ar_A + ar_u + ar_s + ar_0 + ar_t + ar_u + root[0] + ar_0 + root[1] + ar_i + root[2];
           break;
 
         default:
@@ -397,7 +396,7 @@ function conjPassivePast(root, formNum) {
           break;
       }
 
-      return pastIrregular(root, output, "he");
+      return output;
 }
 
 
@@ -409,31 +408,34 @@ function conjPassivePresent(root, formNum) {
     switch (formNum) {
 
         case 1:
-            output = ar_Y + ar_u + root[0] + ar_0 + root[1] + ar_a + root[2] + ar_u;
+            output = root[0] + ar_0 + root[1] + ar_a + root[2] + ar_u;
             break;
 
         case 2:
         case 3:
         case 4:
+        case 8:
+        case 10:
             output = conjActivePresent(root, formNum).replace(ar_i, ar_a);
             break;
 
         case 5:
         case 6:
-            output = conjActivePresent(root, formNum).replace(ar_a, ar_u);
+//          output = conjActivePresent(root, formNum).replace(ar_a, ar_u);
+            output = conjActivePresent(root, formNum);
             break;
 
         case 7:
             output = "---";
             break;
 
-        case 8:
-        case 10:
-            output = conjActivePresent(root, formNum).replace(ar_a, ar_u).replace(ar_i, ar_a);
-            break;
+//         case 8:
+//         case 10:
+//             output = conjActivePresent(root, formNum).replace(ar_a, ar_u).replace(ar_i, ar_a);
+//             break;
 
         case 9:
-            output = ar_Y + ar_u + root[0] + ar_0 + root[1] + ar_a + ar_A + root[2] + ar_2v+ ar_u;
+            output = root[0] + ar_0 + root[1] + ar_a + ar_A + root[2] + ar_2v+ ar_u;
             break;
 
         default:
@@ -441,58 +443,147 @@ function conjPassivePresent(root, formNum) {
             break;
     }
 
-    return presentIrregular(root, output, "he");
+    return output;
 
 }
 
-function expandSubjects(conjHe, tense, root, form) {
-//returns an object holding all conjugations for a given verb form and tense by subject
+function irregularizer(stem, enTense, arSubject, root) {
+//switchboard function to call irregular modifications
 
-if ( tense.toLowerCase() === "present" ) {
+    if ( root[0] === ar_A ) {
+        return irregAssimiliative(stem, enTense, arSubject);
+    }
 
-//Begin with a regular verb, then modify if irregular
-    //regular verbs
-    subs = {
-        stem: conjHe.slice(2,-1),
+    if ( ( root[1] === ar_Y ) || ( root[1] === ar_U ) ){
+        return irregHollow(stem, enTense, arSubject, root);
+    }
 
-    //1st person
-        i: ar_A + subs.stem,
-        we: ar_n + ar_a + subs.stem,
+    if ( ( root[2] === ar_Y ) || ( root[2] === ar_U ) ) {
+        return irregDefective(stem, enTense, arSubject, root);
+    }
 
-    //2nd person
-        you_m: ar_t + ar_a + subs.stem,
-        you_f: conjHe + ar_u + ar_U + ar_n,
+    if ( ( root[root.length]= ar_2v ) || ( root[1] === root[2] )) {
+        //  return irregDoubled()
+    }
 
-        vous_m: subs.you_m + ar_u + ar_U + ar_n + ar_a,
-        vous_f: subs.you_m + ar_0 + ar_n + ar_a,
+    if ( root.indexOf(ar_h5) > -1 ) {
+        //what about hamza seated on a chair?
+        //return irregHamza
+    }
 
-    //third person
-        he: conjHe,
-        she: subs.you_m,
-        they_m: subs.he + ar_u + ar_U + ar_n,
-        they_f: subs.he + ar_0 + ar_n + ar_a,
-    };
-
-//Do irregular checks (present tense)
-
-//combine constants >> ya, ta, Un, na ?
-
-//so far so good?
-console.log(allSubjects);
+} // end irregularizer
 
 
-//////////////////////////////////////////////
-} else if ( tense.toLowerCase() === "past" ) {
-//present tense
+function irregAssimiliative(stem, enTense, arSubject) {
+// modifies stem in accordance with irregular verb rules
+// assumes ( root[0] === ar_A )
 
-    allSubjects.stem = conjHe.slice(0,-1);
+    if ( enTense  === "present" ) {
+        return stem.replace(ar_A,"");
+    } else {
+        return stem;
+    }
+
 }
 
 
-return allSubjects;
-}
+function irregHollow(stem, enTense, arSubject, root) {
+// modifies stem in accordance with irregular verb rules
+// assumes ( ( root[1] === ar_Y ) || ( root[1] === ar_U ) )
+
+var rad1Vowel = "";
+
+    if ( enTense === "present" ){
+
+        //present or imperative tense generally stay regular
+        if ( isHollowIrregular(root) ) {
+
+            //for very irregular verbs
+            if (( arSubject === pro_vousF ) || ( arSubject === pro_theyF ) ) {
+                return stem.replace(root[1],"");
+            } else {
+                return stem.replace(root[1],ar_A);
+            }
+
+        } else { return stem; }
+
+    } else if ( enTense === "past" ) {
+
+        if ( isHollowIrregular(root) ) {
+            //for very irregular verbs
+            rad1Vowel = ar_u;   //** SWAG, QA-QC
+            return root[0] + rad1Vowel + stem.slice(2);
+        }
+
+        if ( ( arSubject = pro_he ) || ( arSubject = pro_she ) || (arSubject = pro_theyM) ) {
+            return stem.replace(root[1],ar_A);
+
+        } else {
+            //subject is i, we, you-m, you-f, vous-m, vous-f...they-f
+            rad1Vowel = ar_u;
+            if ( root[1] === ar_i ) { rad1vowel = ar_i; }
+           return root[0] + rad1Vowel + stem.slice(2);
+        }
+
+    } else { return stem; }
+
+} //end irregHollow
 
 
+function irregDefective(stem, enTense, arSubject, root) {
+// modifies stem in accordance with irregular verb rules
+// assumes ( ( root[2] === ar_Y ) || ( root[2] === ar_U ) )
+
+    if ( enTense === "past" ) {
+
+        if ( root[2] === ar_U ) {
+
+            if ( ( arSubject === pro_she ) || ( arSubject === pro_theyM ) || ( arSubject === pro_theyF ) ) {
+                return stem.replace(ar_U,"");
+
+            } else if ( arSubject === pro_he ) {
+                return stem.replace(ar_U,ar_A);
+
+            } else {
+                //subject is i, we, you-m, you-f, vous-m, vous-f
+                return stem;
+            }
+
+        } else if ( root[2] === ar_Y ) {
+
+            //defective ** resume here
+            return stem;
+            // ( root[2] === ar_Y ) || ( /middlevowel/ === ar_a )
+            // ( root[2] === ar_Y ) || ( /middlevowel/ === ar_i )
+            // dot-less Y handling
+        }
+
+    } else if ( enTense === "present" ) {
+
+        if ( root[2] === ar_U ){
+
+            if ( ( arSubject === pro_youF ) || ( arSubject === pro_theyM ) || ( arSubject === pro_vousM ) ) {
+                return stem.replace(ar_U,"");
+
+            } else {
+                //subject is i, we, you-m, vous-f, he, she, they-f
+                return stem;
+            }
+
+        } else if ( root[2] === ar_Y ) {
+            //defective ** resume here
+            return stem;
+            // ( root[2] === ar_Y ) || ( /middlevowel/ === ar_a )
+            // ( root[2] === ar_Y ) || ( /middlevowel/ === ar_i )
+            // dot-less Y handling
+        }
+
+    } else { return stem;}
+
+} // end irregDefective
+
+/*
+///////////// deprecate /////////////
 function pastIrregular(root, draftConjugation, enSubject) {
 //takes a conjugated verb and applies irregular rules
 //right now only works with enSubject-third person-single-male
@@ -508,7 +599,7 @@ if (enSubject === undefined) {
 
 if ( root[0] === ar_A ) {
 
-    return draftConjugation
+    return draftConjugation;
 
 } // end assimilative
 
@@ -528,7 +619,7 @@ if ( ( root[1] === ar_Y ) || ( root[1] === ar_U ) ){
         //subject is i, we, you-m, you-f, vous-m, vous-f...they-f
 
         var rad1vowel = ar_u;
-        if ( root[1] = ar_i ) { rad1vowel = ar_i;}
+        if ( root[1] === ar_i ) { rad1vowel = ar_i;}
 
         return root[0] + rad1vowel + draftConjugation.slice(2);
     }
@@ -578,8 +669,11 @@ if ( root.indexOf(ar_h5) > -1 ) {
 return draftConjugation;
 
 }
+///////////// deprecate /////////////
+*/
 
-
+/*
+///////////// deprecate /////////////
 function presentIrregular(root, draftConjugation, enSubject) {
 //takes a conjugated verb and applies irregular rules
 //right now only works with enSubject-third person-single-male
@@ -660,7 +754,8 @@ if ( root.indexOf(ar_h5) > -1 ) {
 return draftConjugation;
 
 }
-
+///////////// deprecate /////////////
+*/
 
 /*
 function presentIrregular(root, draftConjugation, enSubject) {
@@ -780,7 +875,7 @@ function isHollowIrregular(root){
 //returns true if verb is very irregular
 
     var arrIrregulars = [];
-        arrIrregulars.push (ar_n + ar_U + ar_m);
+        arrIrregulars.push (ar_n + ar_U + ar_m);    //to sleep
 
     arrIrregulars.forEach(function (currentValue, index) {
         if ( currentValue === root ) {

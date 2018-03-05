@@ -226,8 +226,12 @@ function setupData() {
 }
 
 
-function drawRows(root){
+function drawRows(root, arSubject){
 //controller function for writing out each row
+
+if ( arSubject === undefined ) {
+    arSubject = pro_he;
+}
 
 var objRefs = makeReferenceObject();
 var htmlOut = "";
@@ -273,12 +277,20 @@ for (var formNum = 1; formNum <= 10; ++formNum ) {
     htmlOut += conjMasdar(root, formNum, objRefs).replace(/.*/,"<td class='colNoun'>"+ '$&' +"</td>");
 
 //write verb columns
-    htmlOut += conjPassivePresent(root, formNum).replace(/.*/,"<td class='colVerb'>"+ '$&' +"</td>");
-    htmlOut += conjPassivePast(root, formNum).replace(/.*/,"<td class='colVerb'>"+ '$&' +"</td>");
-    htmlOut += conjImperative(root, formNum, objRefs).replace(/.*/,"<td class='colVerb'>"+ '$&' +"</td>");
-    htmlOut += conjActivePresent(root, formNum, objRefs).replace(/.*/,"<td class='colVerb'>"+ '$&' +"</td>");
-    htmlOut += "<td class='colVerb'><span>"+ conjActivePast(root, formNum, objRefs);
-        htmlOut += "</span> <span class='spnPreposition'> "+ objRefs.query(root, formNum, "Preposition") + "</span>";
+    htmlOut += "<td class='colVerb'>" + verbalize(root, formNum, "present", false, arSubject)       +"</td>";
+    htmlOut += "<td class='colVerb'>" + verbalize(root, formNum, "past", false, arSubject)          +"</td>";
+    htmlOut += "<td class='colVerb'>" + verbalize(root, formNum, "imperative", false, arSubject)    +"</td>";
+    htmlOut += "<td class='colVerb'>" + verbalize(root, formNum, "present", true, arSubject)        +"</td>";
+    htmlOut += "<td class='colVerb'><span>"+ verbalize(root, formNum, "past", true, arSubject);
+        htmlOut += "</span> <span class='spnPreposition'> "+ objRefs.query(root, formNum, "Preposition") + "</span></td>";
+
+// // backup
+//     htmlOut += conjPassivePresent(root, formNum).replace(/.*/,"<td class='colVerb'>"+ '$&' +"</td>");
+//     htmlOut += conjPassivePast(root, formNum).replace(/.*/,"<td class='colVerb'>"+ '$&' +"</td>");
+//     htmlOut += conjImperative(root, formNum, objRefs).replace(/.*/,"<td class='colVerb'>"+ '$&' +"</td>");
+//     htmlOut += conjActivePresent(root, formNum, objRefs).replace(/.*/,"<td class='colVerb'>"+ '$&' +"</td>");
+//     htmlOut += "<td class='colVerb'><span>"+ conjActivePast(root, formNum, objRefs);
+//         htmlOut += "</span> <span class='spnPreposition'> "+ objRefs.query(root, formNum, "Preposition") + "</span>";
 
 //write out meta columns
     htmlOut += arrFormNum[formNum].replace(/.*/,"<td class='colFormNum'>"+ '$&' +"</td>");

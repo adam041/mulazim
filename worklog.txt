@@ -1,8 +1,12 @@
 Work list
 
 - styling
-
+    - include selector for subject - show two cols - primary in Ar, secondary labeller in en
 -core logic
+    - QA
+        >   function conjPassivePast(root, formNum) // form 9
+        >   function irregHollow //short vowel for very irregular in past tense
+
     -* handling irregular verbs - slip in pastIrregular / presentIrregular postprocessing
     - remove unnecessary break following return statements
 
