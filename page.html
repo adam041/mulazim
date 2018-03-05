@@ -33,13 +33,31 @@
             <button id="btnTranslation" title="click to toggle showing column">Translation</button>
             <button id="btnPrepositions" title="click to toggle showing prepositions in Active Past column">Prepositions</button>
 
-            <button id="btnFoo" title="<table> <tr> <td> A1 </td> <td> A2 </td> </tr> <tr> <td> B1 </td> <td> B2 </td> </tr> </table>">testing</button>
+            <span id="spanSelectors">
+            <label for="selectSubject">Subject: </label>
+            <select name="selectSubject" id="selectSubject">
+                <option value="أنا">I / أنا</option>
+                <option value="أنتَ">you m / أنتَ</option>
+                <option value="أنتِ">you f / أنتِ</option>
+                <option selected="selected" value="هو">he / هو</option>
+                <option value="هي">she / هي</option>
 
-            <span id="spanSelectRoot">
-            <label for="selectRoot">Select a root:  </label>
+                <option value="نحن">we / نحن</option>
+                <option value="أنتم">y'all m / أنتم</option>
+                <option value="أنتن">y'all f / أنتن</option>
+                <option value="هم">they m / هم</option>
+                <option value="هنا">they f / هنا</option>
+            </select>
+
+            <label for="selectRoot">Root: </label>
             <select name="selectRoot" id="selectRoot">
                 <option selected="selected">فعل</option>
-            </select> </span>
+            </select>
+            </span>
+
+<!--
+            <button id="btnFoo" title="Ignore plz">testing</button>
+ -->
 
         </th>
         <th id="activeRootOld" class="hideMe"> </th>
@@ -75,8 +93,9 @@
          </table>
          </td>
 
+<!--
          <td>
-        <!--this td/table holds the inputs menu           -->
+        <!~~this td/table holds the inputs menu           ~~>
         <table id="inputTable" class="hideMe"   >
             <tbody>
             <tr> <td>
@@ -86,17 +105,17 @@
                     </thead>
 
                     <tbody>
-<!--
+<!~~
                     <tr> <td>
                             <label for="inputFilter"></label>
                             <input type="text" name="inputFilterInput" id="inputFilter" placeholder="or enter text" value="">
                             <button id="btnFilter">Filter</button>
                         </td>
                     </tr>
- -->
+ ~~>
                     <tr> <td>
                         <ul id="menuOfRoots">
-                          <!-- on load, fill in from backend -->
+                          <!~~ on load, fill in from backend ~~>
                         </ul>
                     </td> </tr>
                     </tbody>
@@ -106,7 +125,9 @@
             </tbody>
         </table>
         </td>
+ -->
 
+<!--
         <td class ="hideMe">
         <table id="tableConjBySubject">
             <thead>
@@ -138,6 +159,7 @@
             </tbody>
         </table>
         </td>
+ -->
 
     </tr> <!-- end of rows of masterTable -->
     </tbody>

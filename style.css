@@ -5,22 +5,18 @@
     border-top-left-radius: 10px;
 }
 
+#masterTable tr:first-child th:first-child {
+    border-top-right-radius: 10px;
+}
+
 #thButtons {
     text-align: left;
     padding: 10px;
     background-color: #BF7F3F;
 }
 
-#activeRoot {
-    font-weight: boldest;
-    font-size: xx-large;
-    background-color: #f4ce42;
-    border-top-right-radius: 10px;
-}
-
-#spanSelectRoot {
+#spanSelectors {
     float:right;
-    display:inline;
 }
 
 button {
@@ -32,11 +28,15 @@ button {
     border-radius: 5px;
 }
 
+label {
+    color: #fff8dc;
+    font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
+    font-size: medium;
+}
+
 /* end master table */
 
-
 /* style content table */
-
 #contentTable tr:first-child th:first-child {
     border-top-left-radius: 0px;
 }
@@ -66,9 +66,6 @@ button {
 }
 
 .colFormNum {
-/*
-    min-width: 40px;
- */
     color: black;
     text-align: center;
     direction: ltr;
@@ -126,25 +123,6 @@ option {
 #inputTable ul {
     border-radius: 10px;
 }
-
-
-#inputFilter {
-    font-size: medium;
-    text-align: right;
-    width: 100px;
-}
-
-#btnFilter {
-    background-color: #fff8dc;
-    font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
-    font-size: small;
-    height: 26px;
-    width: 100px;
-    border-radius: 10px;
-    display: block;
-    margin: 0 auto;
-}
-
 /* end input menu */
 
 /* style subject conjugation table else */
@@ -180,6 +158,8 @@ body {
     background-color: #FFF8DC;
 }
 
+/*
 #btnFoo {
     opacity: .00;
 }
+ */

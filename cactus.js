@@ -3,7 +3,6 @@ function setupMenu(error, options, response){
 
 // console.log(response);
 
-//version A
 $('#menuTable tbody td:first-child').each(function() {
     $("#selectRoot").append("<option>" +  $(this).text() + "</option>");
 });
@@ -11,31 +10,38 @@ $('#menuTable tbody td:first-child').each(function() {
 $(function() {
     $('#selectRoot').selectmenu({
         change: function() {
-            conjugateUpdate( $(this).val() );
+            conjugateUpdate();
+        }
+    });
+});
+
+$(function() {
+    $('#selectSubject').selectmenu({
+        change: function() {
+            conjugateUpdate();
         }
     });
 });
 
 
-//version B
-$('#menuTable tbody td:first-child').each(function() {
-    $("#menuOfRoots").append("<li><div>" +  $(this).text() + "</div></li>");
-});
-
-$( "#menuOfRoots" ).menu();
-
-$( "#menuOfRoots li" ).click(function() {
-    conjugateUpdate( $(this).text() );
-});
+//deprecate
+// $('#menuTable tbody td:first-child').each(function() {
+//     $("#menuOfRoots").append("<li><div>" +  $(this).text() + "</div></li>");
+// });
+//
+// $( "#menuOfRoots" ).menu();
+//
+// $( "#menuOfRoots li" ).click(function() {
+//     conjugateUpdate( $(this).text() );
+// });
 
 }
-
 
 
 jQuery( document ).ready(function() {
 
 //set up jQuery UI and default conjugation
-    conjugateUpdate( ar_Do );
+    conjugateUpdate( ar_Do, pro_he );
 
     $( document ).tooltip();
 
@@ -95,17 +101,10 @@ $('#dataTable').sheetrock({
         $( ".colNoun" ).show("fast");
     });
 
-    $( "#btnFoo" ).dblclick(function() {
+    $( "#thButtons" ).dblclick(function() {
     //** initially opaque button used for testing **
         $( ".hideMe" ).toggle();
         $( "#btnFoo" ).css({"opacity": "1"});
-    });
-
-    $( "#btnFilter" ).click(function() {
-        console.log( $( "#inputFilter" ).val() ) ;
-        //** do some jQuery on list
-        // what about a select menu? http://jqueryui.com/selectmenu/
-        // what about auto-complete? http://jqueryui.com/autocomplete/
     });
 
 });
@@ -159,8 +158,12 @@ function makeReferenceObject() {
 }
 
 
-function conjugateUpdate( root ) {
+function conjugateUpdate( root, arSubject) {
 //Updates data tables with conjugated verbs/nouns
+//Recommended no params passed so function reads from web page.  Need params for initial loading of page.
+
+    if ( root === undefined ) { root = $("#selectRoot").val(); }
+    if ( arSubject === undefined ) { arSubject = $("#selectSubject").val(); }
 
 //Display active root on table and in title
     document.title = "LtCactus Conjugates " + root;
@@ -170,7 +173,7 @@ function conjugateUpdate( root ) {
     $( "#contentTable thead th" ).show();
 
 //Draw table rows
-    jQuery("#contentTable tbody").html( drawRows(root) );
+    jQuery("#contentTable tbody").html( drawRows(root, arSubject ) );
 
 //Update formatting of rows with known-good forms
 
@@ -281,21 +284,13 @@ for (var formNum = 1; formNum <= 10; ++formNum ) {
     htmlOut += "<td class='colVerb'>" + verbalize(root, formNum, "past", false, arSubject)          +"</td>";
     htmlOut += "<td class='colVerb'>" + verbalize(root, formNum, "imperative", false, arSubject)    +"</td>";
     htmlOut += "<td class='colVerb'>" + verbalize(root, formNum, "present", true, arSubject)        +"</td>";
-    htmlOut += "<td class='colVerb'><span>"+ verbalize(root, formNum, "past", true, arSubject);
-        htmlOut += "</span> <span class='spnPreposition'> "+ objRefs.query(root, formNum, "Preposition") + "</span></td>";
-
-// // backup
-//     htmlOut += conjPassivePresent(root, formNum).replace(/.*/,"<td class='colVerb'>"+ '$&' +"</td>");
-//     htmlOut += conjPassivePast(root, formNum).replace(/.*/,"<td class='colVerb'>"+ '$&' +"</td>");
-//     htmlOut += conjImperative(root, formNum, objRefs).replace(/.*/,"<td class='colVerb'>"+ '$&' +"</td>");
-//     htmlOut += conjActivePresent(root, formNum, objRefs).replace(/.*/,"<td class='colVerb'>"+ '$&' +"</td>");
-//     htmlOut += "<td class='colVerb'><span>"+ conjActivePast(root, formNum, objRefs);
-//         htmlOut += "</span> <span class='spnPreposition'> "+ objRefs.query(root, formNum, "Preposition") + "</span>";
+    htmlOut += "<td class='colVerb'> <span>"+ verbalize(root, formNum, "past", true, arSubject) + "</span>" ;
+    htmlOut += "                     <span class='spnPreposition'> "+ objRefs.query(root, formNum, "Preposition") + "</span></td>";
 
 //write out meta columns
-    htmlOut += arrFormNum[formNum].replace(/.*/,"<td class='colFormNum'>"+ '$&' +"</td>");
-    htmlOut += arrMeaning[formNum].replace(/.*/,"<td class='colMeaning'>"+ '$&' +"</td>");
-    htmlOut += objRefs.query(root, formNum, "Translation").replace(/.*/,"<td class='colTranslation'>"+ '$&' +"</td>");
+    htmlOut += "<td class='colFormNum'>" + arrFormNum[formNum] +"</td>";
+    htmlOut += "<td class='colMeaning'>" + arrMeaning[formNum] +"</td>";
+    htmlOut += "<td class='colTranslation'>" + arrFormNum[formNum] +"</td>";
     htmlOut += " </tr>";
 }
 
@@ -330,74 +325,3 @@ var vowelOut = "";
 return vowelOut;
 
 }
-
-
-//crap follows
-
-/*
-objRoot = {
-    root: root,
-
-    verb: function(tense, formNum) {
-        var objRefs = makeReferenceObject();
-
-          switch (tense) {
-
-            //Active Tense
-            case "ActivePast":
-                return conjActivePast(objRoot.root, formNum, objRefs);
-                break;
-
-            case "ActivePresent":
-                return conjActivePresent(objRoot.root, formNum, objRefs );
-                break;
-
-            case "Imperative":
-                return conjImperative(objRoot.root, formNum, objRefs);
-                break;
-
-            case "PassivePast":
-                return conjPassivePast(objRoot.root, formNum);
-                break;
-
-            case "PassivePresent":
-                return conjPassivePresent(objRoot.root, formNum);
-                break;
-
-            default:
-              console.log("error, invalid tense entered");
-              break;
-              }
-        }, // verb switch
-
-    noun: function(tense, formNum) {
-      var objRefs = makeReferenceObject();
-
-      switch (tense) {
-
-        case "Masdar":
-            return conjMasdar(objRoot.root, formNum, objRefs);
-            break;
-
-        case "ActiveParticiple":
-            return conjActiveParticiple(objRoot.root, formNum);
-            break;
-
-        case "PassiveParticiple":
-            return conjPassiveParticiple(objRoot.root, formNum);;
-            break;
-
-        case "NounTimePlace":
-            return conjNounTimePlace(objRoot.root, formNum);
-            break;
-
-        default:
-          return "error"
-          break;
-        }
-
-    } //noun switch
-
-
-};  // arRoot
-*/
