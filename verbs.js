@@ -53,6 +53,10 @@ if ( enTense === "present" ) {
 }
 
 //Get Present Prefix/Suffix
+prefix = getPrefixSuffix(enTense, isActive, arSubject, true, formNum);
+suffix = getPrefixSuffix(enTense,isActive, arSubject, false, formNum);
+
+/*
 if ( enTense === "present" ) {
 
     //Present Prefixes
@@ -85,6 +89,9 @@ if ( enTense === "present" ) {
     switch ( arSubject ) {
 
         case pro_youF:
+            suffix = ar_i + ar_Y + ar_n + ar_a;
+            break;
+
         case pro_theyM:
             suffix = ar_u + ar_U + ar_n;
             break;
@@ -109,7 +116,7 @@ if ( enTense === "present" ) {
             break;
 
         case pro_we:
-            suffix = ar_0 + ar_n + ar_a;
+            suffix = ar_0 + ar_n + ar_A;
             break;
 
         case pro_youM:
@@ -121,11 +128,11 @@ if ( enTense === "present" ) {
             break;
 
         case pro_vousM:
-            suffix = "؟؟؟*";
+            suffix = ar_0 + ar_t + ar_u + ar_m;
             break;
 
         case pro_vousF:
-            suffix = "؟؟؟*";
+            suffix = ar_0 + ar_t + ar_u + ar_n + ar_2v + ar_i;
             break;
 
         case pro_he:
@@ -141,17 +148,140 @@ if ( enTense === "present" ) {
             break;
 
         case pro_theyF:
-            suffix = "؟؟؟*";
+            suffix = ar_0 + ar_n + ar_a;
             break;
     }
+
 
 } else {
 // imperative Or fail
 }
+*/
 
 //check if irregular
+//  **  //  stem = irregularizer(stem, enTense, arSubject, root);
 
 return prefix + stem + suffix;
+}
+
+
+function getPrefixSuffix(enTense, isActive, arSubject, blnPrefixNotSuffix, formNum) {
+
+if ( blnPrefixNotSuffix === "undefined" ) {
+    blnPrefixNotSuffix = true;
+}
+
+if ( isActive === "undefined" ) {
+    isActive = true;
+}
+
+var prefix = "",
+    suffix = "";
+
+    //Get Present Prefix/Suffix
+    if ( enTense === "present" ) {
+
+        //Present Prefixes
+        switch ( arSubject ) {
+
+            case pro_i:
+                prefix = ar_hA + prefixVowel(formNum, isActive);
+                break;
+
+            case pro_we:
+                prefix = ar_n + prefixVowel(formNum, isActive);
+                break;
+
+            case pro_youM:
+            case pro_youF:
+            case pro_she:
+            case pro_vousM:
+            case pro_vousF:
+                prefix = ar_t + prefixVowel(formNum, isActive);
+                break;
+
+            case pro_he:
+            case pro_theyM:
+            case pro_theyF:
+                prefix = ar_Y + prefixVowel(formNum, isActive);
+                break;
+        }
+
+        //Present Suffixes
+        switch ( arSubject ) {
+
+            case pro_youF:
+                suffix = ar_i + ar_Y + ar_n + ar_a;
+                break;
+
+            case pro_theyM:
+                suffix = ar_u + ar_U + ar_n;
+                break;
+
+            case pro_vousM:
+                suffix = ar_u + ar_U + ar_n + ar_a;
+                break;
+
+            case pro_vousF:
+            case pro_theyF:
+                suffix = ar_0 + ar_n + ar_a;
+                break;
+        }
+
+    } else if ( enTense === "past" ) {
+    //Get Past Suffix
+
+        switch ( arSubject ) {
+
+            case pro_i:
+                suffix = ar_0 + ar_t + ar_u;
+                break;
+
+            case pro_we:
+                suffix = ar_0 + ar_n + ar_A;
+                break;
+
+            case pro_youM:
+                suffix = ar_0 + ar_t + ar_a;
+                break;
+
+            case pro_youF:
+                suffix = ar_0 + ar_t + ar_i;
+                break;
+
+            case pro_vousM:
+                suffix = ar_0 + ar_t + ar_u + ar_m;
+                break;
+
+            case pro_vousF:
+                suffix = ar_0 + ar_t + ar_u + ar_n + ar_2v + ar_i;
+                break;
+
+            case pro_he:
+                suffix = ar_a;
+                break;
+
+            case pro_she:
+                suffix = ar_a + ar_t;
+                break;
+
+            case pro_theyM:
+                suffix = ar_u + ar_U + ar_A;
+                break;
+
+            case pro_theyF:
+                suffix = ar_0 + ar_n + ar_a;
+                break;
+        }
+
+    }
+
+if ( blnPrefixNotSuffix ) {
+    return prefix;
+} else {
+    return suffix;
+}
+
 }
 
 
@@ -462,8 +592,8 @@ function irregularizer(stem, enTense, arSubject, root) {
         return irregDefective(stem, enTense, arSubject, root);
     }
 
-    if ( ( root[root.length]= ar_2v ) || ( root[1] === root[2] )) {
-        //  return irregDoubled()
+    if ( ( root.indexOf(ar_2v) > -1) || ( root[1] === root[2] ) ) {
+        return irregDoubled(stem, enTense, arSubject, root);
     }
 
     if ( root.indexOf(ar_h5) > -1 ) {
@@ -511,7 +641,7 @@ var rad1Vowel = "";
 
         if ( isHollowIrregular(root) ) {
             //for very irregular verbs
-            rad1Vowel = ar_u;   //** SWAG, QA-QC
+            rad1Vowel = ar_u;   //** SWAG, QA-QC            // ** resume work here
             return root[0] + rad1Vowel + stem.slice(2);
         }
 
@@ -549,327 +679,122 @@ function irregDefective(stem, enTense, arSubject, root) {
                 return stem;
             }
 
-        } else if ( root[2] === ar_Y ) {
+        } else if ( ( root[2] === ar_Y ) || ( root[2] === ar_am ) ) {
+                                         // ** is this condition necessary to catch ى ?
+            if ( stem[3] === ar_a ) {
 
-            //defective ** resume here
-            return stem;
-            // ( root[2] === ar_Y ) || ( /middlevowel/ === ar_a )
-            // ( root[2] === ar_Y ) || ( /middlevowel/ === ar_i )
-            // dot-less Y handling
+                if ( arSubject === pro_he ) {
+                    return stem;
+
+                } else if ( ( arSubject === pro_she ) || ( arSubject === pro_theyM ) || ( arSubject === pro_theyF ) ) {
+                    return stem.replace(root[2],"");
+
+                } else {
+                    return stem.replace(ar_am,ar_Y);
+                }
+
+            } else if ( stem[3] === ar_i ) {
+
+                if ( arSubject === pro_theyM ) {
+                    return stem.replace(root[2],"");
+
+                } else {
+                    return stem;
+                }
+
+            } else {
+                console.log("irregDefective(" + stem + ",past," + arSubject + "," + arRoot + ") failed, defaulting to regular stem");
+                return stem;
+            }
         }
 
     } else if ( enTense === "present" ) {
 
-        if ( root[2] === ar_U ){
 
-            if ( ( arSubject === pro_youF ) || ( arSubject === pro_theyM ) || ( arSubject === pro_vousM ) ) {
+            if ( ( arSubject === pro_youF ) || ( arSubject === pro_vousM ) || ( arSubject === pro_theyM ) ) {
                 return stem.replace(ar_U,"");
 
             } else {
                 //subject is i, we, you-m, vous-f, he, she, they-f
                 return stem;
-            }
 
-        } else if ( root[2] === ar_Y ) {
-            //defective ** resume here
-            return stem;
-            // ( root[2] === ar_Y ) || ( /middlevowel/ === ar_a )
-            // ( root[2] === ar_Y ) || ( /middlevowel/ === ar_i )
-            // dot-less Y handling
-        }
+            }
+/*
+//Make same changes for defective type 1, type 2, & type 3.  Needs validation.**
+
+//         if ( root[2] === ar_U ){
+//
+//             if ( ( arSubject === pro_youF ) || ( arSubject === pro_vousM ) || ( arSubject === pro_theyM ) ) {
+//                 return stem.replace(ar_U,"");
+//
+//             } else {
+//                 //subject is i, we, you-m, vous-f, he, she, they-f
+//                 return stem;
+//             }
+//
+//         } else if ( root[2] === ar_Y ) {
+//
+//             if ( stem[3] === ar_a ) {
+//
+//                 if ( ( arSubject === pro_youF ) || ( arSubject === pro_vousM ) || ( arSubject === pro_theyM ) ) {
+//                     return stem.replace(root[2],"");
+//
+//                 } else {
+//                     //subject is i, we, you-m, vous-f, he, she, they-f
+//                     return stem;
+//                 }
+//
+//             } else if ( stem[3] === ar_i ) {
+//
+//                 if ( ( arSubject === pro_youF ) || ( arSubject === pro_vousM ) || ( arSubject === pro_theyM ) ) {
+//                     return stem.replace(root[2],"");
+//
+//                 } else {
+//                     //subject is i, we, you-m, vous-f, he, she, they-f
+//                     return stem;
+//                 }
+//
+//             } else {
+//                 console.log("irregDefective(" + stem + ",present," + arSubject + "," + arRoot + ") failed, defaulting to regular stem");
+//                 return stem;
+//             }
+//
+//         }
+*/
 
     } else { return stem;}
 
 } // end irregDefective
 
-/*
-///////////// deprecate /////////////
-function pastIrregular(root, draftConjugation, enSubject) {
-//takes a conjugated verb and applies irregular rules
-//right now only works with enSubject-third person-single-male
 
-var output = "";
+function irregDoubled(stem, enTense, arSubject, root) {
+//assumes doubled roots will end in shadda
 
-if (enSubject === undefined) {
-    enSubject = "he";
-}
+var suffix = getPrefixSuffix(enTense, undefined, arSubject, false, root);
 
-///////////////////
-//assimilative past
+    if ( enTense === "past" ) {
 
-if ( root[0] === ar_A ) {
+        if  ( suffix[0] === ar_u ) {
+            return stem;
+            //keep shadda if damma is vowel over third radical (first char in suffix)
 
-    return draftConjugation;
-
-} // end assimilative
-
-/////////////
-//hollow past
-
-if ( isHollowIrregular(root) ) {
-    return root[0] + rad1vowel + draftConjugation.slice(2);
-}
-
-if ( ( root[1] === ar_Y ) || ( root[1] === ar_U ) ){
-
-    if (( enSubject === "he" ) || ( enSubject === "she" ) || ( enSubject === "they-m" ) ) {
-        return draftConjugation.replace(root[1],ar_A);
-
-    } else {
-        //subject is i, we, you-m, you-f, vous-m, vous-f...they-f
-
-        var rad1vowel = ar_u;
-        if ( root[1] === ar_i ) { rad1vowel = ar_i;}
-
-        return root[0] + rad1vowel + draftConjugation.slice(2);
-    }
-
-} // end hollow
-
-////////////////
-//defective past
-if ( root[2] === ar_U ) {
-
-    if ( ( enSubject === "she" ) || ( enSubject === "they-m" ) || ( enSubject === "they-f" ) ) {
-            return draftConjugation.replace(ar_U,"");
-
-    } else if ( enSubject === "he" ) {
-        return draftConjugation.replace(ar_U,ar_A);
-
-    } else {
-        //subject is i, we, you-m, you-f, vous-m, vous-f
-        return draftConjugation;
-    }
-
-} else if ( root[2] === ar_Y ) {
-
-    //defective ** resume here
-    // ( root[2] === ar_Y ) || ( /middlevowel/ === ar_a )
-    // ( root[2] === ar_Y ) || ( /middlevowel/ === ar_i )
-    // dot-less Y handling
-}
-
-
-//////////////
-//doubled past
-
-if ( ( root[root.length]= ar_2v ) || ( root[1] === root[2] )) {
-//  ** needs work
-}
-
-////////////
-//hamza past
-
-if ( root.indexOf(ar_h5) > -1 ) {
-//  ** needs work
-}
-
-/////////
-//everything else, presumably regular verbs
-return draftConjugation;
-
-}
-///////////// deprecate /////////////
-*/
-
-/*
-///////////// deprecate /////////////
-function presentIrregular(root, draftConjugation, enSubject) {
-//takes a conjugated verb and applies irregular rules
-//right now only works with enSubject-third person-single-male
-
-var output = "";
-
-if (enSubject === undefined) {
-    enSubject = "he";
-}
-
-//////////////////////
-//assimilative present
-
-if ( root[0] === ar_A ) {
-
-    if ( tense.toLowerCase().indexOf("present") > -1 ) {
-        return draftConjugation.replace(ar_A,"");
-    }
-
-} // end assimilative
-
-////////////////
-//hollow present
-
-if ( ( root[1] === ar_Y ) || ( root[1] === ar_U ) ){
-
-    //present or imperative tense generally stay regular
-    if ( isHollowIrregular(root) ) {
-
-        if (( enSubject === "vous-f" ) || ( enSubject === "they-f" ) ) {
-            return draftConjugation.replace(root[1],"");
-        } else {
-            return draftConjugation.replace(root[1],ar_A);
+        } else if ( suffix[0] === ar_0 ) {
+            return stem.slice(0,-1) + root[1];
+            //write last root char twice if sukkun is non-vowel over third radical (first char in suffix)
         }
 
-    } else {
-        return draftConjugation;
-    }
+    } else if ( enTense === "present" ) {
 
-} // end hollow
-
-///////////////////
-//defective present
-
-if ( root[2] === ar_U ){
-
-    if ( ( enSubject === "you-f" ) || ( enSubject === "they-m" ) || ( enSubject === "vous-m" ) ) {
-            return draftConjugation.replace(ar_U,"");
-
-    } else {
-        //subject is i, we, you-m, vous-f, he, she, they-f
-        return draftConjugation;
-    }
-}
-
-//defective ** resume here
-// ( root[2] === ar_Y ) || ( /middlevowel/ === ar_a )
-// ( root[2] === ar_Y ) || ( /middlevowel/ === ar_i )
-// dot-less Y handling
-
-
-/////////////////
-//doubled present
-
-if ( ( root[root.length]= ar_2v ) || ( root[1] === root[2] )) {
-//  ** needs work
-}
-
-///////////////
-//hamza present
-
-if ( root.indexOf(ar_h5) > -1 ) {
-//  ** needs work
-}
-
-/////////
-//everything else, presumably regular verbs
-return draftConjugation;
-
-}
-///////////// deprecate /////////////
-*/
-
-/*
-function presentIrregular(root, draftConjugation, enSubject) {
-//takes a conjugated verb and applies irregular rules
-//right now only works with enSubject-third person-single-male
-
-var output = "";
-
-if (enSubject === undefined) {
-    enSubject = "he";
-}
-
-//////////////
-//assimilative
-
-if ( root[0] === ar_A ) {
-    if ( tense.toLowerCase().indexOf("present") > -1 ) {
-        return draftConjugation.replace(ar_A,"");
-    } else {
-        return draftConjugation;
-    }
-} // end assimilative
-
-/////////
-//hollow
-
-if ( ( root[1] === ar_Y ) || ( root[1] === ar_U ) ){
-
-    if ( tense.toLowerCase().indexOf("past") > -1 ) {
-
-        if (( enSubject === "he" ) || ( enSubject === "she" ) || ( enSubject === "they-m" ) ) {
-            return draftConjugation.replace(root[1],ar_A);
+        if ( ( arSubject === pro_vousF ) || ( arSubject === pro_theyF ) ) {
+            return stem.slice(0,3) + root[1] + ar_u;
 
         } else {
-            //subject is i, we, you-m, you-f, vous-m, vous-f...they-f
-
-            var rad1vowel = ar_u;
-            if ( ( root[1] = ar_i ) || ( isHollowIrregular(root)) ) { rad1vowel = ar_i;}
-
-            return root[0] + rad1vowel + draftConjugation.slice(2);
+            return stem;
         }
-
-    } else {
-        //present or imperative tense generally stay regular
-
-        if ( isHollowIrregular(root) ) {
-
-            if (( enSubject === "vous-f" ) || ( enSubject === "they-f" ) ) {
-                return draftConjugation.replace(root[1],"");
-            } else {
-                return draftConjugation.replace(root[1],ar_A);
-            }
-
-        } else {
-            return draftConjugation;
-        }
-
-    }
-} // end hollow
-
-///////////
-//defective
-
-if (( root[2] === ar_U ) && ( tense.toLowerCase().indexOf("past") > -1 ) ){
-
-    if ( ( enSubject === "she" ) || ( enSubject === "they-m" ) || ( enSubject === "they-f" ) ) {
-            return draftConjugation.replace(ar_U,"");
-
-    } else if ( enSubject === "he" ) {
-        return draftConjugation.replace(ar_U,ar_A);
-    } else {
-        //subject is i, we, you-m, you-f, vous-m, vous-f
-        return draftConjugation;
     }
 
 }
 
-if (( root[2] === ar_U ) && ( tense.toLowerCase().indexOf("present") > -1 ) ){
-
-    if ( ( enSubject === "you-f" ) || ( enSubject === "they-m" ) || ( enSubject === "vous-m" ) ) {
-            return draftConjugation.replace(ar_U,"");
-
-    } else {
-        //subject is i, we, you-m, vous-f, he, she, they-f
-        return draftConjugation;
-    }
-}
-
-//defective ** resume here
-// ( root[2] === ar_Y ) || ( /middlevowel/ === ar_a )
-// ( root[2] === ar_Y ) || ( /middlevowel/ === ar_i )
-// dot-less Y handling
-
-
-/////////
-//doubled
-
-if ( ( root[root.length]= ar_2v ) || ( root[1] === root[2] )) {
-//  ** needs work
-}
-
-///////
-//hamza
-
-if ( root.indexOf(ar_h5) > -1 ) {
-//  ** needs work
-}
-
-/////////
-//everything else, presumably regular verbs
-return draftConjugation;
-
-}
-*/
 
 function isHollowIrregular(root){
 //returns true if verb is very irregular
@@ -887,7 +812,5 @@ function isHollowIrregular(root){
 }
 
 /*
-irregular
-
 case ii - hollow - root[1] = ى/و - past - check backend; weird looking roots with ar_A in root[1] are likely misinterpreted roots in this pattern
 */

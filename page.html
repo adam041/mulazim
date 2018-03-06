@@ -23,10 +23,10 @@
 
 <body>
 
-
     <table id="masterTable">
     <thead> <tr>
         <th id="thButtons">
+
             <button id="btnVerbs" title="click to toggle showing column group, click twice to focus on verbs only">Verbs</button>
             <button id="btnNouns" title="click to toggle showing  column group, click twice to focus on nouns only">Nouns</button>
             <button id="btnMeaning" title="click to toggle showing column">Meaning</button>
@@ -35,14 +35,8 @@
 
             <div id="divSelectors">
 
-<!--
-                <span>
- -->
                 <label for="selectSubject">&nbsp Select Subject: </label>
- <!--
-               <br>
-
- -->               <select name="selectSubject" id="selectSubject">
+                   <select name="selectSubject" id="selectSubject">
                     <option value="أنا">I / أنا</option>
                     <option value="أنتَ">you m / أنتَ</option>
                     <option value="أنتِ">you f / أنتِ</option>
@@ -55,29 +49,15 @@
                     <option value="هم">they m / هم</option>
                     <option value="هنا">they f / هنا</option>
                 </select>
-<!--
-                </span>
 
-                <span>
- -->
                 <label for="selectRoot">&nbsp Select Root: </label>
-<!--
-                <br>
- -->
                 <select name="selectRoot" id="selectRoot">
                     <option selected="selected">فعل</option>
                 </select>
-<!--
-                </span>
- -->
+
             </div>
-<!--
-            <button id="btnFoo" title="Ignore plz">testing</button>
- -->
 
         </th>
-        <th id="activeRootOld" class="hideMe"> </th>
-        <th> </th>
       </tr> </thead>
 
     <tbody>

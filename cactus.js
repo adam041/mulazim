@@ -290,7 +290,7 @@ for (var formNum = 1; formNum <= 10; ++formNum ) {
 //write out meta columns
     htmlOut += "<td class='colFormNum'>" + arrFormNum[formNum] +"</td>";
     htmlOut += "<td class='colMeaning'>" + arrMeaning[formNum] +"</td>";
-    htmlOut += "<td class='colTranslation'>" + arrFormNum[formNum] +"</td>";
+    htmlOut += "<td class='colTranslation'>" + objRefs.query(root, formNum, "Translation")  +"</td>";
     htmlOut += " </tr>";
 }
 
