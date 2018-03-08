@@ -135,7 +135,7 @@ function makeReferenceObject() {
             //rowIndex default is -1, to avoid returning null and match behavior of array.indexOf
 
             refs.rows.forEach(function( currentValue, index ) {
-                if (( currentValue[rootPos] === root ) && ( eval(currentValue[formPos]) === form )) {
+                if ( ( currentValue[rootPos] === root ) && ( parseInt(currentValue[formPos]) === form ) ) {
                     rowIndex = index;
                 }
             });

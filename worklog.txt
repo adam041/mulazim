@@ -7,6 +7,11 @@ Work list
         >   check short vowels before hamza...change vowel to match consonant, or hamza consonant to match preceeding vowel (grammatical!)
         >   implement word object in earlier irregular functions? ... show user type of irregular verb?
 
+     > QA OK
+        >assimilative verbs ok
+        >hollow verbs ?
+        >defective verbs ?
+
 -backend / data quality
     - data entry for imperative?
     - QA/QC conjugations for typos

@@ -23,13 +23,19 @@
     margin: 5px;
 }
 
-.chosen-container-single {
+.chosen-drop .chosen-results {
+
+}
+
+.chosen-select {
     background-color: #fff8dc;
     font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
     font-size: large;
     direction: rtl;
-    width: 100px;
-
+    outerWidth: 100px;
+    width: 50%;
+    height: 25%;
+    float: right;
 }
 
 label#divSelectors {

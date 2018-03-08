@@ -22,6 +22,8 @@ if ( arSubject === undefined ) {
     arSubject = "هو";
 }
 
+formNum = parseInt(formNum);    //ensures formNum not misinterpreted as string
+
 //Declare string variables for internal use
 var word = {
         root: root,
@@ -143,6 +145,10 @@ var prefix = "",
             case pro_theyF:
                 suffix = ar_0 + ar_n + ar_a;
                 break;
+
+            default:
+                suffix = ar_u;
+                break;
         }
 
     } else if ( enTense === "past" ) {
@@ -214,8 +220,7 @@ if ( isActive === true ) {
 
         case 2:
         case 3:
-        case 4:
-            return ar_u;
+        case 4: return ar_u;
 
         case 1:
         case 5:
@@ -223,12 +228,11 @@ if ( isActive === true ) {
         case 7:
         case 8:
         case 9:
-        case 10:
-            return ar_a;
+        case 10: return ar_a;
 
-        default:
-          return "؟";
+        default: return "؟";
     }
+
 } else {
     return ar_u;
 }
@@ -304,44 +308,44 @@ function conjActivePresent(root, formNum, objRefs) {
 
         case 1:
             rad2vowel = vowelMe(objRefs.query(root, formNum, "f1ActivePresentRad2"));
-            output = root[0] + ar_0 + root[1] + rad2vowel + root[2] + ar_a;
+            output = root[0] + ar_0 + root[1] + rad2vowel + root[2];
             break;
 
         case 2:
-            output = root[0] + ar_a + root[1] + ar_2v + ar_i + root[2] + ar_u;
+            output = root[0] + ar_a + root[1] + ar_2v + ar_i + root[2];
             break;
 
         case 3:
-            output = root[0] + ar_a + ar_A + root[1] + ar_i + root[2] + ar_u;
+            output = root[0] + ar_a + ar_A + root[1] + ar_i + root[2];
             break;
 
         case 4:
-            output = root[0] + ar_0 + root[1] + ar_i + root[2] + ar_u;
+            output = root[0] + ar_0 + root[1] + ar_i + root[2];
             //* sukkun over 2nd radical assumed, not on chart
             break;
 
         case 5:
-            output = ar_t + ar_a + conjActivePresent(root, 2).slice(2,-1).replace(ar_i, ar_a) + ar_u;
+            output = ar_t + ar_a + conjActivePresent(root, 2).slice(2,-1).replace(ar_i, ar_a);
             break;
 
         case 6:
-            output = ar_t + ar_a + conjActivePresent(root, 3).slice(2,-1).replace(ar_i, ar_a) + ar_u;
+            output = ar_t + ar_a + conjActivePresent(root, 3).slice(2,-1).replace(ar_i, ar_a);
             break;
 
         case 7:
-            output = ar_n + ar_0 + root[0] + ar_a + root[1] + ar_i + root[2] + ar_u;
+            output = ar_n + ar_0 + root[0] + ar_a + root[1] + ar_i + root[2];
             break;
 
         case 8:
-            output = root[0] + ar_0 + ar_t + ar_a + root[1] + ar_i + root[2] + ar_u;
+            output = root[0] + ar_0 + ar_t + ar_a + root[1] + ar_i + root[2];
             break;
 
         case 9:
-            output = root[0] + ar_0 + root[1] + ar_a + root[2] + ar_2v+ ar_u;
+            output = root[0] + ar_0 + root[1] + ar_a + root[2] + ar_2v;
             break;
 
         case 10:
-            output = ar_s + ar_0 + ar_t + ar_a + root[0] + ar_0 + root[1] + ar_i + root[2] + ar_u;
+            output = ar_s + ar_0 + ar_t + ar_a + root[0] + ar_0 + root[1] + ar_i + root[2];
             break;
 
         default:
@@ -499,17 +503,20 @@ function irregularizer( word ) {
 
 //**bypass for certain forms?
 
-    if ( word.root[0] === ar_A ) {
-        word.stem = irregAssimiliative(word.stem, word.enTense, word.arSubject);
+//     if ( word.root[0] === ar_A ) {
+    if ( ( word.root[0] === ar_Y ) || ( word.root[0] === ar_U ) ){
+        word = irregAssimiliative( word );
         console.log("Irregular: Assimilative");
     }
 
     if ( ( word.root[1] === ar_Y ) || ( word.root[1] === ar_U ) ){
+        //*function returns stem string, not word object
         word.stem = irregHollow(word.stem, word.enTense, word.arSubject, word.root);
         console.log("Irregular: Hollow");
     }
 
     if ( ( word.root[2] === ar_Y ) || ( word.root[2] === ar_U ) ) {
+        //*function returns stem string, not word object
         word.stem = irregDefective(word.stem, word.enTense, word.arSubject, word.root);
         console.log("Irregular: Defective");
     }
@@ -529,16 +536,15 @@ return word;
 } // end irregularizer
 
 
-function irregAssimiliative(stem, enTense, arSubject) {
+function irregAssimiliative( word ) {
 // modifies stem in accordance with irregular verb rules
-// assumes ( root[0] === ar_A )
+// assumes ( root[0] === ar_Y ) || ( root[0] === ar_U )
 
-    if ( enTense  === "present" ) {
-        return stem.replace(ar_A,"");
-    } else {
-        return stem;
+    if ( ( word.enTense  === "present" ) && ( word.root[0] === ar_U ) ) {
+        word.stem = word.stem.slice(2);
     }
 
+return word;
 }
 
 
