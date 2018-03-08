@@ -4,7 +4,17 @@ function setupMenu(error, options, response){
 // console.log(response);
 
 $('#menuTable tbody td:first-child').each(function() {
-    $("#selectRoot").append("<option>" +  $(this).text() + "</option>");
+    $("#selectRoot").append("<option>" + $(this).text() + "</option>");
+    $("#chosenRoot").append("<option value='" + $(this).text() + "'>" + $(this).text() + "</option>");
+});
+
+$("#chooseRoot").chosen({
+    rtl: true,
+    disable_search_threshold: 10,
+});
+
+$("#chosenRoot").chosen().change(function(){
+    conjugateUpdate( $("#chosenRoot").val(), $("#selectSubject").val() );
 });
 
 $(function() {
@@ -274,10 +284,10 @@ for (var formNum = 1; formNum <= 10; ++formNum ) {
 
 //write noun columns
     htmlOut += "<tr> ";
-    htmlOut += conjActiveParticiple(root, formNum).replace(/.*/,"<td class='colNoun'>"+ '$&' +"</td>");
-    htmlOut += conjPassiveParticiple(root, formNum).replace(/.*/,"<td class='colNoun'>"+ '$&' +"</td>");
-    htmlOut += conjNounTimePlace(root, formNum).replace(/.*/,"<td class='colNoun'>"+ '$&' +"</td>");
-    htmlOut += conjMasdar(root, formNum, objRefs).replace(/.*/,"<td class='colNoun'>"+ '$&' +"</td>");
+    htmlOut += "<td class='colNoun'>" + conjActiveParticiple(root, formNum)     +"</td>";
+    htmlOut += "<td class='colNoun'>" + conjPassiveParticiple(root, formNum)    +"</td>";
+    htmlOut += "<td class='colNoun'>" + conjNounTimePlace(root, formNum)        + "</td>";
+    htmlOut += "<td class='colNoun'>" + conjMasdar(root, formNum, objRefs)      + "</td>";
 
 //write verb columns
     htmlOut += "<td class='colVerb'>" + verbalize(root, formNum, "present", false, arSubject)       +"</td>";
@@ -318,6 +328,8 @@ var vowelOut = "";
         vowelOut = ar_Y;
     } else if (enText === "U") {
         vowelOut = ar_U;
+    } else if (enText === "-") {
+        vowelOut = "";
     } else {
         vowelOut = "؟";
     }

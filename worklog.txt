@@ -1,18 +1,12 @@
 Work list
 
-- styling
-    - include selector for subject - show two cols - primary in Ar, secondary labeller in en
 -core logic
     - QA
         >   function conjPassivePast(root, formNum) // form 9
         >   function irregHollow //short vowel for very irregular in past tense
-
-    -* handling irregular verbs - slip in pastIrregular / presentIrregular postprocessing
-    - remove unnecessary break following return statements
+        >   check short vowels before hamza...change vowel to match consonant, or hamza consonant to match preceeding vowel (grammatical!)
+        >   implement word object in earlier irregular functions? ... show user type of irregular verb?
 
 -backend / data quality
     - data entry for imperative?
     - QA/QC conjugations for typos
-
--secondary features
-    - within tense conjugation (i.e. for all subjects; add column on left)

@@ -125,8 +125,8 @@ function conjMasdar(root, formNum, objRefs) {
 
             if (masdarOut === "") {
                 //offers three common patterns if conjugated masdar not given
-                masdarOut = root[0] + ar_a + root[1] + ar_0 + root[2] + " | ";
-                masdarOut += root[0] + ar_u + root[1] + ar_u + ar_U + root[2] + " | ";
+                masdarOut = root[0] + ar_a + root[1] + ar_0 + root[2] + " - ";
+                masdarOut += root[0] + ar_u + root[1] + ar_u + ar_U + root[2] + " - ";
                 masdarOut += root[0] + ar_i + root[1] + ar_a + ar_A + root[2] + ar_a + ar_tb + ar_un;
             }
 
@@ -149,7 +149,7 @@ function conjMasdar(root, formNum, objRefs) {
             masdarOut = ar_t + ar_a + root[0] + ar_0 + root[1] + ar_i + root[2] + ar_a + ar_tb + ar_un;
 
           } else {
-            masdarOut = ar_t + ar_a + root[0] + ar_0 + root[1] + ar_i + ar_Y + root[2] + ar_un + " | ";
+            masdarOut = ar_t + ar_a + root[0] + ar_0 + root[1] + ar_i + ar_Y + root[2] + ar_un + " - ";
             masdarOut +=  ar_t + ar_a + root[0] + ar_0 + root[1] + ar_i + root[2] + ar_a + ar_tb + ar_un;
           }
 
@@ -172,7 +172,7 @@ function conjMasdar(root, formNum, objRefs) {
             masdarOut = root[0] + ar_i + root[1] + ar_a + ar_A + root[2] + ar_un;
 
           } else {
-            masdarOut = ar_m + ar_u + root[0] + ar_a + ar_A + root[1] + ar_a + root[2] + ar_a + ar_tb + ar_un + " | ";
+            masdarOut = ar_m + ar_u + root[0] + ar_a + ar_A + root[1] + ar_a + root[2] + ar_a + ar_tb + ar_un + " - ";
             masdarOut +=  root[0] + ar_i + root[1] + ar_a + ar_A + root[2] + ar_un;
           }
 

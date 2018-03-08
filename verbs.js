@@ -23,9 +23,23 @@ if ( arSubject === undefined ) {
 }
 
 //Declare string variables for internal use
-var stem = "";
-var prefix = "";
-var suffix = "";
+var word = {
+        root: root,
+        formNum: formNum,       //necessary?
+        enTense: enTense,       //necessary?
+        isActive: isActive,     //necessary?
+        arSubject: arSubject,   //necessary?
+        verbType: "regular",        //necessary?
+        prefix: "",
+        stem: "",
+        suffix: "",
+        whole: function() {
+            var wholeWord = this.prefix + this.stem + this.suffix;
+
+            //Catch double alifs and combine to alif w/ madda. Needed for hollow verbs in form 6.
+           return wholeWord.replace(ar_A+ar_A, ar_Am);
+        },
+    };
 
 //Build object holding reference info needed to fill in details for forms 1-3
 var objRefs = makeReferenceObject();
@@ -35,133 +49,36 @@ var objRefs = makeReferenceObject();
 if ( enTense === "present" ) {
 
     if ( isActive ) {
-        stem = conjActivePresent(root, formNum, objRefs);
+        word.stem = conjActivePresent(root, formNum, objRefs);
     } else {
-        stem = conjPassivePresent(root, formNum, objRefs);
+        word.stem = conjPassivePresent(root, formNum, objRefs);
     }
 
 } else if ( enTense === "past" ) {
 
     if ( isActive ) {
-        stem = conjActivePast(root, formNum, objRefs);
+        word.stem = conjActivePast(root, formNum, objRefs);
     } else {
-        stem = conjPassivePast(root, formNum, objRefs);
+        word.stem = conjPassivePast(root, formNum, objRefs);
     }
 
 } else if ( enTense === "imperative" ) {
-    stem = conjImperative(root, formNum, objRefs);
+    word.stem = conjImperative(root, formNum, objRefs);
 }
 
 //Get Present Prefix/Suffix
-prefix = getPrefixSuffix(enTense, isActive, arSubject, true, formNum);
-suffix = getPrefixSuffix(enTense,isActive, arSubject, false, formNum);
+word.prefix = getPrefixSuffix(enTense, isActive, arSubject, true, formNum);
+word.suffix = getPrefixSuffix(enTense,isActive, arSubject, false, formNum);
 
-/*
-if ( enTense === "present" ) {
-
-    //Present Prefixes
-    switch ( arSubject ) {
-
-        case pro_i:
-            prefix = ar_hA + prefixVowel(formNum, isActive);
-            break;
-
-        case pro_we:
-            prefix = ar_n + prefixVowel(formNum, isActive);
-            break;
-
-        case pro_youM:
-        case pro_youF:
-        case pro_she:
-        case pro_vousM:
-        case pro_vousF:
-            prefix = ar_t + prefixVowel(formNum, isActive);
-            break;
-
-        case pro_he:
-        case pro_theyM:
-        case pro_theyF:
-            prefix = ar_Y + prefixVowel(formNum, isActive);
-            break;
-    }
-
-    //Present Suffixes
-    switch ( arSubject ) {
-
-        case pro_youF:
-            suffix = ar_i + ar_Y + ar_n + ar_a;
-            break;
-
-        case pro_theyM:
-            suffix = ar_u + ar_U + ar_n;
-            break;
-
-        case pro_vousM:
-            suffix = ar_u + ar_U + ar_n + ar_a;
-            break;
-
-        case pro_vousF:
-        case pro_theyF:
-            suffix = ar_0 + ar_n + ar_a;
-            break;
-    }
-
-} else if ( enTense === "past" ) {
-//Get Past Suffix
-
-    switch ( arSubject ) {
-
-        case pro_i:
-            suffix = ar_0 + ar_t + ar_u;
-            break;
-
-        case pro_we:
-            suffix = ar_0 + ar_n + ar_A;
-            break;
-
-        case pro_youM:
-            suffix = ar_0 + ar_t + ar_a;
-            break;
-
-        case pro_youF:
-            suffix = ar_0 + ar_t + ar_i;
-            break;
-
-        case pro_vousM:
-            suffix = ar_0 + ar_t + ar_u + ar_m;
-            break;
-
-        case pro_vousF:
-            suffix = ar_0 + ar_t + ar_u + ar_n + ar_2v + ar_i;
-            break;
-
-        case pro_he:
-            suffix = ar_a;
-            break;
-
-        case pro_she:
-            suffix = ar_a + ar_t;
-            break;
-
-        case pro_theyM:
-            suffix = ar_u + ar_U + ar_A;
-            break;
-
-        case pro_theyF:
-            suffix = ar_0 + ar_n + ar_a;
-            break;
-    }
-
-
-} else {
-// imperative Or fail
-}
-*/
 
 //check if irregular
-//  **  //  stem = irregularizer(stem, enTense, arSubject, root);
+word = irregularizer( word );
 
-return prefix + stem + suffix;
+if ( word.verbType !== "regular" ) {
+    console.log(word.verbType);
+}
+
+return word.whole();
 }
 
 
@@ -577,29 +494,37 @@ function conjPassivePresent(root, formNum) {
 
 }
 
-function irregularizer(stem, enTense, arSubject, root) {
+function irregularizer( word ) {
 //switchboard function to call irregular modifications
 
-    if ( root[0] === ar_A ) {
-        return irregAssimiliative(stem, enTense, arSubject);
+//**bypass for certain forms?
+
+    if ( word.root[0] === ar_A ) {
+        word.stem = irregAssimiliative(word.stem, word.enTense, word.arSubject);
+        console.log("Irregular: Assimilative");
     }
 
-    if ( ( root[1] === ar_Y ) || ( root[1] === ar_U ) ){
-        return irregHollow(stem, enTense, arSubject, root);
+    if ( ( word.root[1] === ar_Y ) || ( word.root[1] === ar_U ) ){
+        word.stem = irregHollow(word.stem, word.enTense, word.arSubject, word.root);
+        console.log("Irregular: Hollow");
     }
 
-    if ( ( root[2] === ar_Y ) || ( root[2] === ar_U ) ) {
-        return irregDefective(stem, enTense, arSubject, root);
+    if ( ( word.root[2] === ar_Y ) || ( word.root[2] === ar_U ) ) {
+        word.stem = irregDefective(word.stem, word.enTense, word.arSubject, word.root);
+        console.log("Irregular: Defective");
     }
 
-    if ( ( root.indexOf(ar_2v) > -1) || ( root[1] === root[2] ) ) {
-        return irregDoubled(stem, enTense, arSubject, root);
+    if ( ( word.root.indexOf(ar_2v) > -1) || ( word.root[1] === word.root[2] ) ) {
+        word = irregDoubled( word );
     }
 
-    if ( root.indexOf(ar_h5) > -1 ) {
-        //what about hamza seated on a chair?
-        //return irregHamza
+    if ( hasHamza( word.root ) ) {
+        word = irregHamza( word );
     }
+
+//merge اا into آ
+
+return word;
 
 } // end irregularizer
 
@@ -646,7 +571,14 @@ var rad1Vowel = "";
         }
 
         if ( ( arSubject = pro_he ) || ( arSubject = pro_she ) || (arSubject = pro_theyM) ) {
-            return stem.replace(root[1],ar_A);
+            var index = stem.indexOf(root[1]);
+            stem = stem.slice(0, index) + ar_A + stem.slice(index+1);
+
+            if ( hasShortVowel( stem[index+1] ) ) {
+                //remove short vowel following root[1]
+                stem = stem.slice(0, index+1) + stem.slice(index+2);
+            }
+            return stem;
 
         } else {
             //subject is i, we, you-m, you-f, vous-m, vous-f...they-f
@@ -767,31 +699,106 @@ function irregDefective(stem, enTense, arSubject, root) {
 } // end irregDefective
 
 
-function irregDoubled(stem, enTense, arSubject, root) {
+function irregDoubled( word ) {
 //assumes doubled roots will end in shadda
 
-var suffix = getPrefixSuffix(enTense, undefined, arSubject, false, root);
+word.verbType = "Irregular: Doubled letter in root";
 
-    if ( enTense === "past" ) {
+    if ( word.enTense === "past" ) {
 
-        if  ( suffix[0] === ar_u ) {
-            return stem;
-            //keep shadda if damma is vowel over third radical (first char in suffix)
+        if  ( word.suffix[0] === ar_u ) {
+            //do nothing, keep shadda if damma is vowel over third radical (first char in suffix)
 
         } else if ( suffix[0] === ar_0 ) {
-            return stem.slice(0,-1) + root[1];
-            //write last root char twice if sukkun is non-vowel over third radical (first char in suffix)
+            word.stem = word.stem.slice(0,-1) + word.root[1];
+            //write last word.root char twice if sukkun is non-vowel over third radical (first char in suffix)
         }
 
-    } else if ( enTense === "present" ) {
+    } else if ( word.enTense === "present" ) {
 
-        if ( ( arSubject === pro_vousF ) || ( arSubject === pro_theyF ) ) {
-            return stem.slice(0,3) + root[1] + ar_u;
+        if ( ( word.arSubject === pro_vousF ) || ( word.arSubject === pro_theyF ) ) {
+            word.stem = word.stem.slice(0,3) + word.root[1] + ar_u;
 
         } else {
-            return stem;
+            //do nothing
+            }
+    }
+
+    return word;
+}
+
+
+function irregHamza( word ) {
+
+word.verbType = "Irregular: hamza in root";
+
+if ( hasHamza(word.root[0]) ) {
+
+    if ( word.arSubject === pro_i ) {
+        //replace two alifs with alif madda
+        word.prefix = ar_Am;
+        word.stem = word.stem.slice(1);
+
+        if ( word.stem[0] === ar_a ) {
+            //necessary?
+            word.stem = word.stem.slice(1);
         }
     }
+
+} else if ( hasHamza(word.root[1]) ) {
+    //do nothing
+    console.log("hamza on rad 2");
+
+} else if ( hasHamza(word.root[2]) ) {
+    //do nothing
+    console.log("hamza on rad 3");
+}
+
+return word;
+
+}
+
+
+function hasHamza(aString) {
+//returns true if any character in the root contains a hamza
+
+if ( aString === undefined) { aString = ""; }
+
+var hasHamza = false;
+
+if (
+    ( -1 < aString.indexOf("ء") ) ||
+    ( -1 < aString.indexOf("إ") ) ||
+    ( -1 < aString.indexOf("أ") ) ||
+    ( -1 < aString.indexOf("ئ") ) ||
+    ( -1 < aString.indexOf("ؤ") ) ){
+        hasHamza = true;
+    }
+
+return hasHamza;
+}
+
+
+function hasShortVowel(aString) {
+//returns true if string contains short vowel or diacritic marks
+
+//if ( aString === undefined) { aString = ""; }
+
+var hasChar = false;
+
+if (
+    ( -1 < aString.indexOf(ar_a) ) ||
+    ( -1 < aString.indexOf(ar_i) ) ||
+    ( -1 < aString.indexOf(ar_u) ) ||
+    ( -1 < aString.indexOf(ar_an) ) ||
+    ( -1 < aString.indexOf(ar_in) ) ||
+    ( -1 < aString.indexOf(ar_un) ) ||
+//     ( -1 < aString.indexOf(ar_2v) ) ||
+    ( -1 < aString.indexOf(ar_0) )  ){
+        hasChar = true;
+    }
+
+return hasChar;
 
 }
 
@@ -810,7 +817,3 @@ function isHollowIrregular(root){
 
     return false;
 }
-
-/*
-case ii - hollow - root[1] = ى/و - past - check backend; weird looking roots with ar_A in root[1] are likely misinterpreted roots in this pattern
-*/

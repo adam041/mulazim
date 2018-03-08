@@ -6,15 +6,19 @@
 ar_a="َ";           //fatah
 ar_i="ِ";           //kasrah
 ar_u="ُ";           //damma
-ar_0="ْ";           //sukkun
+
+ar_an="ً";          //fatah + tanwin
+ar_in="ٍ";          //kasrah + tanwin
 ar_un="ٌ";          //damma + tanwin
 
+ar_0="ْ";           //sukkun
 ar_2v="ّ";          //shadda
 
 //long vowels
 ar_A="ا";           //alif (plain)
 ar_hA="أ";          //alif w/ upper hamza
 ar_lA="إ";          //alif w/ lower hamza
+ar_Am = "آ";        //alif with madda hat
 ar_Y="ي";           //ya
 ar_am="ى";          //alif maqsura
 ar_U="و";           //wuuw
