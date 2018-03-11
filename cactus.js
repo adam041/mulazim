@@ -1,82 +1,42 @@
-function setupMenu(error, options, response){
-//callback function once menu data loaded from backend
-
-// console.log(response);
-
-$('#menuTable tbody td:first-child').each(function() {
-    $("#selectRoot").append("<option>" + $(this).text() + "</option>");
-    $("#chosenRoot").append("<option value='" + $(this).text() + "'>" + $(this).text() + "</option>");
-});
-
-$("#chooseRoot").chosen({
-    rtl: true,
-    disable_search_threshold: 10,
-});
-
-$("#chosenRoot").chosen().change(function(){
-    conjugateUpdate( $("#chosenRoot").val(), $("#selectSubject").val() );
-});
-
-$(function() {
-    $('#selectRoot').selectmenu({
-        change: function() {
-            conjugateUpdate();
-        }
-    });
-});
-
-$(function() {
-    $('#selectSubject').selectmenu({
-        change: function() {
-            conjugateUpdate();
-        }
-    });
-});
-
-
-//deprecate
-// $('#menuTable tbody td:first-child').each(function() {
-//     $("#menuOfRoots").append("<li><div>" +  $(this).text() + "</div></li>");
-// });
-//
-// $( "#menuOfRoots" ).menu();
-//
-// $( "#menuOfRoots li" ).click(function() {
-//     conjugateUpdate( $(this).text() );
-// });
-
-}
-
-
 jQuery( document ).ready(function() {
-
 //set up jQuery UI and default conjugation
-    conjugateUpdate( ar_Do, pro_he );
 
-    $( document ).tooltip();
+//conjugate page with default parameters
+conjugateUpdate( ar_Do, pro_he );
+
+//activate chosen enhancements for select elements
+$(function() {
+
+    $("#chosenRoot").chosen({
+        rtl: true,
+        width: "45%",
+    });
+
+    $("#chosenSubject").chosen({
+        disable_search_threshold: 10,
+        rtl: false,
+        width: "30%",
+    });
+
+    $("#chosenRoot").chosen().change(function(){
+        conjugateUpdate( $("#chosenRoot").val(), $("#selectSubject").val() );
+    });
+});
+
+
 
 //Pull menu data from backend
     var gSheetID = "1A5YkYEKrReJ3jjAraR4ycbLIOHf3a_k6-3FM6uh-7Gw",
         gURL = "'https://docs.google.com/spreadsheets/d/" + gSheetID + "/edit#gid=0";
-
-$('#menuTable').sheetrock({
-//query for distinct roots
-    url: gURL,
-    query: "select C, COUNT(C) group by C order by C",
-    labels: ['Root'],
-    callback: setupMenu
-});
 
 //wipe dataTable in advance of XHR
 $('#dataTable').html("");
 
 $('#dataTable').sheetrock({
     url: gURL,
-    query: "select A,B,C,D,E,F,G,H,I,J order by C desc",
+    query: "select A,B,C,D,E,F,G,H,I,J order by C asc, A asc",
     labels: ['Form', 'Preposition', 'Root', 'Masdar', 'f1ActivePresentRad2', 'f1ActivePastRad2', 'f1Imperative0Rad2', 'Translation', 'TBD', 'Comment' ],
     callback: setupData
-
-  //where A = 1
 });
 
 //set up buttons to toggle column groups
@@ -111,11 +71,12 @@ $('#dataTable').sheetrock({
         $( ".colNoun" ).show("fast");
     });
 
-    $( "#thButtons" ).dblclick(function() {
+    $( "tfoot" ).dblclick(function() {
     //** initially opaque button used for testing **
         $( ".hideMe" ).toggle();
-        $( "#btnFoo" ).css({"opacity": "1"});
     });
+
+$( document ).tooltip();
 
 });
 
@@ -124,8 +85,9 @@ function makeReferenceObject() {
 
     refs = {
     //contains reference data downloaded from backend
-        headers: scrapeReference(false),
-        rows: scrapeReference(true),
+        headers: structureReference("dataTable").header,
+        rows: structureReference("dataTable").rows,
+        json: structureReference("dataTable").json,
 
         indexRow: function( root, form) {
 
@@ -168,22 +130,23 @@ function makeReferenceObject() {
 }
 
 
-function conjugateUpdate( root, arSubject) {
+function conjugateUpdate( arRoot, arSubject) {
 //Updates data tables with conjugated verbs/nouns
 //Recommended no params passed so function reads from web page.  Need params for initial loading of page.
 
-    if ( root === undefined ) { root = $("#selectRoot").val(); }
-    if ( arSubject === undefined ) { arSubject = $("#selectSubject").val(); }
+    if ( arRoot === undefined ) { arRoot = $("#chosenRoot").val(); }
+    if ( arSubject === undefined ) { arSubject = $("#chosenSubject").val(); }
+
 
 //Display active root on table and in title
-    document.title = "LtCactus Conjugates " + root;
-    jQuery("#activeRoot").html( root );
+    document.title = "Conjugations of " + arRoot;
+    jQuery("#activeRoot").html( arRoot );
 
 //Force display of all header cells
     $( "#contentTable thead th" ).show();
 
 //Draw table rows
-    jQuery("#contentTable tbody").html( drawRows(root, arSubject ) );
+    jQuery("#contentTable tbody").html( drawRows( arRoot, arSubject ) );
 
 //Update formatting of rows with known-good forms
 
@@ -191,7 +154,7 @@ function conjugateUpdate( root, arSubject) {
 
     for (var formNum = 1; formNum <= 10; ++formNum ) {
 
-        if ( objRefs.indexRow(root, formNum) > -1) {
+        if ( objRefs.indexRow(arRoot, formNum) > -1) {
             jQuery( "#contentTable tr:nth-child("+formNum+") td").css({"color": "black"});
         } else {
             jQuery( "#contentTable tr:nth-child("+formNum+") td").css({"color": "dimgrey", "font-size": "medium"});
@@ -202,39 +165,91 @@ function conjugateUpdate( root, arSubject) {
 }
 
 
-function scrapeReference( blnRowsNotHeader ) {
-//scrapes reference table downloaded from backend into arrays
+function structureReference( tableID ) {
+//organize row into an 1D array of headers, 2D array of data rows, and an array of key-value pairings
 
-    var arrRow = [],
-        arrRows = [];
+var fieldPos = -1,
+    arrHeaderRow = [],
+    arrRow = [],
+    objRow = {},
+    arrRows = [],
+    arrJson = [];
 
-   if ( blnRowsNotHeader === false ) {
-        $( "#dataTable th" ).each(function(colIndex) {
+//structure header
+    $( "#" + tableID + " th" ).each(function(colIndex) {
+        arrHeaderRow.push( $(this).text() );
+    });
+
+//get "column" position of fields
+var xForm = $.inArray( "Form", arrHeaderRow ),
+    xPreposition = $.inArray( "Preposition", arrHeaderRow ),
+    xRoot = $.inArray( "Root", arrHeaderRow ),
+    xMasdar = $.inArray( "Masdar", arrHeaderRow ),
+    xf1ActivePresentRad2 = $.inArray( "f1ActivePresentRad2", arrHeaderRow ),
+    xf1ActivePastRad2 = $.inArray( "f1ActivePastRad2", arrHeaderRow ),
+    xf1Imperative0Rad2 = $.inArray( "f1Imperative0Rad2", arrHeaderRow ),
+    xTranslation = $.inArray( "Translation", arrHeaderRow ),
+    xComment = $.inArray( "Comment", arrHeaderRow );
+
+//structure body
+    $( "#" + tableID + " tbody tr" ).each(function(rowIndex) {
+
+        //org table row into an array
+        $(this).find("td").each (function(colIndex) {
             arrRow.push( $(this).text() );
         });
 
-        return arrRow; //1D array of header (ths)
+        //org array into object
+        objRow = {
+            Root: arrRow[xRoot],
+            Form: arrRow[xForm],
+            Preposition: arrRow[xPreposition],
+            Masdar: arrRow[xMasdar],
+            f1ActivePresentRad2: arrRow[xf1ActivePresentRad2],
+            f1ActivePastRad2: arrRow[xf1ActivePastRad2],
+            f1Imperative0Rad2: arrRow[xf1Imperative0Rad2],
+            Translation: arrRow[xTranslation],
+            //TBD
+            Comment: arrRow[xComment],
+        };
 
-    } else {
+        //save row to arrays, then  wipe row variable
+        arrRows.push( arrRow );
+        arrJson.push( objRow) ;
 
-        $( "#dataTable tbody tr" ).each(function(rowIndex) {
+        arrRow = [];
+        objRow = {};
 
-            $(this).find("td").each (function(colIndex) {
-                arrRow.push( $(this).text() );
-            });
+    });
 
-            arrRows.push( arrRow );
-            arrRow = [];
-        });
+var output = {
+    header: arrHeaderRow,
+    rows: arrRows,
+    json: arrJson,
+    };
 
-        return arrRows; //2D array of arrays (rows + tds)
-    }
-
+return output;
 }
-
 
 function setupData() {
 //callback function after google sheet query is complete
+
+// console.log(response);
+var objRefs = makeReferenceObject(),
+    oldRoot = "placeholder",
+    appendHTML = "";
+
+    objRefs.json.forEach( function( row, index ) {
+    //assumption: json data is sorted by root (asc) and formNum (asc)
+
+        if ( row.Root !== oldRoot ) {
+            appendHTML = "<option value='" + row.Root + "'>" + row.Translation + " / " + row.Root + "</option>";
+            $("#chosenRoot").append( appendHTML );
+        }
+        oldRoot = row.Root;
+    });
+
+    $("#chosenRoot").trigger("chosen:updated");
 
 }
 
@@ -336,4 +351,50 @@ var vowelOut = "";
 
 return vowelOut;
 
+}
+
+
+
+
+function prefixVowel(formNum, isActive) {
+//returns vowel accompanying prefix of present stem of verb
+
+    if ( isActive === undefined ) {
+        isActive = true;
+    }
+
+    if ( isActive === true ) {
+        switch (formNum) {
+
+            case 2:
+            case 3:
+            case 4:
+                return ar_u;
+
+            case 1:
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+                return ar_a;
+
+            default:
+                return "؟";
+        }
+    } else {
+        return ar_u;
+    }
+
+}
+
+
+function jqAlert( htmlAlert ) {
+
+    $( "#divAlert" ).html( htmlAlert );
+
+    $( function() {
+        $( "#divAlert" ).dialog();
+    } );
 }

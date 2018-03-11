@@ -1,5 +1,8 @@
 Work list
 
+! root selector w/ translation
+! doubled verb vowelling
+
 -core logic
     - QA
         >   function conjPassivePast(root, formNum) // form 9
@@ -10,8 +13,17 @@ Work list
      > QA OK
         >assimilative verbs ok
         >hollow verbs ?
+            ! crash on root[2]
         >defective verbs ?
+        >doubled verbs ?
+            ! crash
+        >hamza verbs ?
+
+-styling/css
+    OK   style chosen select x 2.  hide search on subject.  increase height & width.  add label.
+    OK   tweak CSS from js console w/ jQ, then lock in
 
 -backend / data quality
+    - better root selection info
     - data entry for imperative?
-    - QA/QC conjugations for typos
+
