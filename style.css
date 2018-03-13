@@ -60,6 +60,14 @@ button {
    border: solid black 1px;
 }
 
+#divAlert td {
+    border: dotted red 1px;
+    color: blue;
+    direction: rtl;
+    font-size: x-large;
+    padding: 1px;
+}
+
 .colFormNum {
     color: black;
     text-align: center;

@@ -299,18 +299,18 @@ for (var formNum = 1; formNum <= 10; ++formNum ) {
 
 //write noun columns
     htmlOut += "<tr> ";
-    htmlOut += "<td class='colNoun'>" + conjActiveParticiple(root, formNum)     +"</td>";
-    htmlOut += "<td class='colNoun'>" + conjPassiveParticiple(root, formNum)    +"</td>";
-    htmlOut += "<td class='colNoun'>" + conjNounTimePlace(root, formNum)        + "</td>";
-    htmlOut += "<td class='colNoun'>" + conjMasdar(root, formNum, objRefs)      + "</td>";
+    htmlOut += conjActiveParticiple(root, formNum).wrap("<td class='colNoun'>");
+    htmlOut += conjPassiveParticiple(root, formNum).wrap("<td class='colNoun'>");
+    htmlOut += conjNounTimePlace(root, formNum).wrap("<td class='colNoun'>");
+    htmlOut += conjMasdar(root, formNum, objRefs).wrap("<td class='colNoun'>");
 
 //write verb columns
-    htmlOut += "<td class='colVerb'>" + verbalize(root, formNum, "present", false, arSubject)       +"</td>";
-    htmlOut += "<td class='colVerb'>" + verbalize(root, formNum, "past", false, arSubject)          +"</td>";
-    htmlOut += "<td class='colVerb'>" + verbalize(root, formNum, "imperative", false, arSubject)    +"</td>";
-    htmlOut += "<td class='colVerb'>" + verbalize(root, formNum, "present", true, arSubject)        +"</td>";
-    htmlOut += "<td class='colVerb'> <span>"+ verbalize(root, formNum, "past", true, arSubject) + "</span>" ;
-    htmlOut += "                     <span class='spnPreposition'> "+ objRefs.query(root, formNum, "Preposition") + "</span></td>";
+    htmlOut += verbalize(root, formNum, "present", false, arSubject).wrap("<td class='colVerb'>");
+    htmlOut += verbalize(root, formNum, "past", false, arSubject).wrap("<td class='colVerb'>");
+    htmlOut += verbalize(root, formNum, "imperative", false, arSubject).wrap("<td class='colVerb'>");
+    htmlOut += verbalize(root, formNum, "present", true, arSubject).wrap("<td class='colVerb'>");
+    htmlOut += "<td class='colVerb'>" + verbalize(root, formNum, "past", true, arSubject).wrap("<span>");
+    htmlOut +=                          objRefs.query(root, formNum, "Preposition").wrap("<span class='spnPreposition'>") + "</td>";
 
 //write out meta columns
     htmlOut += "<td class='colFormNum'>" + arrFormNum[formNum] +"</td>";
@@ -396,5 +396,26 @@ function jqAlert( htmlAlert ) {
 
     $( function() {
         $( "#divAlert" ).dialog();
-    } );
+    });
+}
+
+
+function isShortVowel( charIn ) {
+//returns true if string is Arabic short vowel or sukkun
+//     smaller sized vowels: 1560-1562 << true
+//     regular sized short vowels and markings: 1611-1616
+//     shadda: 1617 << False
+//     sukkun: 1618
+
+if ( charIn === undefined ) {
+    console.log("Error, null passed to isShortVowel");
+    return false;
+}
+var answer = false;
+
+    if  ( ( ( charIn.charCodeAt(0) >= 1560 ) && ( charIn.charCodeAt(0) <= 1562 ) ) ||
+          ( ( charIn.charCodeAt(0) >= 1611 ) && ( charIn.charCodeAt(0) <= 1616 ) ) || ( charIn.charCodeAt(0) === 1618 )
+        ) { answer = true;}
+
+return answer;
 }

@@ -76,9 +76,9 @@ word.suffix = getPrefixSuffix(enTense,isActive, arSubject, false, formNum);
 //check if irregular
 word = irregularizer( word );
 
-if ( word.verbType !== "regular" ) {
-    console.log(word.verbType);
-}
+// if ( word.verbType !== "regular" ) {
+//     console.log(word.verbType);
+// }
 
 return word.whole();
 }
@@ -498,27 +498,23 @@ function conjPassivePresent(arRoot, formNum) {
 
 }
 
+
 function irregularizer( word ) {
 //switchboard function to call irregular modifications
 
-//**bypass for certain forms?
+    var wordRaw = word;
 
-//     if ( word.arRoot[0] === ar_A ) {
+
     if ( ( word.arRoot[0] === ar_Y ) || ( word.arRoot[0] === ar_U ) ){
-        word = irregAssimiliative( word );
-        console.log("Irregular: Assimilative");
+        word = irregAssimilative( word );
     }
 
     if ( ( word.arRoot[1] === ar_Y ) || ( word.arRoot[1] === ar_U ) ){
-        //*function returns stem string, not word object
-        word.stem = irregHollow(word.stem, word.enTense, word.arSubject, word.arRoot);
-        console.log("Irregular: Hollow");
+        word = irregHollow( word );
     }
 
     if ( ( word.arRoot[2] === ar_Y ) || ( word.arRoot[2] === ar_U ) ) {
-        //*function returns stem string, not word object
         word = irregDefective( word );
-        console.log("Irregular: Defective");
     }
 
     if ( ( word.arRoot.indexOf(ar_2v) > -1) || ( word.arRoot[1] === word.arRoot[2] ) ) {
@@ -529,16 +525,45 @@ function irregularizer( word ) {
         word = irregHamza( word );
     }
 
-//merge اا into آ
+    //inform user if verb is irregular
+    if ( word.verbType === "regular" ) {
+        $("tfoot tr td:nth-child(1) ").html( "&nbsp <br> &nbsp " );
+    } else {
+        $("tfoot tr td:nth-child(1) ").html( "Irregular " + word.verbType + " conjugation applied to " + ar_LM + word.arRoot );
+
+    //debug before and after
+    var preChunk = tableChunk(wordRaw.suffix).wrap("<td>") +  tableChunk(wordRaw.stem).wrap("<td>") +  tableChunk(wordRaw.prefix).wrap("<td>");
+        preChunk = preChunk.wrap("<tr>").wrap("<tbody>");
+
+    var hChunk = "Suffix".wrap("<th>") + "Stem".wrap("<th>") + "Prefix".wrap("<th>");
+        hChunk = hChunk.wrap("<tr>").wrap("<thead>");
+        preChunk = (hChunk + preChunk).wrap("<table>");
+
+        preChunk =  "<h3> PreProcessing of " + ar_LM + wordRaw.arRoot + " f(" + wordRaw.formNum + ")</h3>" + preChunk;
+
+    var postChunk = tableChunk(word.suffix).wrap("<td>") +  tableChunk(word.stem).wrap("<td>") +  tableChunk(word.prefix).wrap("<td>");
+        postChunk = postChunk.wrap("<tr>").wrap("<tbody>");
+        postChunk = (hChunk + postChunk).wrap("<table>");
+
+        postChunk =  "<h3> PostProcessing of " + ar_LM + wordRaw.arRoot + " f(" + wordRaw.formNum + ")</h3>" + postChunk;
+
+    if ( ( wordRaw.formNum === 1 ) && ( wordRaw.enTense === "present" ) && (word.isActive ) ) {
+         jqAlert( preChunk + "<br><br>" +postChunk ); // + postChunk
+         }
+    //end debug before and after
+
+    }
 
 return word;
 
 } // end irregularizer
 
 
-function irregAssimiliative( word ) {
+function irregAssimilative( word ) {
 // modifies stem in accordance with irregular verb rules
 // assumes ( root[0] === ar_Y ) || ( root[0] === ar_U )
+
+    word.verbType = "assimilative";
 
     if ( ( word.enTense  === "present" ) && ( word.arRoot[0] === ar_U ) ) {
         word.stem = word.stem.slice(2);
@@ -548,53 +573,71 @@ return word;
 }
 
 
-function irregHollow(stem, enTense, arSubject, arRoot) {
-// modifies stem in accordance with irregular verb rules
-// assumes ( ( arRoot[1] === ar_Y ) || ( arRoot[1] === ar_U ) )
+function irregHollow( word ) {
+// modifies word.stem in accordance with irregular verb rules
+// assumes ( ( word.arRoot[1] === ar_Y ) || ( word.arRoot[1] === ar_U ) )
 
-var rad1Vowel = "";
+    word.verbType = "hollow";
 
-    if ( enTense === "present" ){
+var rad1Vowel = "",
+    index = -1;
+
+    if ( word.enTense === "present" ){
 
         //present or imperative tense generally stay regular
-        if ( isHollowIrregular(arRoot) ) {
+        if ( isHollowIrregular(word.arRoot) ) {
 
             //for very irregular verbs
-            if (( arSubject === pro_vousF ) || ( arSubject === pro_theyF ) ) {
-                return stem.replace(arRoot[1],"");
+            if (( word.arSubject === pro_vousF ) || ( word.arSubject === pro_theyF ) ) {
+                word.stem = word.stem.replace(word.arRoot[1],"");
+
             } else {
-                return stem.replace(arRoot[1],ar_A);
+                word.stem = word.stem.replace(word.arRoot[1],ar_A);
+
             }
 
-        } else { return stem; }
+        } else {
+            //find first root letter, than advance to vowel position over it.
+            //assumption: there will only be one vowel
+            index = word.stem.indexOf(word.arRoot[0]);
+            if ( index >-1 ) { ++index; }
 
-    } else if ( enTense === "past" ) {
+            //set short vowel over radical 1 to compliment radical 2 long vowel
+            if ( word.arRoot[1] === ar_Y ) { rad1Vowel = ar_i;  }
+            else { rad1Vowel = ar_u; }
 
-        if ( isHollowIrregular(arRoot) ) {
-            //for very irregular verbs
-            rad1Vowel = ar_u;   //** SWAG, QA-QC            // ** resume work here
-            return arRoot[0] + rad1Vowel + stem.slice(2);
+            //replace sukkun or non-complimentary short vowel
+            if ( isShortVowel(word.stem[index]) ) {
+                word.stem = word.stem.slice(0,index) + rad1Vowel + word.stem.slice(index+1);
+            }
         }
 
-        if ( ( arSubject = pro_he ) || ( arSubject = pro_she ) || (arSubject = pro_theyM) ) {
-            var index = stem.indexOf(arRoot[1]);
-            stem = stem.slice(0, index) + ar_A + stem.slice(index+1);
+    } else if ( word.enTense === "past" ) {
 
-            if ( hasShortVowel( stem[index+1] ) ) {
-                //remove short vowel following arRoot[1]
-                stem = stem.slice(0, index+1) + stem.slice(index+2);
+        if ( isHollowIrregular(word.arRoot) ) {
+            //for very irregular verbs
+            rad1Vowel = ar_u;   //** SWAG, QA-QC            // ** resume work here
+            word.stem = word.arRoot[0] + rad1Vowel + word.stem.slice(2);
+        }
+
+        if ( ( word.arSubject = pro_he ) || ( word.arSubject = pro_she ) || (word.arSubject = pro_theyM) ) {
+            index = word.stem.indexOf(word.arRoot[1]);
+            word.stem = word.stem.slice(0, index) + ar_A + word.stem.slice(index+1);
+
+            if ( hasShortVowel( word.stem[index+1] ) ) {
+                //remove short vowel following word.arRoot[1]
+                word.stem = word.stem.slice(0, index+1) + word.stem.slice(index+2);
             }
-            return stem;
 
         } else {
             //subject is i, we, you-m, you-f, vous-m, vous-f...they-f
             rad1Vowel = ar_u;
-            if ( arRoot[1] === ar_i ) { rad1vowel = ar_i; }
-           return arRoot[0] + rad1Vowel + stem.slice(2);
+            if ( word.arRoot[1] === ar_i ) { rad1vowel = ar_i; }
+           word.stem = word.arRoot[0] + rad1Vowel + word.stem.slice(2);
         }
+    }
 
-    } else { return stem; }
-
+return word;
 } //end irregHollow
 
 
@@ -652,7 +695,14 @@ return word;
 function irregDoubled( word ) {
 //assumes doubled roots will end in shadda
 
-word.verbType = "Irregular: Doubled letter in root";
+word.verbType = "doubled";
+
+// var strAlert = "regular: " + superChunk(word.stem) + "<br><br>";
+
+    if (( word.formNum === 2 ) || ( word.formNum === 5 )) {
+        //do nothing on forms 2, 5
+        return word;
+    }
 
     if ( word.enTense === "past" ) {
 
@@ -672,19 +722,23 @@ word.verbType = "Irregular: Doubled letter in root";
     }
 
 //  *** RESUME WORK HERE
+// strAlert += "pre QA: " + superChunk(word.stem) + "<br><br>";
+
 // 1) remove excess characters @ demarc of stem & suffix, 2) prune double shadda, 3) shift rad2 vowel to rad1
 
-
 //set up debug traps
-    var htmlAlert = "<div id='debugDialog' title='debug dialog'>";
-    htmlAlert += "<h3>Pre Proc</h3>";
-    htmlAlert += "<p>[" + word.formNum + ", " + word.enTense + ", " + word.isActive + "] ";
-    htmlAlert += "SUFFIX: " + word.suffix + " STEM: " + word.stem + " PREFIX: " + word.prefix + "</p>";
-    htmlAlert += "<p>chunk: " + chunk(word.stem, false) + "</p>";
+//     var htmlAlert = "<div id='debugDialog' title='debug dialog'>";
+//     htmlAlert += "<h3>Pre Proc</h3>";
+//     htmlAlert += "<p>[" + word.formNum + ", " + word.enTense + ", " + word.isActive + "] ";
+//     htmlAlert += "SUFFIX: " + word.suffix + " STEM: " + word.stem + " PREFIX: " + word.prefix + "</p>";
+//     htmlAlert += "<p>chunk: " + chunk(word.stem, false) + "</p>";
 
 //adjust voweling
     var objRefs = makeReferenceObject();
     var rad2vowel = vowelMe( objRefs.query(word.arRoot, word.formNum, "f1ActivePastRad2") );
+
+// strAlert += "post QA: " + superChunk(word.stem);
+// jqAlert(strAlert);
 
 //  need to apply radical2 vowel on radical1
 
@@ -693,14 +747,14 @@ word.verbType = "Irregular: Doubled letter in root";
 //    word.stem = word.stem.replace(ar_2v + ar_2v, ar_2v);
 
 //continue debug traps
-    htmlAlert += "<h3>Post Proc</h3>";
-    htmlAlert += "<p>[" + word.formNum + ", " + word.enTense + ", " + word.isActive + "] ";
-    htmlAlert += "SUFFIX: " + word.suffix + " STEM: " + word.stem + " PREFIX: " + word.prefix + "</p>";
-    htmlAlert += "<p>chunk: " + chunk(word.stem, false) + "</p>";
-
+//     htmlAlert += "<h3>Post Proc</h3>";
+//     htmlAlert += "<p>[" + word.formNum + ", " + word.enTense + ", " + word.isActive + "] ";
+//     htmlAlert += "SUFFIX: " + word.suffix + " STEM: " + word.stem + " PREFIX: " + word.prefix + "</p>";
+//     htmlAlert += "<p>chunk: " + chunk(word.stem, false) + "</p>";
+//
 //show debug output
     if (( word.formNum === 8 ) && ( word.enTense === "past" ) && ( word.isActive ) ) {
-        jqAlert( htmlAlert );
+//         jqAlert( htmlAlert );
     }
 
 
@@ -722,6 +776,66 @@ word.verbType = "Irregular: Doubled letter in root";
 */
     return word;
 }
+
+
+function tableChunk( stringIn ) {
+//takes an Arabic text string, outputs a html table showing individual characters, split by consonant and vowel/diacritic rows
+
+var consonantRow = "",
+    vowelRow = "",
+    vowelCell = "",
+    htmlTable = "";
+
+for (i = 0; i < stringIn.length; ++i) {
+
+    if  ( ( stringIn.charCodeAt(i) === 1560 ) || ( stringIn.charCodeAt(i) === 1561 ) || ( stringIn.charCodeAt(i) === 1562 ) ||
+          ( ( stringIn.charCodeAt(i) >= 1611 ) && ( stringIn.charCodeAt(i) <= 1618 ) ) ) {
+        //collect vowels and write from bottom to top of cell
+        vowelCell += "<br>" + ar_LM + stringIn[i] ;
+
+    } else if ( ( stringIn.charCodeAt(i) >= 1536 ) && ( stringIn.charCodeAt(i) <= 1791 ) ) {
+        //write all cells RTL
+        consonantRow = stringIn[i].wrap("<td>") + consonantRow;
+
+        //save vowels of proceeding consonant, once new consonant encountered...will write last/leftmost vowel TD blank no matter what
+        vowelRow = vowelCell.wrap("<td>") + vowelRow;
+        vowelCell = "";
+    }
+
+        //remove false-blank td in left-most column of vowel row and replace with vowelCell contents
+        vowelRow = vowelCell.wrap("<td>") + vowelRow.slice("<td></td>".length);
+
+}
+
+htmlTable = vowelRow.wrap("<tr>");
+htmlTable += consonantRow.wrap("<tr>");
+
+stringIn += ar_LM;
+htmlTable = stringIn.wrap("<th>").wrap("<tr>").wrap("<thead>") + htmlTable.wrap("<tbody>");
+
+htmlTable = htmlTable.wrap("<table>");
+
+return htmlTable;
+}
+
+
+String.prototype.wrap = function ( openTag ) {
+//wraps string in passed html tag
+
+    var closeTag,
+        index = openTag.indexOf(" ");
+
+    if ( index === -1 ) {
+        //tag has no other attributes
+        closeTag = "</" + openTag.slice(1);
+
+    } else {
+        closeTag = "</" + openTag.slice(1, index) + ">";
+    }
+
+    return openTag + this + closeTag;
+};
+
 
 function chunk(stringIn, goReverse) {
 

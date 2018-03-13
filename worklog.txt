@@ -1,7 +1,6 @@
 Work list
 
-! root selector w/ translation
-! doubled verb vowelling
+! ultraChunk to parse vowels & markings
 
 -core logic
     - QA
@@ -13,7 +12,7 @@ Work list
      > QA OK
         >assimilative verbs ok
         >hollow verbs ?
-            ! crash on root[2]
+            - rad 1 vowel gets corrected present...past?
         >defective verbs ?
         >doubled verbs ?
             ! crash
@@ -24,6 +23,5 @@ Work list
     OK   tweak CSS from js console w/ jQ, then lock in
 
 -backend / data quality
-    - better root selection info
     - data entry for imperative?
 
