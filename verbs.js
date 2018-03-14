@@ -22,12 +22,10 @@ if ( arSubject === undefined ) {
     arSubject = "هو";
 }
 
-formNum = parseInt(formNum);    //ensures formNum not misinterpreted as string
-
 //Declare string variables for internal use
 var word = {
         arRoot: arRoot,
-        formNum: formNum,
+        formNum: parseInt(formNum),
         enTense: enTense,
         isActive: isActive,
         arSubject: arSubject,
@@ -161,7 +159,7 @@ var prefix = "",
                 break;
 
             case pro_we:
-                suffix = ar_0 + ar_n + ar_A;
+                suffix = ar_0 + ar_n + ar_a + ar_A;
                 break;
 
             case pro_youM:
@@ -582,45 +580,48 @@ function irregHollow( word ) {
 var rad1Vowel = "",
     index = -1;
 
-    if ( word.enTense === "present" ){
+//for very irregular verbs
+if ( isHollowIrregular(word.arRoot) ) {
 
-        //present or imperative tense generally stay regular
-        if ( isHollowIrregular(word.arRoot) ) {
+    if ( word.enTense === "present" ) {
 
-            //for very irregular verbs
-            if (( word.arSubject === pro_vousF ) || ( word.arSubject === pro_theyF ) ) {
-                word.stem = word.stem.replace(word.arRoot[1],"");
-
-            } else {
-                word.stem = word.stem.replace(word.arRoot[1],ar_A);
-
-            }
+        if ( ( word.arSubject === pro_vousF ) || ( word.arSubject === pro_theyF ) ) {
+            word.stem = word.stem.replace(word.arRoot[1],"");
 
         } else {
-            //find first root letter, than advance to vowel position over it.
-            //assumption: there will only be one vowel
-            index = word.stem.indexOf(word.arRoot[0]);
-            if ( index >-1 ) { ++index; }
 
-            //set short vowel over radical 1 to compliment radical 2 long vowel
-            if ( word.arRoot[1] === ar_Y ) { rad1Vowel = ar_i;  }
-            else { rad1Vowel = ar_u; }
+            var regexstring = "." + word.arRoot[1], //+ "."
+                regexp = new RegExp(regexstring, "gi"),
+                replacement = ar_a + ar_A;
 
-            //replace sukkun or non-complimentary short vowel
-            if ( isShortVowel(word.stem[index]) ) {
-                word.stem = word.stem.slice(0,index) + rad1Vowel + word.stem.slice(index+1);
-            }
+            word.stem = word.stem.replace(regexp,replacement);
+        }
+
+        return word;
+
+    } else if ( word.enTense === "past" ) { /*  use usual irregular conjugation, but force kasra as radical 1 vowel */ }
+
+}   // end very irregular processing
+
+    if ( word.enTense === "present" ){
+
+        //find first root letter, than advance to vowel position over it.
+        //assumption: there will only be one vowel
+        index = word.stem.indexOf(word.arRoot[0]);
+        if ( index >-1 ) { ++index; }
+
+        //set short vowel over radical 1 to compliment radical 2 long vowel
+        if ( word.arRoot[1] === ar_Y ) { rad1Vowel = ar_i;  }
+        else { rad1Vowel = ar_u; }
+
+        //replace sukkun or non-complimentary short vowel
+        if ( isShortVowel(word.stem[index]) ) {
+            word.stem = word.stem.slice(0,index) + rad1Vowel + word.stem.slice(index+1);
         }
 
     } else if ( word.enTense === "past" ) {
 
-        if ( isHollowIrregular(word.arRoot) ) {
-            //for very irregular verbs
-            rad1Vowel = ar_u;   //** SWAG, QA-QC            // ** resume work here
-            word.stem = word.arRoot[0] + rad1Vowel + word.stem.slice(2);
-        }
-
-        if ( ( word.arSubject = pro_he ) || ( word.arSubject = pro_she ) || (word.arSubject = pro_theyM) ) {
+        if ( ( word.arSubject === pro_he ) || ( word.arSubject === pro_she ) || (word.arSubject === pro_theyM) ) {
             index = word.stem.indexOf(word.arRoot[1]);
             word.stem = word.stem.slice(0, index) + ar_A + word.stem.slice(index+1);
 
@@ -632,8 +633,10 @@ var rad1Vowel = "",
         } else {
             //subject is i, we, you-m, you-f, vous-m, vous-f...they-f
             rad1Vowel = ar_u;
-            if ( word.arRoot[1] === ar_i ) { rad1vowel = ar_i; }
-           word.stem = word.arRoot[0] + rad1Vowel + word.stem.slice(2);
+            if ( ( word.arRoot[1] === ar_Y ) || ( isHollowIrregular(word.arRoot)) ) {
+                rad1Vowel = ar_i;
+                }
+            word.stem = word.arRoot[0] + rad1Vowel + word.stem.slice(3);
         }
     }
 
@@ -788,8 +791,7 @@ var consonantRow = "",
 
 for (i = 0; i < stringIn.length; ++i) {
 
-    if  ( ( stringIn.charCodeAt(i) === 1560 ) || ( stringIn.charCodeAt(i) === 1561 ) || ( stringIn.charCodeAt(i) === 1562 ) ||
-          ( ( stringIn.charCodeAt(i) >= 1611 ) && ( stringIn.charCodeAt(i) <= 1618 ) ) ) {
+    if  ( isShortVowel( stringIn[i] ) ) {
         //collect vowels and write from bottom to top of cell
         vowelCell += "<br>" + ar_LM + stringIn[i] ;
 
@@ -940,14 +942,13 @@ return hasChar;
 function isHollowIrregular(arRoot){
 //returns true if verb is very irregular
 
-    var arrIrregulars = [];
-        arrIrregulars.push (ar_n + ar_U + ar_m);    //to sleep
+var arrIrregulars = [];
+    arrIrregulars.push (ar_n + ar_U + ar_m);    //to sleep
 
-    arrIrregulars.forEach(function (currentValue, index) {
-        if ( currentValue === arRoot ) {
-            return true;
-        }
-    });
+var isMatch = function(element) {
+        return element === arRoot;
+    };
 
-    return false;
+return arrIrregulars.some(isMatch);
+
 }

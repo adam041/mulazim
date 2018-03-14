@@ -1,22 +1,24 @@
 Work list
-
 ! ultraChunk to parse vowels & markings
 
 -core logic
     - QA
         >   function conjPassivePast(root, formNum) // form 9
-        >   function irregHollow //short vowel for very irregular in past tense
-        >   check short vowels before hamza...change vowel to match consonant, or hamza consonant to match preceeding vowel (grammatical!)
-        >   implement word object in earlier irregular functions? ... show user type of irregular verb?
+        OK   implement word object in earlier irregular functions? ... show user type of irregular verb?
+        OK   nouns.js remove -  Unreachable 'break' after 'return'.
 
-     > QA OK
-        >assimilative verbs ok
-        >hollow verbs ?
-            - rad 1 vowel gets corrected present...past?
+     > QA conjugations
+        OK  assimilative verbs
+        ~~  hollow verbs ?
+            OK regulars in active tenses
+            OK irregular in active tenses
+            > later past tenses have beginning of stem chopped off >>>> USE String.Prototype.replaceAt()
+            > passive tenses have doubled vowels
         >defective verbs ?
         >doubled verbs ?
             ! crash
         >hamza verbs ?
+            change vowel to match consonant, or hamza consonant to match preceeding vowel (grammatical!) - check hollow present logic
 
 -styling/css
     OK   style chosen select x 2.  hide search on subject.  increase height & width.  add label.

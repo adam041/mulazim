@@ -21,9 +21,12 @@ $(function() {
     $("#chosenRoot").chosen().change(function(){
         conjugateUpdate( $("#chosenRoot").val(), $("#selectSubject").val() );
     });
+
+    $("#chosenSubject").chosen().change(function(){
+        conjugateUpdate( $("#chosenRoot").val(), $("#selectSubject").val() );
+    });
+
 });
-
-
 
 //Pull menu data from backend
     var gSheetID = "1A5YkYEKrReJ3jjAraR4ycbLIOHf3a_k6-3FM6uh-7Gw",
@@ -146,10 +149,9 @@ function conjugateUpdate( arRoot, arSubject) {
     $( "#contentTable thead th" ).show();
 
 //Draw table rows
-    jQuery("#contentTable tbody").html( drawRows( arRoot, arSubject ) );
+    jQuery("#contentTable tbody").html( drawRow( arRoot, arSubject ) );
 
 //Update formatting of rows with known-good forms
-
     var objRefs = makeReferenceObject();
 
     for (var formNum = 1; formNum <= 10; ++formNum ) {
@@ -158,7 +160,6 @@ function conjugateUpdate( arRoot, arSubject) {
             jQuery( "#contentTable tr:nth-child("+formNum+") td").css({"color": "black"});
         } else {
             jQuery( "#contentTable tr:nth-child("+formNum+") td").css({"color": "dimgrey", "font-size": "medium"});
-
         }
     }
 
@@ -243,7 +244,7 @@ var objRefs = makeReferenceObject(),
     //assumption: json data is sorted by root (asc) and formNum (asc)
 
         if ( row.Root !== oldRoot ) {
-            appendHTML = "<option value='" + row.Root + "'>" + row.Translation + " / " + row.Root + "</option>";
+            appendHTML = (row.Translation + " / " + row.Root).wrap("<option value='" + row.Root + "'>");
             $("#chosenRoot").append( appendHTML );
         }
         oldRoot = row.Root;
@@ -254,7 +255,7 @@ var objRefs = makeReferenceObject(),
 }
 
 
-function drawRows(root, arSubject){
+function drawRow(arRoot, arSubject){
 //controller function for writing out each row
 
 if ( arSubject === undefined ) {
@@ -295,28 +296,28 @@ var arrMeaning = [
 
 for (var formNum = 1; formNum <= 10; ++formNum ) {
 
-//add checks to re-style row text (color) if verb / noun(s) found
-
 //write noun columns
-    htmlOut += "<tr> ";
-    htmlOut += conjActiveParticiple(root, formNum).wrap("<td class='colNoun'>");
-    htmlOut += conjPassiveParticiple(root, formNum).wrap("<td class='colNoun'>");
-    htmlOut += conjNounTimePlace(root, formNum).wrap("<td class='colNoun'>");
-    htmlOut += conjMasdar(root, formNum, objRefs).wrap("<td class='colNoun'>");
+    htmlOut += "<tr>";
+    htmlOut += conjActiveParticiple(arRoot, formNum).wrap("<td class='colNoun'>");
+    htmlOut += conjPassiveParticiple(arRoot, formNum).wrap("<td class='colNoun'>");
+    htmlOut += conjNounTimePlace(arRoot, formNum).wrap("<td class='colNoun'>");
+    htmlOut += conjMasdar(arRoot, formNum, objRefs).wrap("<td class='colNoun'>");
 
 //write verb columns
-    htmlOut += verbalize(root, formNum, "present", false, arSubject).wrap("<td class='colVerb'>");
-    htmlOut += verbalize(root, formNum, "past", false, arSubject).wrap("<td class='colVerb'>");
-    htmlOut += verbalize(root, formNum, "imperative", false, arSubject).wrap("<td class='colVerb'>");
-    htmlOut += verbalize(root, formNum, "present", true, arSubject).wrap("<td class='colVerb'>");
-    htmlOut += "<td class='colVerb'>" + verbalize(root, formNum, "past", true, arSubject).wrap("<span>");
-    htmlOut +=                          objRefs.query(root, formNum, "Preposition").wrap("<span class='spnPreposition'>") + "</td>";
+    htmlOut += verbalize(arRoot, formNum, "present", false, arSubject).wrap("<td class='colVerb'>");
+    htmlOut += verbalize(arRoot, formNum, "past", false, arSubject).wrap("<td class='colVerb'>");
+    htmlOut += verbalize(arRoot, formNum, "imperative", false, arSubject).wrap("<td class='colVerb'>");
+    htmlOut += verbalize(arRoot, formNum, "present", true, arSubject).wrap("<td class='colVerb'>");
+    htmlOut += "<td class='colVerb'>" + verbalize(arRoot, formNum, "past", true, arSubject).wrap("<span>");
+    htmlOut +=                          objRefs.query(arRoot, formNum, "Preposition").wrap("<span class='spnPreposition'>") + "</td>";
 
 //write out meta columns
-    htmlOut += "<td class='colFormNum'>" + arrFormNum[formNum] +"</td>";
-    htmlOut += "<td class='colMeaning'>" + arrMeaning[formNum] +"</td>";
-    htmlOut += "<td class='colTranslation'>" + objRefs.query(root, formNum, "Translation")  +"</td>";
-    htmlOut += " </tr>";
+    htmlOut += arrFormNum[formNum].wrap("<td class='colFormNum'>");
+    htmlOut += arrMeaning[formNum].wrap("<td class='colMeaning'>");
+    htmlOut += objRefs.query(arRoot, formNum, "Translation").wrap("<td class='colTranslation'>");
+    htmlOut += "</tr>";
+//maintenance note:  htmlOut = htmlOut.wrap("<tr>");  //doesn't work
+
 }
 
 return htmlOut;
@@ -352,8 +353,6 @@ var vowelOut = "";
 return vowelOut;
 
 }
-
-
 
 
 function prefixVowel(formNum, isActive) {
@@ -403,9 +402,9 @@ function jqAlert( htmlAlert ) {
 function isShortVowel( charIn ) {
 //returns true if string is Arabic short vowel or sukkun
 //     smaller sized vowels: 1560-1562 << true
-//     regular sized short vowels and markings: 1611-1616
-//     shadda: 1617 << False
-//     sukkun: 1618
+//     regular sized short vowels and markings: 1611-1616 << true
+//     shadda: 1617 << false
+//     sukkun: 1618 << true
 
 if ( charIn === undefined ) {
     console.log("Error, null passed to isShortVowel");
@@ -418,4 +417,8 @@ var answer = false;
         ) { answer = true;}
 
 return answer;
+}
+
+String.prototype.replaceAt=function(index, replacement) {
+    return this.substr(0, index) + replacement+ this.substr(index + replacement.length);
 }
