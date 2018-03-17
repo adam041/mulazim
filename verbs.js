@@ -2,12 +2,12 @@
 
 function verbalize(arRoot, formNum, enTense, isActive, arSubject) {
 //finds stem of a verb, and then adds prefixes and suffixes appropriate to tense and subject
-
 //root and formNum are required parameters.  Active/Present/3rd person masculine single assumed if no param passed
 // enTense parameter should be "present" or "past", english language string
 // isActive is boolean
 // arSubject parameter should be Arabic language string.  Omit short vowels except to distinguish singular forms of you
 
+console.log("Verbalize called with args: " + Object.entries(arguments) );
 
 //ensure optional variables are not null
 if ( enTense === undefined ) {
@@ -34,10 +34,7 @@ var word = {
         stem: "",
         suffix: "",
         whole: function() {
-            var wholeWord = this.prefix + this.stem + this.suffix;
-
-            //Catch double alifs and combine to alif w/ madda. Needed for hollow verbs in form 6.
-            return wholeWord.replace(ar_A+ar_A, ar_Am);
+            return this.prefix + this.stem + this.suffix;
         },
     };
 
@@ -70,15 +67,81 @@ if ( enTense === "present" ) {
 word.prefix = getPrefixSuffix(enTense, isActive, arSubject, true, formNum);
 word.suffix = getPrefixSuffix(enTense,isActive, arSubject, false, formNum);
 
+//squelch prefix/suffix if stem intentionally left blank
+    if ( word.stem === ar_ILB ) {
+        word.prefix = "";
+        word.suffix = "";
+    }
+
+///////////////////////////////////
+//perform post-processing QA checks
 
 //check if irregular
 word = irregularizer( word );
 
-// if ( word.verbType !== "regular" ) {
-//     console.log(word.verbType);
-// }
+var wholeWord = word.whole();
 
-return word.whole();
+//Catch double alifs and combine to alif w/ madda. Needed for hollow verbs in form 6.
+    wholeWord = wholeWord.replace(ar_A+ar_A, ar_Am);
+
+//De-dupe short vowels
+var arrChunky = [];
+    arrChunky = chunk(wholeWord);
+                //consonants sub array stored at position 0
+                //vowels sub array stored at position 1
+
+////    ////    Debuggery
+var htmlDebug = chunkTable( arrChunky, "", word );
+    $( "#stage1" ).append( htmlDebug );
+
+    arrChunky[1].forEach(function ( subArray, index ) {
+        subArray = Array.from(new Set( subArray ));
+
+   //mark if too many vowels present
+    var hasShadda = function(element) {
+        return element === ar_2v;
+    }
+
+    if  ((  ( subArray.some(hasShadda) ) && ( subArray.length > 2 ) )
+        || ( !( subArray.some(hasShadda) ) && ( subArray.length > 1 ) )) {
+        $( "#stage1 table:last" ).css({ "background-color": "yellow" });
+        console.log("excess vowels/diacritics detected on char " + index);
+    }
+
+    });
+////    ////    Debuggery
+
+//Reassemble array to string
+    wholeWord = "";
+
+    var frame = {
+        consonant: "",
+        vowel: "",
+        reset() {
+            this.consonant = "",
+            this.vowel = "";
+            },
+        full() {
+
+        }
+        };
+
+
+//reverse() added **
+    arrChunky[0].reverse().forEach(function ( value, index ) {
+
+        frame.consonant = value;
+
+        if ( arrChunky[1][index].length > 0 ) {
+            frame.vowel = arrChunky[1][index].reduce(reducer);
+        } else { frame.vowel = ""; }
+
+        wholeWord += frame.consonant + frame.vowel;
+        frame.reset();
+
+    });
+
+return wholeWord;       //trying it out
 }
 
 
@@ -425,7 +488,7 @@ function conjPassivePast(arRoot, formNum) {
           break;
 
         case 7:
-          output =  "---";
+          output =  ar_ILB;
           break;
 
         case 8:
@@ -457,7 +520,7 @@ function conjPassivePresent(arRoot, formNum) {
     switch (formNum) {
 
         case 1:
-            output = arRoot[0] + ar_0 + arRoot[1] + ar_a + arRoot[2] + ar_u;
+            output = arRoot[0] + ar_0 + arRoot[1] + ar_a + arRoot[2];
             break;
 
         case 2:
@@ -475,7 +538,7 @@ function conjPassivePresent(arRoot, formNum) {
             break;
 
         case 7:
-            output = "---";
+            output = ar_ILB;
             break;
 
 //         case 8:
@@ -500,8 +563,7 @@ function conjPassivePresent(arRoot, formNum) {
 function irregularizer( word ) {
 //switchboard function to call irregular modifications
 
-    var wordRaw = word;
-
+//     var wordRaw = word;
 
     if ( ( word.arRoot[0] === ar_Y ) || ( word.arRoot[0] === ar_U ) ){
         word = irregAssimilative( word );
@@ -528,7 +590,8 @@ function irregularizer( word ) {
         $("tfoot tr td:nth-child(1) ").html( "&nbsp <br> &nbsp " );
     } else {
         $("tfoot tr td:nth-child(1) ").html( "Irregular " + word.verbType + " conjugation applied to " + ar_LM + word.arRoot );
-
+    }
+/*
     //debug before and after
     var preChunk = tableChunk(wordRaw.suffix).wrap("<td>") +  tableChunk(wordRaw.stem).wrap("<td>") +  tableChunk(wordRaw.prefix).wrap("<td>");
         preChunk = preChunk.wrap("<tr>").wrap("<tbody>");
@@ -546,11 +609,11 @@ function irregularizer( word ) {
         postChunk =  "<h3> PostProcessing of " + ar_LM + wordRaw.arRoot + " f(" + wordRaw.formNum + ")</h3>" + postChunk;
 
     if ( ( wordRaw.formNum === 1 ) && ( wordRaw.enTense === "present" ) && (word.isActive ) ) {
-         jqAlert( preChunk + "<br><br>" +postChunk ); // + postChunk
+//          jqAlert( preChunk + "<br><br>" +postChunk ); // + postChunk
          }
     //end debug before and after
-
-    }
+*/
+//     }
 
 return word;
 
@@ -590,7 +653,7 @@ if ( isHollowIrregular(word.arRoot) ) {
 
         } else {
 
-            var regexstring = "." + word.arRoot[1], //+ "."
+            var regexstring = "." + word.arRoot[1],
                 regexp = new RegExp(regexstring, "gi"),
                 replacement = ar_a + ar_A;
 
@@ -610,7 +673,7 @@ if ( isHollowIrregular(word.arRoot) ) {
         index = word.stem.indexOf(word.arRoot[0]);
         if ( index >-1 ) { ++index; }
 
-        //set short vowel over radical 1 to compliment radical 2 long vowel
+        // short vowel over radical 1 to compliment radical 2 long vowel
         if ( word.arRoot[1] === ar_Y ) { rad1Vowel = ar_i;  }
         else { rad1Vowel = ar_u; }
 
@@ -781,43 +844,93 @@ word.verbType = "doubled";
 }
 
 
-function tableChunk( stringIn ) {
-//takes an Arabic text string, outputs a html table showing individual characters, split by consonant and vowel/diacritic rows
+function chunkTable( array, title, word ) {
+//takes an array of Arabic where array[0] has all the consonants and array[1] has all the vowels
+//and outputs a html table showing individual characters, split by consonant and vowel/diacritic rows
 
-var consonantRow = "",
-    vowelRow = "",
-    vowelCell = "",
-    htmlTable = "";
+//optional param - title of table
+if ( title === undefined ) { title = ""; }
 
-for (i = 0; i < stringIn.length; ++i) {
+    var vowel = "",
+        frame = "",
+        wholeWord = ""; //vowel(s)
 
-    if  ( isShortVowel( stringIn[i] ) ) {
-        //collect vowels and write from bottom to top of cell
-        vowelCell += "<br>" + ar_LM + stringIn[i] ;
+    var table = "",
+        trConsonants = "",
+        trVowels = "",
+        tdVowel = "";
 
-    } else if ( ( stringIn.charCodeAt(i) >= 1536 ) && ( stringIn.charCodeAt(i) <= 1791 ) ) {
-        //write all cells RTL
-        consonantRow = stringIn[i].wrap("<td>") + consonantRow;
+    array[0].reverse().forEach(function ( consonant, index ) {
 
-        //save vowels of proceeding consonant, once new consonant encountered...will write last/leftmost vowel TD blank no matter what
-        vowelRow = vowelCell.wrap("<td>") + vowelRow;
-        vowelCell = "";
-    }
+        if ( array[1][index].length > 0 ) {
+            vowel = array[1][index].reduce(reducer);
+        } else { vowel = ""; }
 
-        //remove false-blank td in left-most column of vowel row and replace with vowelCell contents
-        vowelRow = vowelCell.wrap("<td>") + vowelRow.slice("<td></td>".length);
+        trConsonants += consonant.wrap("<td>");
+        trVowels += vowel.wrap("<td>"); //probably needs work (array, not string)
+
+        frame = consonant + vowel;
+        wholeWord += frame;
+
+    });
+
+    trConsonants = trConsonants.wrap("<tr>");
+    trVowels = trVowels.wrap("<tr>");
+
+    var params = " ( f" + word.formNum + "-" + word.enTense + "-" + word.isActive + " ) ";
+
+    table += ( ar_LM + wholeWord.split("").reverse().join("") + ar_LM + params + title ).wrap("<th colspan='99'>").wrap("<tr>").wrap("<thead>");
+    table += ( trVowels + trConsonants ).wrap("<tbody>");
+    table = table.wrap("<table>");
+
+return table;
 
 }
 
-htmlTable = vowelRow.wrap("<tr>");
-htmlTable += consonantRow.wrap("<tr>");
 
-stringIn += ar_LM;
-htmlTable = stringIn.wrap("<th>").wrap("<tr>").wrap("<thead>") + htmlTable.wrap("<tbody>");
+function chunk( stringIn ) {
 
-htmlTable = htmlTable.wrap("<table>");
+var arrConsonants = [],
+    arrVowels = [],
+    arrOut = [],
+    vBuffer = [],
+    c = ""; //holds active character from stringIn
 
-return htmlTable;
+for (var i = 0; i < stringIn.length; i++) {
+    c = stringIn.charAt(i);
+
+    if (( isShortVowel(c) ) || ( c === ar_2v )) {
+        vBuffer.push(c);
+    } else {
+
+        arrConsonants.push(c);
+        if ( i !== 0 ) {
+            arrVowels.push(vBuffer);
+            vBuffer = [];
+        }
+    }
+}
+
+//push vowels one last time to maintain symmetry with consonants, and to account for trailing vowel characters
+    arrVowels.push(vBuffer);
+
+//deprecate
+// if ( ( isShortVowel( c ) ) || ( c === ar_2v ) ) {
+//     //take unsaved vowels if last char in string isn't consonant
+//     arrVowels.push(vBuffer);
+// } else {
+//     //push empty frame if no more vowels.  symmetry will be expected during QA
+//     arrVowels.push([]);
+// }
+//deprecate
+
+if ( arrConsonants.length !== arrVowels.length ) {
+    console.log("!  Frame mismatch error in chunk(" + stringIn + ")");
+}
+
+arrOut.push(arrConsonants, arrVowels);
+
+return arrOut;
 }
 
 
@@ -837,31 +950,6 @@ String.prototype.wrap = function ( openTag ) {
 
     return openTag + this + closeTag;
 };
-
-
-function chunk(stringIn, goReverse) {
-
-    if ( goReverse === undefined) {
-        goReverse = false;
-    }
-
-    var stringOut = "",
-        myArray = stringIn.split("");
-
-    if ( goReverse ) {
-            myArray = myArray.reverse();
-    }
-
-    myArray.forEach(function ( currentValue, index ) {
-        stringOut += " " + currentValue + " ";
-    });
-
-//**debug
-console.log("in: " + stringIn);
-console.log("out: " + stringOut);
-
-return stringOut;
-}
 
 
 function irregHamza( word ) {
@@ -915,10 +1003,10 @@ return hasHamza;
 }
 
 
-function hasShortVowel(aString) {
+function hasShortVowel(aString, includeShadda) {
 //returns true if string contains short vowel or diacritic marks
 
-//if ( aString === undefined) { aString = ""; }
+if ( includeShadda === undefined) { includeShadda = false; }
 
 var hasChar = false;
 
@@ -929,13 +1017,14 @@ if (
     ( -1 < aString.indexOf(ar_an) ) ||
     ( -1 < aString.indexOf(ar_in) ) ||
     ( -1 < aString.indexOf(ar_un) ) ||
-//     ( -1 < aString.indexOf(ar_2v) ) ||
     ( -1 < aString.indexOf(ar_0) )  ){
         hasChar = true;
     }
+if ( ( includeShadda ) && ( -1 < aString.indexOf(ar_2v) ) ) {
+    hasChar = true;
+}
 
 return hasChar;
-
 }
 
 

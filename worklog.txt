@@ -1,9 +1,14 @@
 Work list
-! ultraChunk to parse vowels & markings
+! chunk (v4) to parse vowels & markings...need for debugging doubled verbs, catching vowel surplus in other use-cases
+
+!> de-duper needs to print shadda before all vowels - order matters
+!> chunk only prints first vowel...maybe reading first position of array only...may need to reduce vowels-per-frame
+
 
 -core logic
     - QA
-        >   function conjPassivePast(root, formNum) // form 9
+        OK   squelch prefix/suffix on null forms (i.e. form 7 passives, recipient)
+        >    function conjPassivePast(root, formNum) // form 9
         OK   implement word object in earlier irregular functions? ... show user type of irregular verb?
         OK   nouns.js remove -  Unreachable 'break' after 'return'.
 
@@ -12,7 +17,7 @@ Work list
         ~~  hollow verbs ?
             OK regulars in active tenses
             OK irregular in active tenses
-            > later past tenses have beginning of stem chopped off >>>> USE String.Prototype.replaceAt()
+            !> later past tenses have beginning of stem chopped off >>>> USE String.Prototype.replaceAt() vs char position of root
             > passive tenses have doubled vowels
         >defective verbs ?
         >doubled verbs ?

@@ -37,7 +37,8 @@ const ar_a="َ",         //fatah
 //combos
     ar_mu="مٌ",         //mim + damma
     ar_Do="فعل",        //verb for debugging
-    ar_LM = String.fromCharCode(1564);  //Arabic Language Marker character
+    ar_LM = String.fromCharCode(1564),  //Arabic Language Marker character
+    ar_ILB = "---",     //for intentionally left blank stems
 
 //pronouns - no short vowels except to distinguish you-singular
     pro_i = ar_hA + ar_n + ar_A,
@@ -52,6 +53,9 @@ const ar_a="َ",         //fatah
     pro_she = ar_hEye + ar_Y,
     pro_theyM = ar_hEye + ar_m,
     pro_theyF = ar_hEye + ar_n + ar_A;
+
+const reducer = (accumulator, currentValue) => accumulator + currentValue;
+
 
 /*
 Notes

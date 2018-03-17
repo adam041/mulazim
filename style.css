@@ -60,12 +60,12 @@ button {
    border: solid black 1px;
 }
 
-#divAlert td {
+#divDebug td {
     border: dotted red 1px;
     color: blue;
     direction: rtl;
     font-size: x-large;
-    padding: 1px;
+    padding: 1px 10px 1px 1px;
 }
 
 .colFormNum {

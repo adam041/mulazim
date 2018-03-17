@@ -140,6 +140,11 @@ function conjugateUpdate( arRoot, arSubject) {
     if ( arRoot === undefined ) { arRoot = $("#chosenRoot").val(); }
     if ( arSubject === undefined ) { arSubject = $("#chosenSubject").val(); }
 
+//Wipe debug area
+$( "#stage1").html( "PreProcessing".wrap("<h3>") );
+$( "#stage2").html( "PostProcessing".wrap("<h3>") );
+$( "#stage3").html( "".wrap("<h3>") );
+$( "#stage4").html( "".wrap("<h3>") );
 
 //Display active root on table and in title
     document.title = "Conjugations of " + arRoot;
