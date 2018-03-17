@@ -3,7 +3,8 @@ Work list
 
 !> de-duper needs to print shadda before all vowels - order matters
 !> chunk only prints first vowel...maybe reading first position of array only...may need to reduce vowels-per-frame
-
+!>>>>>>>>>! contentTable RTL is ok, but vowels SHOULD run bottom-to-top (not top-to-bottom)
+!>>>>>>>>>! all vowels flagged with yellow (not actually overloaded?!), in right-most td
 
 -core logic
     - QA

@@ -54,8 +54,9 @@ const ar_a="َ",         //fatah
     pro_theyM = ar_hEye + ar_m,
     pro_theyF = ar_hEye + ar_n + ar_A;
 
-const reducer = (accumulator, currentValue) => accumulator + currentValue;
-
+const   reducer = (accumulator, currentValue) => accumulator + currentValue;
+const   rowReducer = (accumulator, currentValue, currentIndex) => accumulator + currentValue.wrap("<td class='vowelCell" + currentIndex+ "'>").wrap("<tr>");
+        //rowReducer note: vowel rows are written to html doc from top to bottom
 
 /*
 Notes

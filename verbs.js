@@ -860,14 +860,17 @@ if ( title === undefined ) { title = ""; }
         trVowels = "",
         tdVowel = "";
 
-    array[0].reverse().forEach(function ( consonant, index ) {
+    array[0].forEach(function ( consonant, index ) {
 
         if ( array[1][index].length > 0 ) {
             vowel = array[1][index].reduce(reducer);
-        } else { vowel = ""; }
+            trVowels += array[1][index].reduce(rowReducer).wrap("<table>").wrap("<td style='vertical-align: bottom'>");
+        } else {
+            vowel = "";
+            trVowels = "".wrap("<table>").wrap("<td>");
+        }
 
         trConsonants += consonant.wrap("<td>");
-        trVowels += vowel.wrap("<td>"); //probably needs work (array, not string)
 
         frame = consonant + vowel;
         wholeWord += frame;
@@ -879,7 +882,7 @@ if ( title === undefined ) { title = ""; }
 
     var params = " ( f" + word.formNum + "-" + word.enTense + "-" + word.isActive + " ) ";
 
-    table += ( ar_LM + wholeWord.split("").reverse().join("") + ar_LM + params + title ).wrap("<th colspan='99'>").wrap("<tr>").wrap("<thead>");
+    table += ( ar_LM + wholeWord + ar_LM + params + title ).wrap("<th colspan='99'>").wrap("<tr>").wrap("<thead>");
     table += ( trVowels + trConsonants ).wrap("<tbody>");
     table = table.wrap("<table>");
 
@@ -893,7 +896,7 @@ function chunk( stringIn ) {
 var arrConsonants = [],
     arrVowels = [],
     arrOut = [],
-    vBuffer = [],
+    vBuffer = [""],
     c = ""; //holds active character from stringIn
 
 for (var i = 0; i < stringIn.length; i++) {
@@ -906,7 +909,7 @@ for (var i = 0; i < stringIn.length; i++) {
         arrConsonants.push(c);
         if ( i !== 0 ) {
             arrVowels.push(vBuffer);
-            vBuffer = [];
+            vBuffer = [""];
         }
     }
 }
