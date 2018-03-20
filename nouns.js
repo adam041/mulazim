@@ -20,7 +20,7 @@ function conjNounTimePlace(root, formNum) {
           return conjActiveParticiple(root, formNum).replace(ar_i, ar_a);
 
         case 9:
-          return "---";
+          return ar_ILB;
 
         default:
           return "Error";
@@ -50,7 +50,7 @@ function conjPassiveParticiple(root, formNum) {
 
         case 7:
         case 9:
-          return "---";
+          return ar_ILB;
 
         default:
           return "Error";

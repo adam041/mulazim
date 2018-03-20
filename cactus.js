@@ -314,7 +314,7 @@ for (var formNum = 1; formNum <= 10; ++formNum ) {
     htmlOut += verbalize(arRoot, formNum, "imperative", false, arSubject).wrap("<td class='colVerb'>");
     htmlOut += verbalize(arRoot, formNum, "present", true, arSubject).wrap("<td class='colVerb'>");
     htmlOut += "<td class='colVerb'>" + verbalize(arRoot, formNum, "past", true, arSubject).wrap("<span>");
-    htmlOut +=                          objRefs.query(arRoot, formNum, "Preposition").wrap("<span class='spnPreposition'>") + "</td>";
+    htmlOut +=    (" " + objRefs.query(arRoot, formNum, "Preposition") ).wrap("<span class='spnPreposition'>") + "</td>";
 
 //write out meta columns
     htmlOut += arrFormNum[formNum].wrap("<td class='colFormNum'>");

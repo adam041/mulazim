@@ -1,10 +1,6 @@
 Work list
 ! chunk (v4) to parse vowels & markings...need for debugging doubled verbs, catching vowel surplus in other use-cases
-
-!> de-duper needs to print shadda before all vowels - order matters
-!> chunk only prints first vowel...maybe reading first position of array only...may need to reduce vowels-per-frame
-!>>>>>>>>>! contentTable RTL is ok, but vowels SHOULD run bottom-to-top (not top-to-bottom)
-!>>>>>>>>>! all vowels flagged with yellow (not actually overloaded?!), in right-most td
+!   > compare output short vowels to exemplars; trace discrepancies
 
 -core logic
     - QA
@@ -15,15 +11,24 @@ Work list
 
      > QA conjugations
         OK  assimilative verbs
+
         ~~  hollow verbs ?
             OK regulars in active tenses
             OK irregular in active tenses
-            !> later past tenses have beginning of stem chopped off >>>> USE String.Prototype.replaceAt() vs char position of root
-            > passive tenses have doubled vowels
-        >defective verbs ?
-        >doubled verbs ?
-            ! crash
-        >hamza verbs ?
+            ?ok? later past tenses have beginning of stem chopped off >>>> USE String.Prototype.replaceAt() vs char position of root
+                String.prototype.replaceAt=function(index, char) {return this.substr(0, index) + char + this.substr(index+char.length);}
+                Line806
+            OK (auto-squelched) passive tenses have doubled vowels
+
+        ~ defective verbs ?
+
+        > doubled verbs ?
+            OK form 1  -- rad 2 takes place of shadda
+            -- need to validate vous-f/they-f
+            ?? later forms - need more data to validate...dupe vowels squelched
+            !! NOUN conj needs to stay regular in form2/5
+
+        ~ hamza verbs ?
             change vowel to match consonant, or hamza consonant to match preceeding vowel (grammatical!) - check hollow present logic
 
 -styling/css

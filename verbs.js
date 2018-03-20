@@ -84,7 +84,7 @@ var wholeWord = word.whole();
 //Catch double alifs and combine to alif w/ madda. Needed for hollow verbs in form 6.
     wholeWord = wholeWord.replace(ar_A+ar_A, ar_Am);
 
-//De-dupe short vowels
+//Chunk string to array
 var arrChunky = [];
     arrChunky = chunk(wholeWord);
                 //consonants sub array stored at position 0
@@ -92,56 +92,69 @@ var arrChunky = [];
 
 ////    ////    Debuggery
 var htmlDebug = chunkTable( arrChunky, "", word );
-    $( "#stage1" ).append( htmlDebug );
 
-    arrChunky[1].forEach(function ( subArray, index ) {
-        subArray = Array.from(new Set( subArray ));
+//write out initial conjugations to debug review area
+ $( "#stage1" ).append( htmlDebug );
 
-   //mark if too many vowels present
-    var hasShadda = function(element) {
-        return element === ar_2v;
+//de-dupe vowels
+arrChunky[1].forEach(function ( subArray, index ) {
+
+// if ( word.verbType !== "regular" ) {
+//     //debugging breakpoint enabler
+//         console.log(subArray.join(ar_l + " "));
+//     //****resume work here
+//     }
+    arrChunky[1][index] = Array.from(new Set( subArray ));
+
+});
+
+//write out post-processed conjugations to debug review area
+    htmlDebug = chunkTable( arrChunky, "", word );
+    $( "#stage2" ).append( htmlDebug );
+
+//flag excess vowels  ** it would be nicer if formatting didn't include shadda in overload count, but this is close enough
+    $( ".vowelCell2" ).css({ "background-color": "yellow" });
+    $( ".vowelCell3" ).css({ "background-color": "orange" });
+    $( ".vowelCell4" ).css({ "background-color": "red" });
+
+//Remove dupe vowels
+
+/*  do not like
+    //remove trailing doubled short vowel
+    var len = word.stem.length-1;
+
+    if ( ( word.stem[len] === word.suffix[0] )  ) {
+    //&& ( hasShortVowel(word.stem[len]) )
+        word.stem = word.stem.slice(0,-1);
     }
 
-    if  ((  ( subArray.some(hasShadda) ) && ( subArray.length > 2 ) )
-        || ( !( subArray.some(hasShadda) ) && ( subArray.length > 1 ) )) {
-        $( "#stage1 table:last" ).css({ "background-color": "yellow" });
-        console.log("excess vowels/diacritics detected on char " + index);
+    //remove vowel before shadda
+    len = word.stem.indexOf(ar_2v);
+    if ( len > -1 ) {
+        word.stem = word.stem.slice(0,len) + word.stem.slice(len+1)
     }
-
-    });
-////    ////    Debuggery
+*/
 
 //Reassemble array to string
     wholeWord = "";
 
-    var frame = {
-        consonant: "",
-        vowel: "",
-        reset() {
-            this.consonant = "",
-            this.vowel = "";
-            },
-        full() {
+    var consonant = "",
+        vowel = "";
 
-        }
-        };
+//reverse() removed **
+    arrChunky[0].forEach(function ( value, index ) {
 
-
-//reverse() added **
-    arrChunky[0].reverse().forEach(function ( value, index ) {
-
-        frame.consonant = value;
+        consonant = value;
 
         if ( arrChunky[1][index].length > 0 ) {
-            frame.vowel = arrChunky[1][index].reduce(reducer);
-        } else { frame.vowel = ""; }
+            vowel = arrChunky[1][index].reduce(reducer);
+        } else { vowel = ""; }
 
-        wholeWord += frame.consonant + frame.vowel;
-        frame.reset();
-
+        wholeWord += consonant + vowel;
+        consonant = vowel = "";
     });
 
-return wholeWord;       //trying it out
+return wholeWord;
 }
 
 
@@ -750,7 +763,7 @@ function irregDefective( word ) {
     } else if ( word.enTense === "present" ) {
 
             if ( ( word.arSubject === pro_youF ) || ( word.arSubject === pro_vousM ) || ( word.arSubject === pro_theyM ) ) {
-                word.stem = stem.replace(ar_U,"");
+                word.stem = word.stem.replace(ar_U,"");
             }
     }
 
@@ -762,8 +775,9 @@ function irregDoubled( word ) {
 //assumes doubled roots will end in shadda
 
 word.verbType = "doubled";
-
-// var strAlert = "regular: " + superChunk(word.stem) + "<br><br>";
+var index = -1,
+    strBefore = "",
+    strAfter = "";
 
     if (( word.formNum === 2 ) || ( word.formNum === 5 )) {
         //do nothing on forms 2, 5
@@ -782,64 +796,34 @@ word.verbType = "doubled";
 
     } else if ( word.enTense === "present" ) {
 
+        //Remove sukkun over radical 1 and shift radical 2 vowel to radical 1.
+        //Needed for f1.  Maybe needed for forms 8-10?
+            index = word.stem.indexOf(word.arRoot[1]) + 1, //increment to get vowel
+            shiftMe = word.stem.slice(index,index+1);
+
+        if (( isShortVowel(shiftMe) ) && (word.stem.indexOf(ar_0) > -1 )) {
+            strBefore = word.stem.slice(0,index),
+            strAfter = word.stem.slice(index+1);
+
+            word.stem = strBefore + strAfter;
+            word.stem = word.stem.replace(ar_0, shiftMe);
+        }
+
         if ( ( word.arSubject === pro_vousF ) || ( word.arSubject === pro_theyF ) ) {
+            index = word.stem.indexOf(word.root[1]) + 1;
             word.stem = word.stem.slice(0,3) + ar_u + word.arRoot[1];
         }
     }
-
-//  *** RESUME WORK HERE
-// strAlert += "pre QA: " + superChunk(word.stem) + "<br><br>";
-
-// 1) remove excess characters @ demarc of stem & suffix, 2) prune double shadda, 3) shift rad2 vowel to rad1
-
-//set up debug traps
-//     var htmlAlert = "<div id='debugDialog' title='debug dialog'>";
-//     htmlAlert += "<h3>Pre Proc</h3>";
-//     htmlAlert += "<p>[" + word.formNum + ", " + word.enTense + ", " + word.isActive + "] ";
-//     htmlAlert += "SUFFIX: " + word.suffix + " STEM: " + word.stem + " PREFIX: " + word.prefix + "</p>";
-//     htmlAlert += "<p>chunk: " + chunk(word.stem, false) + "</p>";
 
 //adjust voweling
     var objRefs = makeReferenceObject();
     var rad2vowel = vowelMe( objRefs.query(word.arRoot, word.formNum, "f1ActivePastRad2") );
 
-// strAlert += "post QA: " + superChunk(word.stem);
-// jqAlert(strAlert);
-
-//  need to apply radical2 vowel on radical1
-
-//     word.stem = word.stem.replace(word.stem[1], rad2vowel);
-//     word.stem = word.stem.slice(0,-2) + ar_2v;
-//    word.stem = word.stem.replace(ar_2v + ar_2v, ar_2v);
-
-//continue debug traps
-//     htmlAlert += "<h3>Post Proc</h3>";
-//     htmlAlert += "<p>[" + word.formNum + ", " + word.enTense + ", " + word.isActive + "] ";
-//     htmlAlert += "SUFFIX: " + word.suffix + " STEM: " + word.stem + " PREFIX: " + word.prefix + "</p>";
-//     htmlAlert += "<p>chunk: " + chunk(word.stem, false) + "</p>";
-//
 //show debug output
     if (( word.formNum === 8 ) && ( word.enTense === "past" ) && ( word.isActive ) ) {
 //         jqAlert( htmlAlert );
     }
 
-
-/*
-//do not like
-    //remove trailing doubled short vowel
-    var len = word.stem.length-1;
-
-    if ( ( word.stem[len] === word.suffix[0] )  ) {
-    //&& ( hasShortVowel(word.stem[len]) )
-        word.stem = word.stem.slice(0,-1);
-    }
-
-    //remove vowel before shadda
-    len = word.stem.indexOf(ar_2v);
-    if ( len > -1 ) {
-        word.stem = word.stem.slice(0,len) + word.stem.slice(len+1)
-    }
-*/
     return word;
 }
 
@@ -916,16 +900,6 @@ for (var i = 0; i < stringIn.length; i++) {
 
 //push vowels one last time to maintain symmetry with consonants, and to account for trailing vowel characters
     arrVowels.push(vBuffer);
-
-//deprecate
-// if ( ( isShortVowel( c ) ) || ( c === ar_2v ) ) {
-//     //take unsaved vowels if last char in string isn't consonant
-//     arrVowels.push(vBuffer);
-// } else {
-//     //push empty frame if no more vowels.  symmetry will be expected during QA
-//     arrVowels.push([]);
-// }
-//deprecate
 
 if ( arrConsonants.length !== arrVowels.length ) {
     console.log("!  Frame mismatch error in chunk(" + stringIn + ")");
