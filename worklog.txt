@@ -1,30 +1,31 @@
 Work list
-! chunk (v4) to parse vowels & markings...need for debugging doubled verbs, catching vowel surplus in other use-cases
-!   > compare output short vowels to exemplars; trace discrepancies
 
 -core logic
     - QA
+        >>   irregulars in forms after 1
         OK   squelch prefix/suffix on null forms (i.e. form 7 passives, recipient)
         >    function conjPassivePast(root, formNum) // form 9
         OK   implement word object in earlier irregular functions? ... show user type of irregular verb?
         OK   nouns.js remove -  Unreachable 'break' after 'return'.
+        OK   chunk (v4) to parse vowels & markings...need for debugging doubled verbs, catching vowel surplus in other use-cases
+                ok   > compare output short vowels to exemplars; trace discrepancies
 
      > QA conjugations
         OK  assimilative verbs
 
-        ~~  hollow verbs ?
+        OK  hollow verbs ?
             OK regulars in active tenses
             OK irregular in active tenses
-            ?ok? later past tenses have beginning of stem chopped off >>>> USE String.Prototype.replaceAt() vs char position of root
+            OK? later past tenses have beginning of stem chopped off >>>> USE String.Prototype.replaceAt() vs char position of root
                 String.prototype.replaceAt=function(index, char) {return this.substr(0, index) + char + this.substr(index+char.length);}
                 Line806
             OK (auto-squelched) passive tenses have doubled vowels
 
         ~ defective verbs ?
+resumeworkhere! they-f has sukkun over waaw in active imperfect...should not be there.  no trailing ar_a on they-m.
 
         > doubled verbs ?
             OK form 1  -- rad 2 takes place of shadda
-            -- need to validate vous-f/they-f
             ?? later forms - need more data to validate...dupe vowels squelched
             !! NOUN conj needs to stay regular in form2/5
 
@@ -36,5 +37,10 @@ Work list
     OK   tweak CSS from js console w/ jQ, then lock in
 
 -backend / data quality
-    - data entry for imperative?
+    - data entry for imperative...jussive? > six ways, varies by subject (person/gender)
+    - Regex root from masdar? > could manually run through patterns, but current option is simpler
+    - correlation b/t form 1/2/3 masdar > no?
+    - dual
+    - irregulars with many forms for QA
+    - handle irregular within conj script?
 

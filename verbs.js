@@ -251,7 +251,7 @@ var prefix = "",
                 break;
 
             case pro_vousF:
-                suffix = ar_0 + ar_t + ar_u + ar_n + ar_2v + ar_i;
+                suffix = ar_0 + ar_t + ar_u + ar_n + ar_2v + ar_a;
                 break;
 
             case pro_he:
@@ -604,29 +604,6 @@ function irregularizer( word ) {
     } else {
         $("tfoot tr td:nth-child(1) ").html( "Irregular " + word.verbType + " conjugation applied to " + ar_LM + word.arRoot );
     }
-/*
-    //debug before and after
-    var preChunk = tableChunk(wordRaw.suffix).wrap("<td>") +  tableChunk(wordRaw.stem).wrap("<td>") +  tableChunk(wordRaw.prefix).wrap("<td>");
-        preChunk = preChunk.wrap("<tr>").wrap("<tbody>");
-
-    var hChunk = "Suffix".wrap("<th>") + "Stem".wrap("<th>") + "Prefix".wrap("<th>");
-        hChunk = hChunk.wrap("<tr>").wrap("<thead>");
-        preChunk = (hChunk + preChunk).wrap("<table>");
-
-        preChunk =  "<h3> PreProcessing of " + ar_LM + wordRaw.arRoot + " f(" + wordRaw.formNum + ")</h3>" + preChunk;
-
-    var postChunk = tableChunk(word.suffix).wrap("<td>") +  tableChunk(word.stem).wrap("<td>") +  tableChunk(word.prefix).wrap("<td>");
-        postChunk = postChunk.wrap("<tr>").wrap("<tbody>");
-        postChunk = (hChunk + postChunk).wrap("<table>");
-
-        postChunk =  "<h3> PostProcessing of " + ar_LM + wordRaw.arRoot + " f(" + wordRaw.formNum + ")</h3>" + postChunk;
-
-    if ( ( wordRaw.formNum === 1 ) && ( wordRaw.enTense === "present" ) && (word.isActive ) ) {
-//          jqAlert( preChunk + "<br><br>" +postChunk ); // + postChunk
-         }
-    //end debug before and after
-*/
-//     }
 
 return word;
 
@@ -728,21 +705,22 @@ function irregDefective( word ) {
 
         if ( word.arRoot[2] === ar_U ) {
 
-            if ( ( arSubject === pro_she ) || ( arSubject === pro_theyM ) || ( arSubject === pro_theyF ) ) {
+            if ( ( word.arSubject === pro_she ) || ( word.arSubject === pro_theyM ) || ( word.arSubject === pro_theyF ) ) {
                 word.stem = word.stem.replace(ar_U,"");
 
-            } else if ( arSubject === pro_he ) {
+            } else if ( word.arSubject === pro_he ) {
                 word.stem = word.stem.replace(ar_U,ar_A);
             }
 
         } else if ( ( word.arRoot[2] === ar_Y ) || ( word.arRoot[2] === ar_am ) ) {
-                                         // ** is this condition necessary to catch ى ?
+                                         //  checking for "ى" is probably un-necessary.  root should be entered with ي.
+            if ( word.arSubject === pro_he ) {
+                word.stem = word.stem.slice(0,-1) + ar_am;
+            }
+
             if ( word.stem[3] === ar_a ) {
 
-                if ( word.arSubject === pro_he ) {
-                    //do nothing
-
-                } else if ( ( word.arSubject === pro_she ) || ( word.arSubject === pro_theyM ) || ( word.arSubject === pro_theyF ) ) {
+                if ( ( word.arSubject === pro_she ) || ( word.arSubject === pro_theyM ) || ( word.arSubject === pro_theyF ) ) {
                     word.stem = word.stem.replace(word.arRoot[2],"");
 
                 } else {
@@ -763,7 +741,8 @@ function irregDefective( word ) {
     } else if ( word.enTense === "present" ) {
 
             if ( ( word.arSubject === pro_youF ) || ( word.arSubject === pro_vousM ) || ( word.arSubject === pro_theyM ) ) {
-                word.stem = word.stem.replace(ar_U,"");
+                word.stem = word.stem.replace(ar_u + ar_U, "");
+                word.stem = word.stem.replace(ar_i + ar_Y, "");
             }
     }
 
@@ -810,18 +789,9 @@ var index = -1,
         }
 
         if ( ( word.arSubject === pro_vousF ) || ( word.arSubject === pro_theyF ) ) {
-            index = word.stem.indexOf(word.root[1]) + 1;
+            index = word.stem.indexOf(word.arRoot[1]) + 1;
             word.stem = word.stem.slice(0,3) + ar_u + word.arRoot[1];
         }
-    }
-
-//adjust voweling
-    var objRefs = makeReferenceObject();
-    var rad2vowel = vowelMe( objRefs.query(word.arRoot, word.formNum, "f1ActivePastRad2") );
-
-//show debug output
-    if (( word.formNum === 8 ) && ( word.enTense === "past" ) && ( word.isActive ) ) {
-//         jqAlert( htmlAlert );
     }
 
     return word;
@@ -1017,4 +987,9 @@ var isMatch = function(element) {
 
 return arrIrregulars.some(isMatch);
 
+}
+
+String.prototype.replaceAt=function(index, char) {
+//  https://gist.github.com/AdamBrodzinski/4010249
+    return this.substr(0, index) + char + this.substr(index+char.length);
 }
