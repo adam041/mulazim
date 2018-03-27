@@ -39,28 +39,28 @@ var word = {
     };
 
 //Build object holding reference info needed to fill in details for forms 1-3
-var objRefs = makeReferenceObject();
+// var objRefs = makeReferenceObject();
 
 //Get the stem
 
 if ( enTense === "present" ) {
 
     if ( isActive ) {
-        word.stem = conjActivePresent(arRoot, formNum, objRefs);
+        word.stem = conjActivePresent(arRoot, formNum);
     } else {
-        word.stem = conjPassivePresent(arRoot, formNum, objRefs);
+        word.stem = conjPassivePresent(arRoot, formNum);
     }
 
 } else if ( enTense === "past" ) {
 
     if ( isActive ) {
-        word.stem = conjActivePast(arRoot, formNum, objRefs);
+        word.stem = conjActivePast(arRoot, formNum);
     } else {
-        word.stem = conjPassivePast(arRoot, formNum, objRefs);
+        word.stem = conjPassivePast(arRoot, formNum);
     }
 
 } else if ( enTense === "imperative" ) {
-    word.stem = conjImperative(arRoot, formNum, objRefs);
+    word.stem = conjImperative(arRoot, formNum);
 }
 
 //Get Present Prefix/Suffix
@@ -322,7 +322,7 @@ if ( isActive === true ) {
 }
 
 
-function conjActivePast(arRoot, formNum, objRefs) {
+function conjActivePast(arRoot, formNum) {
 //returns conjugated trilateral verb in Past Perfect (active)
 
     var output,
@@ -380,7 +380,7 @@ function conjActivePast(arRoot, formNum, objRefs) {
 }
 
 
-function conjActivePresent(arRoot, formNum, objRefs) {
+function conjActivePresent(arRoot, formNum) {
 //returns conjugated trilateral verb in Present Imperfect (active)
 
     var output,
@@ -440,7 +440,7 @@ function conjActivePresent(arRoot, formNum, objRefs) {
 }
 
 
-function conjImperative(arRoot, formNum, objRefs) {
+function conjImperative(arRoot, formNum) {
 //returns conjugated trilateral verb in Imperative
 
 

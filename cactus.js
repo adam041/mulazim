@@ -1,6 +1,9 @@
 jQuery( document ).ready(function() {
 //set up jQuery UI and default conjugation
 
+//need to have some data available for conjugateUpdate before backend loads
+objRefs = makeReferenceObject();
+
 //conjugate page with default parameters
 conjugateUpdate( ar_Do, pro_he );
 
@@ -161,10 +164,7 @@ $( "#stage4").html( "".wrap("<h3>") );
 //Draw table rows
     jQuery("#contentTable tbody").html( drawRow( arRoot, arSubject ) );
 
-
 //Update formatting of rows with known-good forms
-    var objRefs = makeReferenceObject();
-
     for (var formNum = 1; formNum <= 10; ++formNum ) {
 
         if ( objRefs.indexRow(arRoot, formNum) > -1) {
@@ -275,7 +275,9 @@ function setupData() {
 //callback function after google sheet query is complete
 
 // console.log(response);
-var objRefs = makeReferenceObject();
+
+//objRefs should be global!
+    objRefs = makeReferenceObject();
 
 var oldRoot = "placeholder",
     appendHTML = "";
@@ -302,7 +304,6 @@ if ( arSubject === undefined ) {
     arSubject = pro_he;
 }
 
-var objRefs = makeReferenceObject();
 var htmlOut = "";
 
 //Declare data arrays
@@ -341,7 +342,7 @@ for (var formNum = 1; formNum <= 10; ++formNum ) {
     htmlOut += conjActiveParticiple(arRoot, formNum).wrap("<td class='colNoun'>");
     htmlOut += conjPassiveParticiple(arRoot, formNum).wrap("<td class='colNoun'>");
     htmlOut += conjNounTimePlace(arRoot, formNum).wrap("<td class='colNoun'>");
-    htmlOut += conjMasdar(arRoot, formNum, objRefs).wrap("<td class='colNoun'>");
+    htmlOut += conjMasdar(arRoot, formNum).wrap("<td class='colNoun'>");
 
 //write verb columns
     htmlOut += verbalize(arRoot, formNum, "present", false, arSubject).wrap("<td class='colVerb'>");
