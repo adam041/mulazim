@@ -269,12 +269,15 @@ var output = {
 return output;
 }
 
+
+
 function setupData() {
 //callback function after google sheet query is complete
 
 // console.log(response);
-var objRefs = makeReferenceObject(),
-    oldRoot = "placeholder",
+var objRefs = makeReferenceObject();
+
+var oldRoot = "placeholder",
     appendHTML = "";
 
     objRefs.json.forEach( function( row, index ) {

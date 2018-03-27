@@ -945,9 +945,9 @@ var segments = {
 };
 
 var indices = {
-    r1 = word.stem.indexOf( segments.rad1 ),
-    r2 = word.stem.indexOf( segments.rad2 ),
-    r3 = word.stem.indexOf( segments.rad3 ),
+    r1: word.stem.indexOf( segments.rad1 ),
+    r2: word.stem.indexOf( segments.rad2 ),
+    r3: word.stem.indexOf( segments.rad3 ),
 };
 
 if ( indices.r1 > 0 ) {
