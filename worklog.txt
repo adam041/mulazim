@@ -1,17 +1,47 @@
 Work list
 
+!!!
+- would it be easier (hollow irreg & doubled irreg & jussive) to check for sukkun following rad3, then apply script.
+BAU is check for subject / characters that would cause sukkun to be written.
+- write out cheat card for data entry - esp. masdar codes...document on git read.me too?
+
+???
+- would doubled be easier to handle with rad3 being written instead of shadda? - look at later forms ?
+- jussive/imperative
+- "polishing" function for QA - de-dupe vowels, ?complement long/short vowels?, collapse alifs, etc
+- segmentate?
+
+
+needed but boring
+- moar data
+- QA hamza, QA assimilative > late
+- req gather f2-f10
+    !!!!! switch() forms before going into irregularizer? // 'arabic irregular verbs'.numbers
+- css for ios
+- irregular handling of masdar; nouns
+
+
+nice to have
+-? segmentate (9) Suffix < OuterLeft < R3 < InnerLeft < R2 < InnerRight < R1 < OuterRight < Prefix
+- constants as one big object? or lotsa small vars? ar_A vs r.A vs ar.A vs r.translit(a,r,b)
+
 -core logic
     - QA
-        >>   irregulars in forms after 1
+        >>   QA irregulars in forms after 1
         OK   squelch prefix/suffix on null forms (i.e. form 7 passives, recipient)
         >    function conjPassivePast(root, formNum) // form 9
         OK   implement word object in earlier irregular functions? ... show user type of irregular verb?
         OK   nouns.js remove -  Unreachable 'break' after 'return'.
         OK   chunk (v4) to parse vowels & markings...need for debugging doubled verbs, catching vowel surplus in other use-cases
                 ok   > compare output short vowels to exemplars; trace discrepancies
+        OK   have option to print ALL conjugations from all subjects
+        OK   Added codes for form1 masdar; cleaned up code for form 2/3
+        OK   regex match one of multiple unicode chars - collapse اا into آ
 
      > QA conjugations
         OK  assimilative verbs
+>>          !  fix form 8 (also masdar broke) active present outputs يَتَصِلُ
+                    ...should be يَتَواصِل
 
         OK  hollow verbs ?
             OK regulars in active tenses
@@ -22,7 +52,8 @@ Work list
             OK (auto-squelched) passive tenses have doubled vowels
 
         ~ defective verbs ?
-resumeworkhere! they-f has sukkun over waaw in active imperfect...should not be there.  no trailing ar_a on they-m.
+            OK in present tense, need to prune lead char of suffix
+>> resume >>  ?? past tense, especially they x2
 
         > doubled verbs ?
             OK form 1  -- rad 2 takes place of shadda
@@ -37,10 +68,21 @@ resumeworkhere! they-f has sukkun over waaw in active imperfect...should not be 
     OK   tweak CSS from js console w/ jQ, then lock in
 
 -backend / data quality
+    - SQL join / js to combine & de-dupe both sheets...translations not read if backend has a dupe
+    - on 500
+        - defective - write Ya, not alif maqsura
+        - doubled - using shadda on orig (write out both on 500)
+        - quadrilateral (offload to separate sheet a.t.t.)
+        - جوب - two meanings/rad2 conjugations in form 10
+
+>>>> data quality standards
+    - doubled roots get shadda as rad3, not a repeat of rad2
+    - roots that get hyphens for form 1 vowels: hollow, doubled
+    - defective roots get ? in rad3
+
     - data entry for imperative...jussive? > six ways, varies by subject (person/gender)
-    - Regex root from masdar? > could manually run through patterns, but current option is simpler
-    - correlation b/t form 1/2/3 masdar > no?
     - dual
-    - irregulars with many forms for QA
     - handle irregular within conj script?
+    - Regex root from masdar? > could manually run through patterns, but current option is simpler
+        - correlation b/t form 1/2/3 masdar > no?
 

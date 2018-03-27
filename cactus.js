@@ -79,6 +79,11 @@ $('#dataTable').sheetrock({
         $( ".hideMe" ).toggle();
     });
 
+    $( "#divSelectors" ).dblclick(function() {
+        drawAllSubjects();
+    });
+
+
 $( document ).tooltip();
 
 });
@@ -156,6 +161,7 @@ $( "#stage4").html( "".wrap("<h3>") );
 //Draw table rows
     jQuery("#contentTable tbody").html( drawRow( arRoot, arSubject ) );
 
+
 //Update formatting of rows with known-good forms
     var objRefs = makeReferenceObject();
 
@@ -167,6 +173,32 @@ $( "#stage4").html( "".wrap("<h3>") );
             jQuery( "#contentTable tr:nth-child("+formNum+") td").css({"color": "dimgrey", "font-size": "medium"});
         }
     }
+
+}
+
+
+function drawAllSubjects() {
+//mostly intended for debugging, the UI is ugly
+
+var arRoot = $("#chosenRoot").val(),
+    arSubject = "",
+    dividerRow = "";
+    dividerRowTemp = "";
+
+for (var i = 1; i <= 11; ++i ) {
+    dividerRow += "<td> </td>";
+}
+
+//wipe table
+    jQuery("#contentTable tbody").html( "" );
+
+//iterate & conjugate through all possible subject choices
+$( "#chosenSubject option").each( function( index, element ) {
+    arSubject = element.value;
+    dividerRowTemp = (dividerRow + element.value.wrap("<td>") ).wrap("<tr>");
+    jQuery("#contentTable tbody").append( dividerRowTemp );
+    jQuery("#contentTable tbody").append( drawRow( arRoot, arSubject ) );
+});
 
 }
 

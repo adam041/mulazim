@@ -33,6 +33,12 @@ const ar_a="َ",         //fatah
     ar_t="ت",           //ta
     ar_tb="ة",          //ta-marbuta
     ar_h5="ء",          //hamza
+    ar_d="د",
+    ar_dh="ذ",
+    ar_z="ز",
+    ar_Taa="ط",
+    ar_Zaa="ظ",
+    ar_Daad="ض",
 
 //combos
     ar_mu="مٌ",         //mim + damma
