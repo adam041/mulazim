@@ -440,25 +440,35 @@ function jqAlert( htmlAlert ) {
 }
 
 
-function isShortVowel( charIn ) {
+function isShortVowel( charIn, shaddaToo ) {
 //returns true if string is Arabic short vowel or sukkun
 //     smaller sized vowels: 1560-1562 << true
 //     regular sized short vowels and markings: 1611-1616 << true
-//     shadda: 1617 << false
+//     shadda: 1617 << it depends
 //     sukkun: 1618 << true
 
 if ( charIn === undefined ) {
     console.log("Error, null passed to isShortVowel");
     return false;
 }
+
+if ( shaddaToo === undefined ) {
+    shaddaToo = false;
+}
+
 var answer = false;
 
-    if  ( ( ( charIn.charCodeAt(0) >= 1560 ) && ( charIn.charCodeAt(0) <= 1562 ) ) ||
-          ( ( charIn.charCodeAt(0) >= 1611 ) && ( charIn.charCodeAt(0) <= 1616 ) ) || ( charIn.charCodeAt(0) === 1618 )
-        ) { answer = true;}
+if  ( ( ( charIn.charCodeAt(0) >= 1560 ) && ( charIn.charCodeAt(0) <= 1562 ) ) ||
+      ( ( charIn.charCodeAt(0) >= 1611 ) && ( charIn.charCodeAt(0) <= 1616 ) ) || ( charIn.charCodeAt(0) === 1618 )
+    ) { answer = true;}
+
+if (( shaddaToo ) && ( charIn.charCodeAt(0) === 1617 )) {
+    answer = true;
+}
 
 return answer;
 }
+
 
 String.prototype.replaceAt=function(index, replacement) {
     return this.substr(0, index) + replacement+ this.substr(index + replacement.length);

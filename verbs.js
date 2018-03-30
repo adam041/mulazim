@@ -81,6 +81,10 @@ word = irregularizer( word );
 
 var wholeWord = word.whole();
 
+// if ( word.formNum === 10 ) {
+    console.log( segment(word) );
+// }
+
 //Catch double alifs and combine to alif w/ madda. Needed for hollow verbs in form 6.
     var re2Alif = new RegExp(/[\u{0622}|\u{0623}|\u{0625}|\u{0627}]{2}/ug);
     wholeWord = wholeWord.replace(re2Alif, ar_Am);
@@ -382,6 +386,78 @@ function conjActivePast(arRoot, formNum) {
 
 function conjActivePresent(arRoot, formNum) {
 //returns conjugated trilateral verb in Present Imperfect (active)
+
+    var output,
+        rad2vowel = "";
+
+    switch (formNum) {
+
+        case 1:
+            rad2vowel = vowelMe(objRefs.query(arRoot, formNum, "f1ActivePresentRad2"));
+            output = arRoot[0] + ar_0 + arRoot[1] + rad2vowel + arRoot[2];
+            break;
+
+        case 2:
+            output = arRoot[0] + ar_a + arRoot[1] + ar_2v + ar_i + arRoot[2];
+            break;
+
+        case 3:
+            output = arRoot[0] + ar_a + ar_A + arRoot[1] + ar_i + arRoot[2];
+            break;
+
+        case 4:
+            output = arRoot[0] + ar_0 + arRoot[1] + ar_i + arRoot[2];
+            //* sukkun over 2nd radical assumed, not on chart
+            break;
+
+        case 5:
+            output = ar_t + ar_a + conjActivePresent(arRoot, 2).replace(ar_i, ar_a);
+            break;
+
+        case 6:
+            output = ar_t + ar_a + conjActivePresent(arRoot, 3).replace(ar_i, ar_a);
+            break;
+
+        case 7:
+            output = ar_n + ar_0 + arRoot[0] + ar_a + arRoot[1] + ar_i + arRoot[2];
+            break;
+
+        case 8:
+            output = arRoot[0] + ar_0 + ar_t + ar_a + arRoot[1] + ar_i + arRoot[2];
+            break;
+
+        case 9:
+            output = arRoot[0] + ar_0 + arRoot[1] + ar_a + arRoot[2] + ar_2v;
+            break;
+
+        case 10:
+            output = ar_s + ar_0 + ar_t + ar_a + arRoot[0] + ar_0 + arRoot[1] + ar_i + arRoot[2];
+            break;
+
+        default:
+          output = "Error";
+          break;
+    }
+
+    return output;
+
+}
+
+
+
+function conjJussive(arRoot, formNum) {
+//returns conjugated trilateral verb in Jussive Form
+
+/*
+RESUME WORK HERE !!!  UNDORK existing conjugations before working on jussive
+
+    var sWord = segment( word );
+
+    if ( sWord.rad1Vowel === ar_0 ) {
+    //do stuff if sukkun found!
+    }
+
+*/
 
     var output,
         rad2vowel = "";
@@ -927,53 +1003,99 @@ return table;
 
 }
 
+
 function segment( word ) {
 //takes a word object, returns an object containing segments of Arabic word, organized around radicals
 
 //rad1Vowel?
 
-var segments = {
+var seg = {
+
     prefix: word.prefix,
     innerPrefix: "",
-    rad1: word.root.charAt(0),
-    midLeft: "",
-    rad2: word.root.charAt(1),
+
+    rad1: word.arRoot.charAt(0),
+    index1: -1,
+    rad1Vowel: "",
+
     midRight: "",
-    rad3: word.root.charAt(2),
+
+    rad2: word.arRoot.charAt(1),
+    index2: -1,
+    rad2Vowel: "",
+
+    midLeft: "",
+
+    rad3: word.arRoot.charAt(2),
+    index3: -1,
+    rad3Vowel: "",
+
     innerSuffix: "",
     suffix: word.suffix,
+
+    all: "",
+
+    meta: word,
 };
 
-var indices = {
-    r1: word.stem.indexOf( segments.rad1 ),
-    r2: word.stem.indexOf( segments.rad2 ),
-    r3: word.stem.indexOf( segments.rad3 ),
-};
+//get radical positions
+    seg.index1 = word.stem.indexOf( seg.rad1 );
+    seg.index2 = word.stem.indexOf( seg.rad2 );
+    seg.index3 = word.stem.indexOf( seg.rad3 );
 
-if ( indices.r1 > 0 ) {
-    segments.innerPrefix = word.stem.slice(0, indices.r1 );
+if ( seg.index1 > 0 ) {
+    seg.innerPrefix = word.stem.slice(0, seg.index1 );
 } else {
-    segments.innerPrefix = "";
+    seg.innerPrefix = "";
 }
 
-segments.midLeft = word.stem.slice(indices.r1,indices.r2);
+seg.midRight = word.stem.slice(seg.index1 + 1, seg.index2);
 
-if ( segments.rad3 === ar_2v ) {
-    segments.rad3 = segments.rad2;
+//take vowels from midRight
+var i = 0;
+while ( isShortVowel( seg.midRight.charAt(i), true) ) {
+    seg.rad1Vowel += seg.midRight.charAt(i);
+    seg.midRight = seg.midRight.slice(1);
+    i++;
 }
 
-// if (indices.r2 + 1 === indices.r3 ) {
-//     segments.midRight = "";
-// } else {
-    segments.midRight = word.stem.slice(indices.r2,indices.r3);
-// }
+if ( seg.index3 === ar_2v ) {
+    seg.rad3 = seg.rad2;
+}
 
-if ( word.stem.length > indices.r3 ) {
-    segments.innerSuffix = word.stem.slice(indices.r3);
+seg.midLeft = word.stem.slice(seg.index2 + 1, seg.index3);
+//take vowels from midLeft
+i = 0;
+while ( isShortVowel( seg.midLeft.charAt(i), true) ) {
+    seg.rad2Vowel += seg.midLeft.charAt(i);
+    seg.midLeft = seg.midLeft.slice(1);
+    i++;
+}
+
+//create innerSuffix and take rad3 vowel away (or from Suffix)
+i = 0;
+if ( word.stem.length > seg.index3 ) {
+    seg.innerSuffix = word.stem.slice(seg.index3 + 1);
+    while ( isShortVowel( seg.innerSuffix.charAt(i), true) ) {
+        seg.rad3Vowel += seg.innerSuffix.charAt(i);
+        seg.innerSuffix = seg.innerSuffix.slice(1);
+        i++;
+    }
+
 } else {
-    segments.innerSuffix = "";
+    seg.innerSuffix = "";
+    while ( isShortVowel( seg.suffix.charAt(i), true) ) {
+        seg.rad3Vowel += seg.suffix.charAt(i);
+        seg.suffix = seg.suffix.slice(1);
+        i++;
+    }
+
 }
 
+seg.all = seg.prefix + seg.innerPrefix + seg.rad1 + seg.rad1Vowel + seg.midRight + seg.rad2 + seg.rad2Vowel;
+seg.all += seg.midLeft + seg.rad3 + seg.rad3Vowel + seg.innerSuffix + seg.suffix;
+
+return seg;
 }
 
 
