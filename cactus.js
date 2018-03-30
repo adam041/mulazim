@@ -1,6 +1,9 @@
 jQuery( document ).ready(function() {
 //set up jQuery UI and default conjugation
 
+//need to have some data available for conjugateUpdate before backend loads
+objRefs = makeReferenceObject();
+
 //conjugate page with default parameters
 conjugateUpdate( ar_Do, pro_he );
 
@@ -161,10 +164,7 @@ $( "#stage4").html( "".wrap("<h3>") );
 //Draw table rows
     jQuery("#contentTable tbody").html( drawRow( arRoot, arSubject ) );
 
-
 //Update formatting of rows with known-good forms
-    var objRefs = makeReferenceObject();
-
     for (var formNum = 1; formNum <= 10; ++formNum ) {
 
         if ( objRefs.indexRow(arRoot, formNum) > -1) {
@@ -269,12 +269,17 @@ var output = {
 return output;
 }
 
+
+
 function setupData() {
 //callback function after google sheet query is complete
 
 // console.log(response);
-var objRefs = makeReferenceObject(),
-    oldRoot = "placeholder",
+
+//objRefs should be global!
+    objRefs = makeReferenceObject();
+
+var oldRoot = "placeholder",
     appendHTML = "";
 
     objRefs.json.forEach( function( row, index ) {
@@ -299,7 +304,6 @@ if ( arSubject === undefined ) {
     arSubject = pro_he;
 }
 
-var objRefs = makeReferenceObject();
 var htmlOut = "";
 
 //Declare data arrays
@@ -338,7 +342,7 @@ for (var formNum = 1; formNum <= 10; ++formNum ) {
     htmlOut += conjActiveParticiple(arRoot, formNum).wrap("<td class='colNoun'>");
     htmlOut += conjPassiveParticiple(arRoot, formNum).wrap("<td class='colNoun'>");
     htmlOut += conjNounTimePlace(arRoot, formNum).wrap("<td class='colNoun'>");
-    htmlOut += conjMasdar(arRoot, formNum, objRefs).wrap("<td class='colNoun'>");
+    htmlOut += conjMasdar(arRoot, formNum).wrap("<td class='colNoun'>");
 
 //write verb columns
     htmlOut += verbalize(arRoot, formNum, "present", false, arSubject).wrap("<td class='colVerb'>");
@@ -436,25 +440,35 @@ function jqAlert( htmlAlert ) {
 }
 
 
-function isShortVowel( charIn ) {
+function isShortVowel( charIn, shaddaToo ) {
 //returns true if string is Arabic short vowel or sukkun
 //     smaller sized vowels: 1560-1562 << true
 //     regular sized short vowels and markings: 1611-1616 << true
-//     shadda: 1617 << false
+//     shadda: 1617 << it depends
 //     sukkun: 1618 << true
 
 if ( charIn === undefined ) {
     console.log("Error, null passed to isShortVowel");
     return false;
 }
+
+if ( shaddaToo === undefined ) {
+    shaddaToo = false;
+}
+
 var answer = false;
 
-    if  ( ( ( charIn.charCodeAt(0) >= 1560 ) && ( charIn.charCodeAt(0) <= 1562 ) ) ||
-          ( ( charIn.charCodeAt(0) >= 1611 ) && ( charIn.charCodeAt(0) <= 1616 ) ) || ( charIn.charCodeAt(0) === 1618 )
-        ) { answer = true;}
+if  ( ( ( charIn.charCodeAt(0) >= 1560 ) && ( charIn.charCodeAt(0) <= 1562 ) ) ||
+      ( ( charIn.charCodeAt(0) >= 1611 ) && ( charIn.charCodeAt(0) <= 1616 ) ) || ( charIn.charCodeAt(0) === 1618 )
+    ) { answer = true;}
+
+if (( shaddaToo ) && ( charIn.charCodeAt(0) === 1617 )) {
+    answer = true;
+}
 
 return answer;
 }
+
 
 String.prototype.replaceAt=function(index, replacement) {
     return this.substr(0, index) + replacement+ this.substr(index + replacement.length);

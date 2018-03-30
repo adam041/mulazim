@@ -93,7 +93,7 @@ function conjActiveParticiple(root, formNum) {
 }
 
 
-function conjMasdar(root, formNum, objRefs) {
+function conjMasdar(root, formNum) {
 //returns conjugated trilateral noun as Verbal Noun (masdar)
 
     var masdarOut,
