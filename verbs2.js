@@ -1,5 +1,260 @@
 //Verb Conjugation Scripts
 
+// define new object
+// ?non-pop? - doesn't exist... could make a method to pop & re-push
+// cnjFormBase // blues
+
+
+/*
+
+var Animal = {
+  type: 'Invertebrates', // Default value of properties
+  displayType: function() {  // Method which will display type of Animal
+    console.log(this.type);
+  }
+};
+
+function Car(make, model, year, owner) {
+  this.make = make;
+  this.model = model;
+  this.year = year;
+  this.owner = owner;
+  this.displayCar = displayCar;
+}
+
+*/
+
+//Holds a segment of a Word object
+function Segment() {
+
+  this.frames = [];
+  //frames will contain an array of objects with keys c and v
+  //each object will contain a consonant and possibly a vowel
+  // {c:"ف", v:"َ" }
+  // {c:"ع", v:"َ" }
+  // {c:"ل", v:"َ" }
+
+  this.push = function (c, v) {
+  //takes two strings, creates a JSON, and pushes to frames array
+    var frame = {"c": c, "v": v };
+    this.frames.push( frame );
+  };
+
+
+  this.get = function () {
+	//getter method, outputs array as string
+
+		var framesAsString = "";
+
+       this.frames.forEach(function ( value, index ) {
+          framesAsString += value.c + value.v;
+        });
+
+    return framesAsString;
+    };
+
+  this.let = function (index, key, insertValue, overWrite ) {
+
+  	if (overWrite === undefined) {
+    	overWrite = false;
+  	}
+
+    if ( overWrite ) {
+    	this.frames[index][key] = insertValue;
+    } else {
+    	this.frames[index][key] += insertValue;
+    }
+
+  };
+
+  this.vet = function ( insertValue, overWrite ) {
+    //let, for radical vowels
+  	this.let(0, "v", insertValue, overWrite);
+  };
+
+}
+
+
+// Word properties encapsulation.  Keep it dumb (i.e. external functions, not internal methods).
+function Word( arRoot ) {
+
+//declare metadata properties (6)
+    this.arRoot = arRoot;
+    this.arSubject = null;
+    this.verbType = null;    //auto-categorize on declaration?
+
+    this.formNum = null;
+    this.enTense = null;
+    this.isActive = null;
+
+//declare data segments (9)
+    this.prefix =  new Segment();
+    this.innerPrefix = new Segment();
+
+    this.rad1 = new Segment();
+    this.midRight = new Segment();
+    this.rad2 = new Segment();
+    this.midLeft = new Segment();
+
+    this.rad3 = new Segment();
+    this.innerSuffix = new Segment();
+    this.suffix = new Segment();
+
+//load radical segments with consonants
+    this.rad1.push( arRoot.charAt(0), "" );
+    this.rad2.push( arRoot.charAt(1), "" );
+    this.rad3.push( arRoot.charAt(2), "" );  //** may get weird on doubled verbs if rad3 is shadda
+
+//declare method(s)
+    this.whole = function() {
+    //apply unwinds!!**
+        var theWord = this.prefix.get() + this.innerPrefix.get() + this.rad1.get() + this.midRight.get() + this.rad2.get();
+        theWord += this.midLeft.get() + this.rad3.get() + this.innerSuffix.get() + this.suffix.get();
+        return theWord;
+    };
+
+};
+
+
+function formBase( word, formNum ){
+//takes a word object and a form number, and adds appropriate characters (i.e. blue on trilateral chart)
+
+    //clone (last layer of) original word
+    //  ? OR pass clone of last layer as parameter...handle array mgt OUTSIDE function
+    //  ? word.rad1[0].v - should this be an array or string?
+
+    switch (formNum) {
+
+        //case 1, do nothing
+
+        case 2:
+            word.rad2.vet(ar_2v); //need to fill in the final vowel later
+            break;
+
+        case 3:
+            word.rad1.vet(ar_a);
+            word.midRight.push( {c: ar_A, v: ""} );
+            break;
+
+        case 4:
+            word.midRight.push( {c: ar_hA, v: ar_a} );
+            word.rad1.vet(ar_0);  //* for all EXCEPT imperative
+            break;
+
+        case 5:
+            word.innerPrefix.push( {c: ar_ta, v: ""} );
+            word.rad1.vet(ar_2v);
+            break;
+
+        case 6:
+            word.innerPrefix.push( {c: ar_ta, v: ar_a} );
+            word.rad1.vet(ar_a);
+            word.innerRight.push( {c: ar_A, v: ""} );
+            break;
+
+        case 7:
+            word.innerPrefix.push( {c: ar_A, v: ar_i} );
+            word.innerPrefix.push( {c: ar_n, v: ar_0} );
+            break;
+
+        case 8:
+            word.innerPrefix.push( {c: ar_A, v: ar_i} );
+            word.rad1.vet(ar_0);
+            word.innerRight.push( {c: ar_t, v: ar_a} );
+            break;
+
+        case 9:
+            word.innerPrefix.push( {c: ar_A, v: ar_i} ); //* for all EXCEPT imperfect verb or agent noun
+            break;
+
+        case 10:
+            word.innerPrefix.push( {c: ar_A, v: ar_i} );
+            word.innerPrefix.push( {c: ar_s, v: ar_0} );
+            word.innerPrefix.push( {c: ar_t, v: ""} );  //need to fill in the final vowel later
+            break;
+
+    }
+
+//???
+    //word0.push(word);
+    //return word0;
+
+    return word;
+
+}
+
+function conjActivePast(arRoot, formNum) {
+//returns conjugated trilateral verb in Past Perfect (active)
+
+    var output,
+        rad2vowel = "";
+
+    switch (formNum) {
+
+        case 1:
+          rad2vowel = vowelMe(objRefs.query(arRoot, formNum, "f1ActivePastRad2"));
+          output = arRoot[0] + ar_a + arRoot[1] + rad2vowel + arRoot[2];
+          break;
+
+        case 2:
+          output = arRoot[0] + ar_a + arRoot[1] + ar_2v + ar_a + arRoot[2];
+          break;
+
+        case 3:
+          output = arRoot[0] + ar_a + ar_A + arRoot[1] + ar_a + arRoot[2];
+          break;
+
+        case 4:
+          output = ar_hA + ar_a + arRoot[0] + ar_0 + arRoot[1] + ar_a + arRoot[2];
+          break;
+
+        case 5:
+          output = ar_t + ar_a + conjActivePast(arRoot, 2);
+          break;
+
+        case 6:
+          output = ar_t + ar_a + conjActivePast(arRoot, 3);
+          break;
+
+        case 7:
+          output = ar_A + ar_i + ar_n + ar_0 + arRoot[0] + ar_a + arRoot[1] + ar_a + arRoot[2];
+          break;
+
+        case 8:
+          output = ar_A + ar_i + arRoot[0] + ar_0 + ar_t + ar_a + arRoot[1] + ar_a + arRoot[2];
+          break;
+
+        case 9:
+          output = ar_A + ar_i + arRoot[0] + ar_0 + arRoot[1] + ar_a + arRoot[2] + ar_2v;
+          break;
+
+        case 10:
+          output = ar_A + ar_i + ar_s + ar_0 + ar_t + ar_a + arRoot[0] + ar_0 + arRoot[1] + ar_a + arRoot[2];
+          break;
+
+        default:
+          output = "Error";
+          break;
+      }
+
+        return output;
+}
+
+
+
+
+
+
+
+
+
+
+////////////////////
+// OLD STUFF BELOW
+////////////////////
+
+
+
 function verbalize(arRoot, formNum, enTense, isActive, arSubject) {
 //finds stem of a verb, and then adds prefixes and suffixes appropriate to tense and subject
 //root and formNum are required parameters.  Active/Present/3rd person masculine single assumed if no param passed
