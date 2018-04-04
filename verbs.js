@@ -82,7 +82,7 @@ word = irregularizer( word );
 var wholeWord = word.whole();
 
 // if ( word.formNum === 10 ) {
-    console.log( segment(word) );
+//    console.log( segment(word) );
 // }
 
 //Catch double alifs and combine to alif w/ madda. Needed for hollow verbs in form 6.

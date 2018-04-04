@@ -1,5 +1,12 @@
 Work list
 
+###
+
+resume work in >>> function base10( wordIn, callback, Args ) {
+...try object map implementation
+...or method to cloneWord(cloneMetaData, cloneSegments)?
+
+
 !!!
 - would it be easier (hollow irreg & doubled irreg & jussive) to check for sukkun following rad3, then apply script??
 BAU is check for subject / characters that would cause sukkun to be written.

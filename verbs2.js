@@ -1,29 +1,5 @@
 //Verb Conjugation Scripts
 
-// define new object
-// ?non-pop? - doesn't exist... could make a method to pop & re-push
-// cnjFormBase // blues
-
-
-/*
-
-var Animal = {
-  type: 'Invertebrates', // Default value of properties
-  displayType: function() {  // Method which will display type of Animal
-    console.log(this.type);
-  }
-};
-
-function Car(make, model, year, owner) {
-  this.make = make;
-  this.model = model;
-  this.year = year;
-  this.owner = owner;
-  this.displayCar = displayCar;
-}
-
-*/
-
 //Holds a segment of a Word object
 function Segment() {
 
@@ -39,7 +15,6 @@ function Segment() {
     var frame = {"c": c, "v": v };
     this.frames.push( frame );
   };
-
 
   this.get = function () {
 	//getter method, outputs array as string
@@ -82,6 +57,7 @@ function Word( arRoot ) {
     this.arRoot = arRoot;
     this.arSubject = null;
     this.verbType = null;    //auto-categorize on declaration?
+    this.layer = "initial";  //identifies phase of conjugation processing
 
     this.formNum = null;
     this.enTense = null;
@@ -113,15 +89,104 @@ function Word( arRoot ) {
         return theWord;
     };
 
+
+    this.miniMe = function() {
+    //returns a new word object with same metadata, but empty Segments
+
+        var miniMe = new Word( this.arRoot );
+
+        miniMe.arSubject = this.arSubject;
+        miniMe.verbType = this.verbType;
+        miniMe.layer = this.layer;
+
+        miniMe.formNum = this.formNum;
+        miniMe.enTense = this.enTense;
+        miniMe.isActive = this.isActive;
+
+        return miniMe;
+    }
+
 };
+
+
+function draftMain( arRoot ){
+//holds developmental scripts...maybe will replace Verbalize in verbs.js
+
+if (arRoot === undefined){
+    arRoot = ar_Do;
+}
+
+var formNum = 1; //for developmental testing **
+
+var drafts = [],
+    draftWord = "";
+
+
+//declare
+    drafts.push( new Word(arRoot) );
+//      draftWord = drafts.last().miniMe(); //unecessary
+
+//get base of form
+//     drafts.push( formBase( draftWord, formNum) );
+//         draftWord = drafts.last().miniMe();
+
+var arrBases = base10( drafts.last(), formBase );
+    console.log("bases " + arrBases);
+
+//function verbalize(arRoot, formNum, enTense, isActive, arSubject) {
+
+//     for(var i=1; i <= 10; ++i) {
+//         //clone, update, and push
+//         draftWord = drafts.last().miniMe();
+//         draftWord = formBase( draftWord, i );
+//         drafts.push( draftWord );
+//         }
+
+return drafts;
+
+}
+
+
+Array.prototype.last = function () {
+//method returns last item from array
+    return this[this.length - 1];
+};
+
+
+function cloneObj( objIn ){
+//from https://stackoverflow.com/questions/14810506/map-function-for-objects-instead-of-arrays
+
+    var objOut = Object.keys( objIn ).reduce(function(previous, current) {
+        previous[current] = objIn[current]; //scan payload for Segment object **!
+        return previous;
+    }, {});
+
+    return objOut;
+}
+
+
+function base10( wordIn, callback, Args ) {
+//*** Args object not used at this time...need to implement
+
+var bakers10 = [], //actually has 11 items, with 0 position not used
+    wordOut;
+
+    bakers10.push("intentionally left blank");
+
+for(var i=1; i <= 10; ++i) {
+    wordOut = cloneObj(wordIn);
+    wordOut = callback( wordOut, i );
+    bakers10.push( wordOut );
+    }
+return bakers10;
+}
 
 
 function formBase( word, formNum ){
 //takes a word object and a form number, and adds appropriate characters (i.e. blue on trilateral chart)
 
-    //clone (last layer of) original word
-    //  ? OR pass clone of last layer as parameter...handle array mgt OUTSIDE function
-    //  ? word.rad1[0].v - should this be an array or string?
+    word.layer = "formBase";
+    word.formNum = formNum;
 
     switch (formNum) {
 
@@ -133,55 +198,51 @@ function formBase( word, formNum ){
 
         case 3:
             word.rad1.vet(ar_a);
-            word.midRight.push( {c: ar_A, v: ""} );
+            word.midRight.push(ar_A, "");
             break;
 
         case 4:
-            word.midRight.push( {c: ar_hA, v: ar_a} );
+            word.innerPrefix.push(ar_hA, ar_a);
             word.rad1.vet(ar_0);  //* for all EXCEPT imperative
             break;
 
         case 5:
-            word.innerPrefix.push( {c: ar_ta, v: ""} );
-            word.rad1.vet(ar_2v);
+            word.innerPrefix.push(ar_t, "");
+            word.rad2.vet(ar_2v);
             break;
 
         case 6:
-            word.innerPrefix.push( {c: ar_ta, v: ar_a} );
+            word.innerPrefix.push(ar_t, ar_a);
             word.rad1.vet(ar_a);
-            word.innerRight.push( {c: ar_A, v: ""} );
+            word.midRight.push(ar_A, "");
             break;
 
         case 7:
-            word.innerPrefix.push( {c: ar_A, v: ar_i} );
-            word.innerPrefix.push( {c: ar_n, v: ar_0} );
+            word.innerPrefix.push(ar_A, ar_i);
+            word.innerPrefix.push(ar_n, ar_0);
             break;
 
         case 8:
-            word.innerPrefix.push( {c: ar_A, v: ar_i} );
+            word.innerPrefix.push(ar_A, ar_i);
             word.rad1.vet(ar_0);
-            word.innerRight.push( {c: ar_t, v: ar_a} );
+            word.midRight.push(ar_t, ar_a);
             break;
 
         case 9:
-            word.innerPrefix.push( {c: ar_A, v: ar_i} ); //* for all EXCEPT imperfect verb or agent noun
+            word.innerPrefix.push(ar_A, ar_i); //* for all EXCEPT imperfect verb or agent noun
             break;
 
         case 10:
-            word.innerPrefix.push( {c: ar_A, v: ar_i} );
-            word.innerPrefix.push( {c: ar_s, v: ar_0} );
-            word.innerPrefix.push( {c: ar_t, v: ""} );  //need to fill in the final vowel later
+            word.innerPrefix.push(ar_A, ar_i);
+            word.innerPrefix.push(ar_s, ar_0);
+            word.innerPrefix.push(ar_t, "");  //need to fill in the final vowel later
             break;
 
     }
 
-//???
-    //word0.push(word);
-    //return word0;
-
     return word;
-
 }
+
 
 function conjActivePast(arRoot, formNum) {
 //returns conjugated trilateral verb in Past Perfect (active)
@@ -337,7 +398,7 @@ word = irregularizer( word );
 var wholeWord = word.whole();
 
 // if ( word.formNum === 10 ) {
-    console.log( segment(word) );
+//    console.log( segment(word) );
 // }
 
 //Catch double alifs and combine to alif w/ madda. Needed for hollow verbs in form 6.
