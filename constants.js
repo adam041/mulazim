@@ -2,6 +2,8 @@
 //Variables holding frequently used arabic characters.
 //Holding Arabic strings inside prevents RTF/LTR mismatch dorkery
 
+'esversion: 6'
+
 //short vowels & diacritics
 const ar_a="َ",         //fatah
     ar_i="ِ",           //kasrah

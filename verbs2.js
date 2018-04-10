@@ -1,57 +1,5 @@
 //Verb Conjugation Scripts
 
-//DEPRECATE!!!
-/*
-//Holds a segment of a Word object
-function Segment() {
-
-  this.frames = [];
-  //frames will contain an array of objects with keys c and v
-  //each object will contain a consonant and possibly a vowel
-  // {c:"ف", v:"َ" }
-  // {c:"ع", v:"َ" }
-  // {c:"ل", v:"َ" }
-
-  this.push = function (c, v) {
-  //takes two strings, creates a JSON, and pushes to frames array
-    var frame = {"c": c, "v": v };
-    this.frames.push( frame );
-  };
-
-  this.get = function () {
-	//getter method, outputs array as string
-
-		var framesAsString = "";
-
-       this.frames.forEach(function ( value, index ) {
-          framesAsString += value.c + value.v;
-        });
-
-    return framesAsString;
-    };
-
-  this.let = function (index, key, insertValue, overWrite ) {
-
-  	if (overWrite === undefined) {
-    	overWrite = false;
-  	}
-
-    if ( overWrite ) {
-    	this.frames[index][key] = insertValue;
-    } else {
-    	this.frames[index][key] += insertValue;
-    }
-
-  };
-
-  this.vet = function ( insertValue, overWrite ) {
-    //let, for radical vowels
-  	this.let(0, "v", insertValue, overWrite);
-  };
-
-}
-*/
-
 function arrayOW (array, newValue, x, y) {
 //over-writes new value into specified position in array, then returns the array
     array[x][y] = newValue;
@@ -64,6 +12,31 @@ Array.prototype.vowel = function(vowel){
     return arrayOW(this, vowel, 0, 1);
 };
 
+Array.prototype.consonant = function(consonant){
+//inserts consonant as new value in array position [1][0]
+    return arrayOW(this, vowel, 1, 0);
+};
+
+function flatReduce(arrayIn){
+//takes an array with an arbitrary number of dimensions and returns a string
+//* fails if param is a 1D array?!
+
+    if ( (arrayIn === undefined) || (arrayIn.length === 0) ) {
+        return "";
+    }
+
+    //flatten multi-D array into 1-drafts
+    var flatArray = arrayIn.reduce(function(prev, curr) {
+        return prev.concat(curr);
+    });
+
+    //reduce array to string
+    if ( flatArray.length === 0 ) {
+        return "";
+    } else {
+        return flatArray.reduce(reducer);
+    }
+}
 
 
 // Word properties encapsulation.  Keep it dumb (i.e. external functions, not internal methods).
@@ -92,9 +65,6 @@ function Word( arRoot, enTense, isActive, arSubject ) {
     this.innerSuffix = [];    //was Segment
     this.suffix = [];    //was Segment
 
-//segments can be identified by checking ( <object name>.<segment name>.constructor.name === "Segment" )
-
-
 //load radical segments with consonants
     this.rad1.push( [arRoot.charAt(0), ""] );
     this.rad2.push( [arRoot.charAt(1), ""] );
@@ -102,68 +72,79 @@ function Word( arRoot, enTense, isActive, arSubject ) {
 
 //declare method(s)
     this.whole = function() {
-    //reduce and strip comma artifacts instead ! ** arry.reduce(reducer).replace(",","")
-
-/*        var theWord = this.prefix.get() + this.innerPrefix.get() + this.rad1.get() + this.midRight.get() + this.rad2.get();
-        theWord += this.midLeft.get() + this.rad3.get() + this.innerSuffix.get() + this.suffix.get();
-        return theWord; */
-        return "The Bird is the Word"; //notational value
+        return whole(this);
     };
 
-/*
-    this.miniMe = function() {
-    //returns a new word object with same metadata, but empty Segments
-
-        var miniMe = new Word( this.arRoot );
-
-        miniMe.arSubject = this.arSubject;
-        miniMe.verbType = this.verbType;
-        miniMe.layer = this.layer;
-
-        miniMe.formNum = this.formNum;
-        miniMe.enTense = this.enTense;
-        miniMe.isActive = this.isActive;
-
-        return miniMe;
-    }
-*/
 }
 
 
-function main( arRoot ){
+function whole(word){
+//assembles all segment arrays of word object, and returns a String
+
+    var theWord = flatReduce(word.prefix);
+        theWord += flatReduce(word.innerPrefix);
+        theWord += flatReduce(word.rad1);
+        theWord += flatReduce(word.midRight);
+        theWord += flatReduce(word.rad2);
+        theWord += flatReduce(word.midLeft);
+        theWord += flatReduce(word.rad3);
+        theWord += flatReduce(word.innerSuffix);
+        theWord += flatReduce(word.suffix);
+
+    return theWord;
+}
+
+function nonWord( wordIn ) {
+//create intentionally blank output, for when there is no conjugation (i.e. passive form of form 7 verb)
+
+    var word = clone(wordIn);
+
+    word.rad1 = ([["-",""]]);
+    word.rad2 = ([["-",""]]);
+    word.rad3 = ([["-",""]]);
+
+    word.prefix = [];
+    word.innerPrefix = [];
+    word.midRight = [];
+    word.midLeft = [];
+    word.innerSuffix = [];
+    word.suffix = [];
+
+    return word;
+}
+
+
+//made for testing
+function a(){
+    return cnjVerb( ar_Do, "perfect", true,  pro_he );
+}
+
+
+function cnjVerb( arRoot, enTense, isActive,  arSubject ){
 //holds developmental scripts...maybe will replace Verbalize in verbs.js
 
-if (arRoot === undefined){
-    arRoot = ar_Do;
-}
-
-var formNum = 1; //for developmental testing **
-
 var drafts = [],
-    draftWord = "";
+    draft = [];
 
-//initial declare
-//    drafts.push( new Word(arRoot) );
-//      draftWord = drafts.last().miniMe(); //unecessary
-// var arrBases = base10( drafts.last(), cnjForm );
+var baseWord = new Word(arRoot, enTense, isActive, arSubject);
 
-var baseWord = new Word(arRoot, "perfect", true, pro_he);
+//get base conj, for all 10 forms
+    draft = base10(baseWord, cnjForm);
+    drafts.push(draft);
 
-var arrBases = base10( clone(baseWord), cnjForm );
-    console.log("bases " + arrBases);
+//get regular verb conj, for all 10 forms
+    draft = draft.x10(cnjRegularVerb, true);
+    drafts.push(draft);
 
-    console.log("Perfect f1\n" + cnjPerfect( arrBases[1] ) );
-//inner prefix way overloaded !!!
+//adjust conj if irregular, for all 10 forms
+    draft = draft.x10(cnjIrregularVerb, true);
+    drafts.push(draft);
 
+//apply QA routines
+    //  tbd
 
-//     for(var i=1; i <= 10; ++i) {
-//         //clone, update, and push
-//         draftWord = drafts.last().miniMe();
-//         draftWord = cnjForm( draftWord, i );
-//         drafts.push( draftWord );
-//         }
-
-return "drafts done";
+console.log(drafts);
+return drafts.last();
 
 }
 
@@ -178,64 +159,118 @@ function clone( objIn ) {
     return JSON.parse(JSON.stringify(objIn));
 }
 
-
-function clob( objIn ) {
-
-    var objOut = {},
-        myObj = objIn;
-
-    Object.keys(myObj).forEach(function (key) {
-      let obj = myObj[key];
-      console.log( myObj );
-      // do something with obj
-    });
-
-
-    // for (const prop in objIn) {
-//         conole.log( objIn.${prop} + ${objIn[prop]} );
-//     }
-
-}
-
-function cloneObj( objIn ){
-//from https://stackoverflow.com/questions/14810506/map-function-for-objects-instead-of-arrays
-
-    var objOut = Object.keys( objIn ).reduce(function(previous, current) {
-        previous[current] = objIn[current];
-        return previous;
-    }, {});
-
-    return objOut;
-}
-
-Array.prototype.lastObj = function () {
-//finds last object in array, and returns a non-linked copy of it
-    var obj = this[this.length - 1];
-    return cloneObj( obj );
+Array.prototype.x10 = function(callback, isVerbose){
+    return x10(this, callback, isVerbose);
 };
 
 
-function base10( wordIn, callback, Args ) {
-//*** Args object not used at this time...need to implement
+function x10(arrayIn, callback, isVerbose){
+//somewhat general function for processing a copy of an array containing ten forms of a conjugation
 
-var bakers10 = [], //actually has 11 items, with 0 position not used
+    var arrayOut = [],
+        word = {};
+
+    arrayIn.forEach(function ( value, index ) {
+
+        if ( index === 0 ) {
+            arrayOut.push(value);
+
+            if (isVerbose) { console.log(arrayOut[index]); }
+
+        } else {
+            word = clone(value);
+            arrayOut.push( callback(word)  );
+
+            if (isVerbose) { console.log( whole(arrayOut[index]) ); }
+        }
+    }   );
+
+    return arrayOut;
+}
+
+
+function base10( wordIn, callback ) {
+//returns an size 11 array containing templates of all 10 verb forms (0 is intended for use)
+
+var arrayOut = [],
     word = {};
-    bakers10.push("array[0] intentionally left blank");
+
+    arrayOut.push(ar_ILB);
 
 for(var i=1; i <= 10; ++i) {
     word = clone(wordIn);
-
-// console.log("<فبل>" + word.whole() );
-
-    word = callback( clone(word), i );
-    bakers10.push( clone(word) );
-//     Object.freeze(bakers10[i]);
-//     console.log( i + "<بعد>" + bakers10[i].whole() );
-//
-    word = undefined;
+    word = cnjForm( word, i );
+    arrayOut.push( word );
     }
-return bakers10;
+return arrayOut;
 }
+
+
+function cnjRegularVerb( wordIn ) {
+//routing function for verb conjugations
+
+var word = clone(wordIn);
+
+//get Regular conjugation
+if ( word.enTense === "perfect" ) {
+    return cnjPerfect( word );
+
+} else if ( word.enTense === "imperfect" ) {
+    return cnjImperfect( word );
+
+} else if ( word.enTense === "jussive" ) {
+    return cnjJussive( word );
+    //what about imperative?
+}
+
+return word;
+
+// handle irregulars in separate function, in order
+// to compare & debug differences in processing
+}
+
+
+function cnjIrregularVerb( wordIn ) {
+//switchboard function to call irregular modifications
+
+var word = clone(wordIn); //redundant?
+
+    if ( ( word.arRoot[0] === ar_Y ) || ( word.arRoot[0] === ar_U ) ){
+        word = cnjAssimilativeVerb( word );
+    }
+
+    if ( isHollowIrregular(word.arRoot) ) {
+        word = cnjUltraHollowVerb( word );
+    }
+
+    if ( ( word.arRoot[1] === ar_Y ) || ( word.arRoot[1] === ar_U ) ){
+        word = cnjHollowVerb( word );
+    }
+
+/*
+
+    if ( ( word.arRoot[2] === ar_Y ) || ( word.arRoot[2] === ar_U ) ) {
+        word = irregDefective( word );
+    }
+
+    if ( ( word.arRoot.indexOf(ar_2v) > -1) || ( word.arRoot[1] === word.arRoot[2] ) ) {
+        word = irregDoubled( word );
+    }
+
+    if ( hasHamza( word.arRoot ) ) {
+        word = irregHamza( word );
+    }
+*/
+    //inform user if verb is irregular
+    if ( word.verbType === "regular" ) {
+        $("tfoot tr td:nth-child(1) ").html( "&nbsp <br> &nbsp " );
+    } else {
+        $("tfoot tr td:nth-child(1) ").html( "Irregular " + word.verbType + " conjugation applied to " + ar_LM + word.arRoot );
+    }
+
+return word;
+
+} // end irregularizer
 
 
 function cnjForm( wordIn, formNum ){
@@ -248,31 +283,24 @@ function cnjForm( wordIn, formNum ){
 
     switch (formNum) {
 
-        //case 1, do nothing
+        case 1: break;
 
+        case 5:
+            word.innerPrefix.push( [ar_t, ar_a] );
         case 2:
             word.rad2.vowel(ar_2v ); //need to fill in the final vowel later
             break;
 
+        case 6:
+            word.innerPrefix.push( [ar_t, ar_a] );
         case 3:
-            word.rad1.vowel(ar_a );
+            word.rad1.vowel(ar_a);
             word.midRight.push( [ar_A, ""] );
             break;
 
         case 4:
             word.innerPrefix.push( [ar_hA, ar_a] );
             word.rad1.vowel(ar_0 );  //* for all EXCEPT imperative
-            break;
-
-        case 5:
-            word.innerPrefix.push( [ar_t, ""] );
-            word.rad2.vowel(ar_2v );
-            break;
-
-        case 6:
-            word.innerPrefix.push( [ar_t, ar_a] );
-            word.rad1.vowel(ar_a );
-            word.midRight.push( [ar_A, ""] );
             break;
 
         case 7:
@@ -304,86 +332,60 @@ function cnjForm( wordIn, formNum ){
 function cnjPerfect( wordIn ) {
 //returns conjugated trilateral verb in Perfect (past) tense
 
-    var word = cloneObj( wordIn ),
-        rad2vowel = "";
+var word = clone( wordIn );
+
+//set prefix and suffix
+    setPrefixSuffix(word);
 
 if ( word.isActive ) {
     word.layer = "Perfect, Active";
 
     switch (word.formNum) {
 
-//QA plz ** >> pileup on innerPrefix =( words reduced to word?
-
         case 1:
             word.rad1.vowel(ar_a);
-            rad2vowel = vowelMe(objRefs.query(word.arRoot, word.formNum, "f1ActivePastRad2"));
+            var rad2vowel = vowelMe(objRefs.query(word.arRoot, word.formNum, "f1ActivePastRad2"));
             word.rad2.vowel(rad2vowel);
             break;
 
-        //case 5:
         case 2:
+        case 5:
             word.rad1.vowel(ar_a);
             word.rad2.vowel(ar_2v + ar_a);
             break;
 
-        //case 6:
         case 3:
+        case 6:
             word.rad1.vowel(ar_a);
-            word.innerRight.push( [ar_A, ""] );
             word.rad2.vowel(ar_a);
             break;
 
         case 4:
-            word.innerPrefix.push( [ar_hA, ar_a] );
             word.rad1.vowel(ar_0);
             word.rad2.vowel(ar_a);
             break;
 
-        case 5:
-            word.innerPrefix.push( [ar_t, ar_a] );
-            word.rad1.vowel(ar_a);
-            word.rad2.vowel(ar_2v + ar_a );
-            break;
-
-        case 6:
-            word.innerPrefix.push( [ar_t, ar_a] );
-            word.rad1.vowel(ar_a);
-            word.innerRight.push( [ar_A, ""] );
-            word.rad2.vowel(ar_a);
-            break;
-
         case 7:
-            word.innerPrefix.push( [ar_A, ar_i] );
-            word.innerPrefix.push( [ar_n, ar_0] );
             word.rad1.vowel(ar_a);
             word.rad2.vowel(ar_a);
             break;
 
         case 8:
-            word.innerPrefix.push( [ar_A, ar_i] );
-            word.rad1.vowel(ar_0);
-            word.midRight.push( [ar_t, ar_a] );
+//          word.rad1.vowel(ar_0);
             word.rad2.vowel(ar_a);
             break;
 
         case 9:
-            word.innerPrefix.push( [ar_A, ar_i] );
             word.rad1.vowel(ar_0);
             word.rad2.vowel(ar_a);
             word.rad3.vowel(ar_2v);
             break;
 
         case 10:
-            word.innerPrefix.push( [ar_A, ar_i] );
-            word.innerPrefix.push( [ar_s, ar_0] );
-            word.innerPrefix.push( [ar_t, ar_a] );
             word.rad1.vowel(ar_0);
             word.rad2.vowel(ar_a);
             break;
 
-        default:
-          output = "Error";
-          break;
         }
     } else {
         word.layer = "Perfect, Passive";
@@ -393,49 +395,179 @@ if ( word.isActive ) {
             word.rad1.vowel(ar_u);
             word.rad2.vowel(ar_u);
             break;
-/*
-        case 2:
-          output =  arRoot[0] + ar_u + arRoot[1] + ar_2v + ar_i + arRoot[2];
-          break;
-
-        case 3:
-          output =  arRoot[0] + ar_u + ar_U + arRoot[1] + ar_i + arRoot[2];
-          break;
-
-        case 4:
-          output =  ar_hA + ar_u + arRoot[0] + ar_0 + arRoot[1] + ar_i + arRoot[2];
-          break;
 
         case 5:
-          output =  ar_t + ar_u + conjPassivePast(arRoot, 2);
-          break;
+            word.innerPrefix.vowel(ar_u);
+        case 2:
+            word.rad1.vowel(ar_u);
+            word.rad2.vowel(ar_2v + ar_i);
+            break;
 
         case 6:
-          output =  ar_t + ar_u + conjPassivePast(arRoot, 3);
-          break;
+            word.innerPrefix.vowel(ar_u);
+        case 3:
+            word.rad1.vowel(ar_u);
+            word.midRight.consonant(ar_U);
+            word.rad2.vowel(ar_i);
+            break;
+
+        case 4:
+//             word.innerPrefix.push([ar_hA, ar_u]);
+            word.rad1.vowel(ar_0);
+            word.rad2.vowel(ar_i);
+            break;
 
         case 7:
-          output =  ar_ILB;
-          break;
+            word = nonWord( word );
+            break;
 
         case 8:
-          output =  ar_A + ar_u + arRoot[0] + ar_0 + ar_t + ar_u + arRoot[1] + ar_i + arRoot[2];
-          break;
+            word.innerPrefix.vowel(ar_u);
+//             word.rad1.vowel(ar_0);
+            word.midRight.vowel(ar_u);
+            word.rad2.vowel(ar_i);
+            break;
 
         case 9:
+            word.innerPrefix.vowel(ar_u);
+            word.rad1.vowel(ar_0);
+            word.rad2.vowel(ar_a);
+            word.rad3.vowel(ar_2v);
+            break;
+
           output =  conjActivePast(arRoot, formNum).replace(ar_i, ar_u);
           break;
 
         case 10:
-          output =  ar_A + ar_u + ar_s + ar_0 + ar_t + ar_u + arRoot[0] + ar_0 + arRoot[1] + ar_i + arRoot[2];
-          break;
-*/
+            word.innerPrefix.vowel(ar_u);
+            word.rad1.vowel(ar_0);
+            word.midRight.push(["", ar_u]);
+            word.rad2.vowel(ar_i);
+            break;
 
       }//end switch
 }//end if (active / else passive)
 
+    return word;
+}
+
+
+function cnjImperfect( wordIn ) {
+//returns conjugated trilateral verb in Perfect (past) tense
+
+var word = clone( wordIn );
+
 //set prefix and suffix
     setPrefixSuffix(word);
+
+if ( word.isActive ) {
+    word.layer = "Imperfect, Active";
+
+    switch (word.formNum) {
+
+        case 1:
+            word.rad1.vowel(ar_0);
+            var rad2vowel = vowelMe(objRefs.query(word.arRoot, word.formNum, "f1ActivePastRad2"));
+            word.rad2.vowel(rad2vowel);
+            break;
+
+        case 2:
+            word.rad1.vowel(ar_a);
+            word.rad2.vowel(ar_2v + ar_i);
+            break;
+
+        case 3:
+            word.rad1.vowel(ar_a);
+            word.rad2.vowel(ar_i);
+            break;
+
+        case 4:
+            word.rad1.vowel(ar_0);  //* assumed
+            word.rad2.vowel(ar_i);
+            word.innerPrefix = [];
+            break;
+
+        case 5:
+            word.rad1.vowel(ar_a);
+            word.rad2.vowel(ar_2v + ar_a );
+            break;
+
+        case 6:
+            word.rad1.vowel(ar_a);
+            word.rad2.vowel(ar_a);
+            break;
+
+        case 7:
+            word.rad1.vowel(ar_a);
+            word.rad2.vowel(ar_i);
+            break;
+
+        case 8:
+//             word.rad1.vowel(ar_0);
+            word.rad2.vowel(ar_i);
+            break;
+
+        case 9:
+            word.rad1.vowel(ar_0);
+            word.rad2.vowel(ar_a);
+            word.rad3.vowel(ar_2v);
+            break;
+
+        case 10:
+            word.rad1.vowel(ar_0);
+            word.rad2.vowel(ar_i);
+            break;
+
+        }
+    } else {
+        word.layer = "Imperfect, Passive";
+        switch (word.formNum) {
+
+        case 1:
+            word.rad1.vowel(ar_0);
+            word.rad2.vowel(ar_a);
+            break;
+
+        case 2:
+        case 5:
+            word.rad1.vowel(ar_a);
+            word.rad2.vowel(ar_2v + ar_a);
+            break;
+
+        case 3:
+        case 6:
+            word.rad1.vowel(ar_a);
+            word.rad2.vowel(ar_a);
+            break;
+
+        case 4:
+            word.rad1.vowel(ar_0);  //* assumed
+            word.rad2.vowel(ar_a);
+            word.innerPrefix = [];
+            break;
+
+        case 7:
+            word = nonWord( word );
+            break;
+
+        case 8:
+//             word.rad1.vowel(ar_0);
+            word.rad2.vowel(ar_a);
+            break;
+
+        case 9:
+            word.rad1.vowel(ar_0);
+            word.rad2.vowel(ar_a);
+            word.rad3.vowel(ar_2v);
+            break;
+
+        case 10:
+            word.rad1.vowel(ar_0);
+            word.rad2.vowel(ar_a);
+            break;
+
+      }//end switch
+}//end if (active / else passive)
 
     return word;
 }
@@ -476,67 +608,66 @@ var prefix = "",
         prefixVowel = ar_u;
     }
 
-
     //Get Present Prefix/Suffix
     if (( word.enTense === "imperfect" ) || ( word.enTense === "present" )) {
     switch ( word.arSubject ) {
 
         case pro_i:
-            word.prefix.push(ar_hA, prefixVowel);
-            word.suffix.push("", ar_u);
+            word.prefix.push([ar_hA, prefixVowel]);
+            word.suffix.push(["", ar_u]);
             break;
 
         case pro_we:
-            word.prefix.push(ar_n, prefixVowel);
-            word.suffix.push("", ar_u);
+            word.prefix.push([ar_n, prefixVowel]);
+            word.suffix.push(["", ar_u]);
             break;
 
         case pro_youM:
-            word.prefix.push(ar_t, prefixVowel);
-            word.suffix.push("", ar_u);
+            word.prefix.push([ar_t, prefixVowel]);
+            word.suffix.push(["", ar_u]);
             break;
 
         case pro_youF:
-            word.prefix.push(ar_t, prefixVowel);
-            word.suffix.push("", ar_i);     //** un-anticipated format, needs QA!
-            word.suffix.push(ar_Y, "");
-            word.suffix.push(ar_n, ar_a);
+            word.prefix.push([ar_t, prefixVowel]);
+            word.suffix.push(["", ar_i]);     //** un-anticipated format, needs QA!
+            word.suffix.push([ar_Y, ""]);
+            word.suffix.push([ar_n, ar_a]);
             break;
 
         case pro_vousM:
-            word.prefix.push(ar_t, prefixVowel);
-            word.suffix.push("", ar_u);     //** un-anticipated format, needs QA!
-            word.suffix.push(ar_U, "");
-            word.suffix.push(ar_n, ar_a);
+            word.prefix.push([ar_t, prefixVowel]);
+            word.suffix.push(["", ar_u]);     //** un-anticipated format, needs QA!
+            word.suffix.push([ar_U, ""]);
+            word.suffix.push([ar_n, ar_a]);
             break;
 
         case pro_vousF:
-            word.prefix.push(ar_t, prefixVowel);
-            word.suffix.push("", ar_0);
-            word.suffix.push(ar_n, ar_a);
+            word.prefix.push([ar_t, prefixVowel]);
+            word.suffix.push(["", ar_0]);
+            word.suffix.push([ar_n, ar_a]);
             break;
 
         case pro_he:
-            word.prefix.push(ar_Y, prefixVowel);
-            word.suffix.push("", ar_u);
+            word.prefix.push([ar_Y, prefixVowel]);
+            word.suffix.push(["", ar_u]);
             break;
 
         case pro_she:
-            word.prefix.push(ar_t, prefixVowel);
-            word.suffix.push("", ar_u);
+            word.prefix.push([ar_t, prefixVowel]);
+            word.suffix.push(["", ar_u]);
             break;
 
         case pro_theyM:
-            word.prefix.push(ar_Y, prefixVowel);
-            word.suffix.push("", ar_u);     //** un-anticipated format, needs QA!
-            word.suffix.push(ar_U, "");
-            word.suffix.push(ar_n, "");
+            word.prefix.push([ar_Y, prefixVowel]);
+            word.suffix.push(["", ar_u]);     //** un-anticipated format, needs QA!
+            word.suffix.push([ar_U, ""]);
+            word.suffix.push([ar_n, ""]);
             break;
 
         case pro_theyF:
-            word.prefix.push(ar_Y, prefixVowel);
-            word.suffix.push("", ar_0);
-            word.suffix.push(ar_n, ar_a);
+            word.prefix.push([ar_Y, prefixVowel]);
+            word.suffix.push(["", ar_0]);
+            word.suffix.push([ar_n, ar_a]);
             break;
     }//end switch (present)
 
@@ -544,56 +675,56 @@ var prefix = "",
       switch ( word.arSubject ) {
 
         case pro_i:
-            word.suffix.push("", ar_0);
-            word.suffix.push(ar_t, ar_u);
+            word.suffix.push(["", ar_0]);
+            word.suffix.push([ar_t, ar_u]);
             break;
 
         case pro_we:
-            word.suffix.push(ar_0, "");
-            word.suffix.push(ar_n, ar_a);
-            word.suffix.push(ar_A, "");
+            word.suffix.push([ar_0, ""]);
+            word.suffix.push([ar_n, ar_a]);
+            word.suffix.push([ar_A, ""]);
             break;
 
         case pro_youM:
-            word.suffix.push("", ar_0);
-            word.suffix.push(ar_t, ar_a);
+            word.suffix.push(["", ar_0]);
+            word.suffix.push([ar_t, ar_a]);
             break;
 
         case pro_youF:
-            word.suffix.push("", ar_0);
-            word.suffix.push(ar_t, ar_i);
+            word.suffix.push(["", ar_0]);
+            word.suffix.push([ar_t, ar_i]);
             break;
 
         case pro_vousM:
-            word.suffix.push("", ar_0);
-            word.suffix.push(ar_t, ar_u);
-            word.suffix.push(ar_m, "");
+            word.suffix.push(["", ar_0]);
+            word.suffix.push([ar_t, ar_u]);
+            word.suffix.push([ar_m, ""]);
             break;
 
         case pro_vousF:
-            word.suffix.push("", ar_0);
-            word.suffix.push(ar_t, ar_u);
-            word.suffix.push(ar_n, ar_2v + ar_a);
+            word.suffix.push(["", ar_0]);
+            word.suffix.push([ar_t, ar_u]);
+            word.suffix.push([ar_n, ar_2v + ar_a]);
             break;
 
         case pro_he:
-            word.suffix.push("", ar_a);
+            word.suffix.push(["", ar_a]);
             break;
 
         case pro_she:
-            word.suffix.push("", ar_a);
-            word.suffix.push(ar_t, "");
+            word.suffix.push(["", ar_a]);
+            word.suffix.push([ar_t, ""]);
             break;
 
         case pro_theyM:
-            word.suffix.push("", ar_u);     //** un-anticipated format, needs QA!
-            word.suffix.push(ar_U, "");
-            word.suffix.push(ar_A, "");
+            word.suffix.push(["", ar_u]);     //** un-anticipated format, needs QA!
+            word.suffix.push([ar_U, ""]);
+            word.suffix.push([ar_A, ""]);
             break;
 
         case pro_theyF:
-            word.suffix.push("", ar_0);
-            word.suffix.push(ar_n, ar_a);
+            word.suffix.push(["", ar_0]);
+            word.suffix.push([ar_n, ar_a]);
             break;
     }//end switch (past)
     }
@@ -601,7 +732,170 @@ var prefix = "",
 }
 
 
+function cnjAssimilativeVerb( wordIn ) {
+// modifies stem in accordance with irregular verb rules
+// assumes ( root[0] === ar_Y ) || ( root[0] === ar_U )
 
+var word = clone(wordIn);
+
+//bypass irregular processing for some forms
+    switch ( word.formNum) {
+
+        case 2:
+        case 3:
+        case 5:
+        case 6:
+        case 10:
+            word.verbType = "regular in this form, root matches assimilative pattern";
+            return word;
+
+        case 4:
+            //(present) has long U to start  **
+            break;
+
+        case 8:
+            //double ت  **
+            break;
+
+        default: //proceed
+            //case 1
+            //case 7?
+            //case 9?
+            break;
+    }
+
+    word.verbType = "assimilative";
+
+//continue to process verb as irregular
+
+    if ( word.enTense  === "perfect" ) {
+            //do nothing
+
+    } else if ( word.enTense  === "imperfect" ) {
+
+        //drop rad1 if ar_u
+        if ( word.rad1[0][0] === ar_U ) {
+            word.rad1 = [];
+        }
+
+    } else { /* what about jussive/imperative?*/ }
+
+return word;
+
+}
+
+
+function cnjHollowVerb( wordIn ) {
+// modifies stem in accordance with irregular verb rules
+// assumes ( root[0] === ar_Y ) || ( root[0] === ar_U )
+
+var word = clone(wordIn);
+
+//bypass irregular processing for some forms
+    switch ( word.formNum) {
+        /*
+        //case 1
+        //case 7?
+        //case 9?
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+        case 6:
+        case 8:
+        case 10:
+        */
+        default: //proceed
+            break;
+    }
+
+    word.verbType = "hollow";
+
+//continue to process verb as irregular
+
+    if ( word.enTense  === "perfect" ) {
+
+        if ( ( word.arSubject === pro_he ) || ( word.arSubject === pro_she ) || (word.arSubject === pro_theyM) ) {
+            word.rad1.vowel(ar_a);
+            word.rad2 = [[ar_A], [""]];
+
+        } else {
+            //subject is i, we, you-m, you-f, vous-m, vous-f...they-f
+
+            if ( word.arRoot[1] === ar_U ) {
+                word.rad1.vowel(ar_u);
+            } else if ( word.arRoot[1] === ar_Y ) {
+                word.rad1.vowel(ar_i);
+            }
+
+            word.rad2 = [];
+        }
+
+    } else if ( word.enTense  === "imperfect" ) {
+
+        if ( ( word.arSubject === pro_vousF ) || ( word.arSubject === pro_theyF ) ) {
+            word.rad2 = [];
+            word.rad3.vowel(ar_0);
+        }
+
+        //ensure rad1 vowel compliments rad2 long vowel
+        if ( word.arRoot[1] === ar_Y ) {
+            word.rad1.vowel(ar_i);
+        } else if ( word.arRoot[1] === ar_U ){
+            word.rad1.vowel(ar_u);
+        }
+
+    } else { /* what about jussive/imperative?*/ }
+
+return word;
+
+}
+
+
+function cnjUltraHollowVerb(word) {
+// modifies stem in accordance with irregular verb rules
+// assumes verb is an especially irregular hollow verb, such as to sleep
+
+    word.verbType = "hollow, especially irregular";
+
+    if ( word.enTense  === "perfect" ) {
+        //conj as if it is hollow, with ar_Y in the 2nd radical
+
+        if ( ( word.arSubject === pro_he ) || ( word.arSubject === pro_she ) || (word.arSubject === pro_theyM) ) {
+            word.rad1.vowel(ar_a);
+            word.rad2 = [[ar_A], [""]];
+
+        } else {
+            //subject is i, we, you-m, you-f, vous-m, vous-f...they-f
+
+            word.rad1.vowel(ar_i);
+            word.rad2 = [];
+        }
+
+    } else if ( word.enTense  === "imperfect" ) {
+
+        word = cnjHollowVerb(word);
+
+    } else { /* what about jussive/imperative?*/ }
+
+
+return word;
+}
+
+
+
+
+////////////////////
+// OLD STUFF BELOW
+////////////////////
+
+
+
+
+
+////////////////////
+// OLD STUFF BELOW
+////////////////////
 
 
 
@@ -1057,12 +1351,11 @@ function conjActivePresent(arRoot, formNum) {
 }
 
 
-
 function conjJussive(arRoot, formNum) {
 //returns conjugated trilateral verb in Jussive Form
 
 /*
-RESUME WORK HERE !!!  UNDORK existing conjugations before working on jussive
+NEED WORK HERE !!!  UNDORK existing conjugations before working on jussive
 
     var sWord = segment( word );
 
