@@ -66,6 +66,16 @@ const   reducer = (accumulator, currentValue) => accumulator + currentValue;
 const   rowReducer = (accumulator, currentValue, currentIndex) => accumulator + currentValue.wrap("<td class='vowelCell" + currentIndex+ "'>").wrap("<tr>");
         //rowReducer note: vowel rows are written to html doc from top to bottom
 
+
+//Irregular exemplars for testing
+
+const arrive = "وصل",
+    travel = "زور",
+    fly = "طير",
+    walk = "مشي",
+    complain = "",
+    take = "أخذ"
+
 /*
 Notes
 HTML/ASCI letter codes for Arabic and related alphabets: 1536 to 1791

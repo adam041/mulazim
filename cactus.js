@@ -356,8 +356,9 @@ for (var formNum = 1; formNum <= 10; ++formNum ) {
     htmlOut += verbalize(arRoot, formNum, "past", false, arSubject).wrap("<td class='colVerb'>");
     htmlOut += verbalize(arRoot, formNum, "imperative", false, arSubject).wrap("<td class='colVerb'>");
     htmlOut += whole(colActiveImperfect[formNum]).wrap("<td class='colVerb'>");
-    htmlOut += "<td class='colVerb'>" + whole(colActivePerfect[formNum]).wrap("<span>");
-    htmlOut +=    (" " + objRefs.query(arRoot, formNum, "Preposition") ).wrap("<span class='spnPreposition'>") + "</td>";
+    htmlOut += "<td class='colVerb'>";
+    htmlOut +=  whole(colActivePerfect[formNum]).wrap("<span>");
+    htmlOut +=  (" " + objRefs.query(arRoot, formNum, "Preposition") ).wrap("<span class='spnPreposition'>") + "</td>";
 
 //write out meta columns
     htmlOut += arrFormNum[formNum].wrap("<td class='colFormNum'>");
@@ -467,7 +468,7 @@ var answer = false;
 
 if  ( ( ( charIn.charCodeAt(0) >= 1560 ) && ( charIn.charCodeAt(0) <= 1562 ) ) ||
       ( ( charIn.charCodeAt(0) >= 1611 ) && ( charIn.charCodeAt(0) <= 1616 ) ) || ( charIn.charCodeAt(0) === 1618 )
-    ) { answer = true;}
+    ) { answer = true; }
 
 if (( shaddaToo ) && ( charIn.charCodeAt(0) === 1617 )) {
     answer = true;
@@ -477,6 +478,30 @@ return answer;
 }
 
 
+function isLongVowel( charIn ) {
+//returns true if string is Arabic long vowel, excludes hamza carriers
+
+// alef 1575
+// waw 1608
+// alef maksura 1609
+// yeh (2 dots) 1610
+
+if ( charIn === undefined ) {
+    console.log("Error, null passed to isLongVowel");
+    return false;
+}
+
+var answer = false;
+
+if  ( ( ( charIn.charCodeAt(0) >= 1608 ) && ( charIn.charCodeAt(0) <= 1610 ) ) ||
+      ( charIn.charCodeAt(0) === 1575 )
+    ) { answer = true; }
+
+return answer;
+}
+
+
+//do i still need this? **
 String.prototype.replaceAt=function(index, replacement) {
     return this.substr(0, index) + replacement+ this.substr(index + replacement.length);
 }
