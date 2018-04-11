@@ -334,9 +334,10 @@ var arrMeaning = [
     "Pretending, Requesting Change, Usage "];
 
 //Write out rows, one td at a time
-                                                                                // ** resume here
-    var colPassiveImperfect = cnjVerb(arRoot, "imperfect", false,  arSubject),  // ** doesn't work =((((
-        colPassivePerfect,   // TBD *
+
+//but first, generate data
+    var colPassiveImperfect = cnjVerb(arRoot, "imperfect", false,  arSubject),
+        colPassivePerfect = cnjVerb(arRoot, "perfect", false,  arSubject),
         colImperative,      //  TBD
         colActiveImperfect = cnjVerb(arRoot, "imperfect", true,  arSubject),
         colActivePerfect = cnjVerb(arRoot, "perfect", true,  arSubject);
@@ -351,10 +352,9 @@ for (var formNum = 1; formNum <= 10; ++formNum ) {
     htmlOut += conjMasdar(arRoot, formNum).wrap("<td class='colNoun'>");
 
 //write verb columns
-
     htmlOut += whole(colPassiveImperfect[formNum]).wrap("<td class='colVerb'>");
-    htmlOut += verbalize(arRoot, formNum, "past", false, arSubject).wrap("<td class='colVerb'>");
-    htmlOut += verbalize(arRoot, formNum, "imperative", false, arSubject).wrap("<td class='colVerb'>");
+    htmlOut += whole(colPassivePerfect[formNum]).wrap("<td class='colVerb'>");
+    htmlOut += verbalize(arRoot, formNum, "imperative", false, arSubject).wrap("<td class='colVerb'>"); //old way
     htmlOut += whole(colActiveImperfect[formNum]).wrap("<td class='colVerb'>");
     htmlOut += "<td class='colVerb'>";
     htmlOut +=  whole(colActivePerfect[formNum]).wrap("<span>");
