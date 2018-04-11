@@ -278,10 +278,8 @@ var word = clone(wordIn);
     } else if ( ( word.arRoot[2] === ar_Y ) || ( word.arRoot[2] === ar_U ) ) {
         word = cnjDefectiveVerb( word );
 
-/*
-    if ( ( word.arRoot.indexOf(ar_2v) > -1) || ( word.arRoot[1] === word.arRoot[2] ) ) {
-        word = irregDoubled( word );
-*/
+    } if ( ( word.arRoot.indexOf(ar_2v) > -1) || ( word.arRoot[1] === word.arRoot[2] ) ) {
+        word = cnjDoubledVerb(word);
 
     } else if ( hasHamza( word.arRoot ) ) {
         word = cnjHamzaVerb( word );
@@ -1004,6 +1002,49 @@ return word;
 }
 
 
+function cnjDoubledVerb(wordIn) {
+// modifies stem in accordance with irregular verb rules
+// code works whether verb radical 2 and 3 are the same, OR rad3 is a shadda
+
+    var word = clone(wordIn);
+
+    word.verbType = "doubled";
+
+    function doubleSauce(word) {
+        //move rad2 vowel to rad1, collapse rad3 into rad2 shadda
+        word.rad1.vowel( word.rad2.vowel() );
+        word.rad1.vowel( word.rad1.vowel().replace(ar_2v,"") ); //remove dupe shadda for form 2 & 5
+        word.rad2.vowel( ar_2v );
+        word.rad3 = [];
+    };
+
+    if ( word.enTense  === "perfect" ) {
+    //most subjects get rad3 as letter
+
+        if ( ( word.arSubject === pro_he ) || ( word.arSubject === pro_she ) || (word.arSubject === pro_theyM) ) {
+            doubleSauce(word);
+        } else {
+            word.rad3.consonant( word.rad2.consonant() );
+        }
+
+    } else if ( word.enTense  === "imperfect" ) {
+    //most subjects get rad3 as shadda
+
+      if ( ( word.arSubject === pro_youF ) || ( word.arSubject === pro_theyF ) ) {
+            word.rad3.consonant( word.rad2.consonant() );
+
+        } else {
+            doubleSauce(word);
+        }
+
+    } else { /* what about jussive/imperative?*/ }
+
+return word;
+
+}
+
+
+
 
 
 ////////////////////
@@ -1354,79 +1395,6 @@ if ( isActive === true ) {
 }
 
 
-
-
-function conjJussive(arRoot, formNum) {
-//returns conjugated trilateral verb in Jussive Form
-
-/*
-NEED WORK HERE !!!  UNDORK existing conjugations before working on jussive
-
-    var sWord = segment( word );
-
-    if ( sWord.rad1Vowel === ar_0 ) {
-    //do stuff if sukkun found!
-    }
-
-*/
-
-    var output,
-        rad2vowel = "";
-
-    switch (formNum) {
-
-        case 1:
-            rad2vowel = vowelMe(objRefs.query(arRoot, formNum, "f1ActivePresentRad2"));
-            output = arRoot[0] + ar_0 + arRoot[1] + rad2vowel + arRoot[2];
-            break;
-
-        case 2:
-            output = arRoot[0] + ar_a + arRoot[1] + ar_2v + ar_i + arRoot[2];
-            break;
-
-        case 3:
-            output = arRoot[0] + ar_a + ar_A + arRoot[1] + ar_i + arRoot[2];
-            break;
-
-        case 4:
-            output = arRoot[0] + ar_0 + arRoot[1] + ar_i + arRoot[2];
-            //* sukkun over 2nd radical assumed, not on chart
-            break;
-
-        case 5:
-            output = ar_t + ar_a + conjActivePresent(arRoot, 2).replace(ar_i, ar_a);
-            break;
-
-        case 6:
-            output = ar_t + ar_a + conjActivePresent(arRoot, 3).replace(ar_i, ar_a);
-            break;
-
-        case 7:
-            output = ar_n + ar_0 + arRoot[0] + ar_a + arRoot[1] + ar_i + arRoot[2];
-            break;
-
-        case 8:
-            output = arRoot[0] + ar_0 + ar_t + ar_a + arRoot[1] + ar_i + arRoot[2];
-            break;
-
-        case 9:
-            output = arRoot[0] + ar_0 + arRoot[1] + ar_a + arRoot[2] + ar_2v;
-            break;
-
-        case 10:
-            output = ar_s + ar_0 + ar_t + ar_a + arRoot[0] + ar_0 + arRoot[1] + ar_i + arRoot[2];
-            break;
-
-        default:
-          output = "Error";
-          break;
-    }
-
-    return output;
-
-}
-
-
 function conjImperative(arRoot, formNum) {
 //returns conjugated trilateral verb in Imperative
 
@@ -1464,57 +1432,6 @@ function conjImperative(arRoot, formNum) {
         default:
             return "Error";
       }
-}
-
-
-
-
-
-function irregDoubled( word ) {
-//assumes doubled roots will end in shadda
-
-word.verbType = "doubled";
-var index = -1,
-    strBefore = "",
-    strAfter = "";
-
-    if (( word.formNum === 2 ) || ( word.formNum === 5 )) {
-        //do nothing on forms 2, 5
-        return word;
-    }
-
-    if ( word.enTense === "past" ) {
-
-        if  ( word.suffix[0] === ar_u ) {
-            //do nothing, keep shadda if damma is vowel over third radical (first char in suffix)
-
-        } else if ( word.suffix[0] === ar_0 ) {
-            word.stem = word.stem.slice(0,-1) + word.arRoot[1];
-            //write last word.arRoot char twice if sukkun is non-vowel over third radical (first char in suffix)
-        }
-
-    } else if ( word.enTense === "present" ) {
-
-        //Remove sukkun over radical 1 and shift radical 2 vowel to radical 1.
-        //Needed for f1.  Maybe needed for forms 8-10?
-            index = word.stem.indexOf(word.arRoot[1]) + 1; //increment to get vowel
-            shiftMe = word.stem.slice(index,index+1);
-
-        if (( isShortVowel(shiftMe) ) && (word.stem.indexOf(ar_0) > -1 )) {
-            strBefore = word.stem.slice(0,index);
-            strAfter = word.stem.slice(index+1);
-
-            word.stem = strBefore + strAfter;
-            word.stem = word.stem.replace(ar_0, shiftMe);
-        }
-
-        if ( ( word.arSubject === pro_vousF ) || ( word.arSubject === pro_theyF ) ) {
-            index = word.stem.indexOf(word.arRoot[1]) + 1;
-            word.stem = word.stem.slice(0,3) + ar_u + word.arRoot[1];
-        }
-    }
-
-    return word;
 }
 
 
@@ -1697,55 +1614,74 @@ arrOut.push(arrConsonants, arrVowels);
 return arrOut;
 }
 
+function isShortVowel( charIn, shaddaToo ) {
+//returns true if string is Arabic short vowel or sukkun
+//     smaller sized vowels: 1560-1562 << true
+//     regular sized short vowels and markings: 1611-1616 << true
+//     shadda: 1617 << it depends
+//     sukkun: 1618 << true
 
-String.prototype.wrap = function ( openTag ) {
-//wraps string in passed html tag
+if ( charIn === undefined ) {
+    console.log("Error, null passed to isShortVowel");
+    return false;
+}
 
-    var closeTag,
-        index = openTag.indexOf(" ");
+if ( shaddaToo === undefined ) {
+    shaddaToo = false;
+}
 
-    if ( index === -1 ) {
-        //tag has no other attributes
-        closeTag = "</" + openTag.slice(1);
+var answer = false;
 
-    } else {
-        closeTag = "</" + openTag.slice(1, index) + ">";
+if  ( ( ( charIn.charCodeAt(0) >= 1560 ) && ( charIn.charCodeAt(0) <= 1562 ) ) ||
+      ( ( charIn.charCodeAt(0) >= 1611 ) && ( charIn.charCodeAt(0) <= 1616 ) ) || ( charIn.charCodeAt(0) === 1618 )
+    ) { answer = true; }
+
+if (( shaddaToo ) && ( charIn.charCodeAt(0) === 1617 )) {
+    answer = true;
+}
+
+return answer;
+}
+
+function prefixVowel(formNum, isActive) {
+//returns vowel accompanying prefix of present stem of verb
+
+    if ( isActive === undefined ) {
+        isActive = true;
     }
 
-    return openTag + this + closeTag;
-};
+    if ( isActive === true ) {
+        switch (formNum) {
 
+            case 2:
+            case 3:
+            case 4:
+                return ar_u;
 
-function irregHamza( word ) {
+            case 1:
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+                return ar_a;
 
-word.verbType = "Irregular: hamza in root";
-
-if ( hasHamza(word.arRoot[0]) ) {
-
-    if ( word.arSubject === pro_i ) {
-        //replace two alifs with alif madda
-        word.prefix = ar_Am;
-        word.stem = word.stem.slice(1);
-
-        if ( word.stem[0] === ar_a ) {
-            //necessary?
-            word.stem = word.stem.slice(1);
+            default:
+                return "؟";
         }
+    } else {
+        return ar_u;
     }
 
-} else if ( hasHamza(word.arRoot[1]) ) {
-    //do nothing
-    console.log("hamza on rad 2");
-
-} else if ( hasHamza(word.arRoot[2]) ) {
-    //do nothing
-    console.log("hamza on rad 3");
 }
 
-return word;
 
-}
 
+//stuff above here may become garbage
+
+//////////////////////////////////
+//Keep Everything Below This Line
 
 function hasHamza(aString) {
 //returns true if any character in the root contains a hamza
@@ -1766,32 +1702,6 @@ if (
 return hasHamza;
 }
 
-//still necessary?
-function hasShortVowel(aString, includeShadda) {
-//returns true if string contains short vowel or diacritic marks
-
-if ( includeShadda === undefined) { includeShadda = false; }
-
-var hasChar = false;
-
-if (
-    ( -1 < aString.indexOf(ar_a) ) ||
-    ( -1 < aString.indexOf(ar_i) ) ||
-    ( -1 < aString.indexOf(ar_u) ) ||
-    ( -1 < aString.indexOf(ar_an) ) ||
-    ( -1 < aString.indexOf(ar_in) ) ||
-    ( -1 < aString.indexOf(ar_un) ) ||
-    ( -1 < aString.indexOf(ar_0) )  ){
-        hasChar = true;
-    }
-
-if ( ( includeShadda ) && ( -1 < aString.indexOf(ar_2v) ) ) {
-    hasChar = true;
-}
-
-return hasChar;
-}
-
 
 function isHollowIrregular(arRoot){
 //returns true if verb is very irregular
@@ -1806,8 +1716,3 @@ var isMatch = function(element) {
 return arrIrregulars.some(isMatch);
 
 }
-
-String.prototype.replaceAt=function(index, char) {
-//  https://gist.github.com/AdamBrodzinski/4010249
-    return this.substr(0, index) + char + this.substr(index+char.length);
-};

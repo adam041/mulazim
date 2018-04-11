@@ -338,8 +338,9 @@ var arrMeaning = [
 //but first, generate data
     var colPassiveImperfect = cnjVerb(arRoot, "imperfect", false,  arSubject),
         colPassivePerfect = cnjVerb(arRoot, "perfect", false,  arSubject),
-        colImperative,      //  TBD
-        colActiveImperfect = cnjVerb(arRoot, "imperfect", true,  arSubject),
+        colImperative;      //  TBD
+
+    var colActiveImperfect = cnjVerb(arRoot, "imperfect", true,  arSubject),
         colActivePerfect = cnjVerb(arRoot, "perfect", true,  arSubject);
 
 for (var formNum = 1; formNum <= 10; ++formNum ) {
@@ -352,9 +353,15 @@ for (var formNum = 1; formNum <= 10; ++formNum ) {
     htmlOut += conjMasdar(arRoot, formNum).wrap("<td class='colNoun'>");
 
 //write verb columns
+
+//     htmlOut += "f".wrap("<td class='colVerb'>"); //whole(colPassiveImperfect[formNum]).wrap("<td class='colVerb'>");
+//     htmlOut += "o".wrap("<td class='colVerb'>"); //whole(colPassivePerfect[formNum]).wrap("<td class='colVerb'>");
+//     htmlOut += "o".wrap("<td class='colVerb'>"); //verbalize(arRoot, formNum, "imperative", false, arSubject).wrap("<td class='colVerb'>"); //old way
+
     htmlOut += whole(colPassiveImperfect[formNum]).wrap("<td class='colVerb'>");
     htmlOut += whole(colPassivePerfect[formNum]).wrap("<td class='colVerb'>");
     htmlOut += verbalize(arRoot, formNum, "imperative", false, arSubject).wrap("<td class='colVerb'>"); //old way
+
     htmlOut += whole(colActiveImperfect[formNum]).wrap("<td class='colVerb'>");
     htmlOut += "<td class='colVerb'>";
     htmlOut +=  whole(colActivePerfect[formNum]).wrap("<span>");
@@ -404,40 +411,6 @@ return vowelOut;
 }
 
 
-function prefixVowel(formNum, isActive) {
-//returns vowel accompanying prefix of present stem of verb
-
-    if ( isActive === undefined ) {
-        isActive = true;
-    }
-
-    if ( isActive === true ) {
-        switch (formNum) {
-
-            case 2:
-            case 3:
-            case 4:
-                return ar_u;
-
-            case 1:
-            case 5:
-            case 6:
-            case 7:
-            case 8:
-            case 9:
-            case 10:
-                return ar_a;
-
-            default:
-                return "؟";
-        }
-    } else {
-        return ar_u;
-    }
-
-}
-
-
 function jqAlert( htmlAlert ) {
 
     $( "#divAlert" ).html( htmlAlert );
@@ -448,60 +421,19 @@ function jqAlert( htmlAlert ) {
 }
 
 
-function isShortVowel( charIn, shaddaToo ) {
-//returns true if string is Arabic short vowel or sukkun
-//     smaller sized vowels: 1560-1562 << true
-//     regular sized short vowels and markings: 1611-1616 << true
-//     shadda: 1617 << it depends
-//     sukkun: 1618 << true
+String.prototype.wrap = function ( openTag ) {
+//wraps string in passed html tag
 
-if ( charIn === undefined ) {
-    console.log("Error, null passed to isShortVowel");
-    return false;
-}
+    var closeTag,
+        index = openTag.indexOf(" ");
 
-if ( shaddaToo === undefined ) {
-    shaddaToo = false;
-}
+    if ( index === -1 ) {
+        //tag has no other attributes
+        closeTag = "</" + openTag.slice(1);
 
-var answer = false;
+    } else {
+        closeTag = "</" + openTag.slice(1, index) + ">";
+    }
 
-if  ( ( ( charIn.charCodeAt(0) >= 1560 ) && ( charIn.charCodeAt(0) <= 1562 ) ) ||
-      ( ( charIn.charCodeAt(0) >= 1611 ) && ( charIn.charCodeAt(0) <= 1616 ) ) || ( charIn.charCodeAt(0) === 1618 )
-    ) { answer = true; }
-
-if (( shaddaToo ) && ( charIn.charCodeAt(0) === 1617 )) {
-    answer = true;
-}
-
-return answer;
-}
-
-
-function isLongVowel( charIn ) {
-//returns true if string is Arabic long vowel, excludes hamza carriers
-
-// alef 1575
-// waw 1608
-// alef maksura 1609
-// yeh (2 dots) 1610
-
-if ( charIn === undefined ) {
-    console.log("Error, null passed to isLongVowel");
-    return false;
-}
-
-var answer = false;
-
-if  ( ( ( charIn.charCodeAt(0) >= 1608 ) && ( charIn.charCodeAt(0) <= 1610 ) ) ||
-      ( charIn.charCodeAt(0) === 1575 )
-    ) { answer = true; }
-
-return answer;
-}
-
-
-//do i still need this? **
-String.prototype.replaceAt=function(index, replacement) {
-    return this.substr(0, index) + replacement+ this.substr(index + replacement.length);
-}
+    return openTag + this + closeTag;
+};

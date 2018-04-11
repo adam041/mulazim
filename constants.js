@@ -74,7 +74,9 @@ const arrive = "وصل",
     fly = "طير",
     walk = "مشي",
     complain = "",
-    take = "أخذ"
+    take = "أخذ",
+    replyA = "ردد",
+    replyB = "ردّ";
 
 /*
 Notes
