@@ -13,7 +13,13 @@ Array.prototype.vowel = function(vowel){
 //intended use for vowels accompanying Arabic root radicals
 
     if ( vowel === undefined ) {
-        return this[0][1];
+
+        if (this[0] === undefined) {
+            return "";
+
+        } else {
+            return this[0][1];
+        }
 
     } else {
         return arrayOW(this, vowel, 0, 1);
@@ -25,7 +31,13 @@ Array.prototype.consonant = function(consonant){
 //OR returns incumbent character if no param passed
 
     if ( consonant === undefined ) {
-        return this[0][0];
+
+        if (this[0] === undefined) {
+            return "";
+
+        } else {
+            return this[0][0];
+        }
 
     } else {
         return arrayOW(this, consonant, 0, 0);
@@ -55,8 +67,8 @@ function flatReduce(arrayIn){
 }
 
 
-// Word properties encapsulation.  Keep it dumb (i.e. external functions, not internal methods).
 function Word( arRoot, enTense, isActive, arSubject ) {
+// Word properties encapsulation.  Keep it dumb (i.e. external functions, not internal methods).
 
 //declare metadata properties (6)
     this.arRoot = arRoot;
@@ -110,6 +122,7 @@ function whole(word){
     return theWord;
 }
 
+
 function nonWord( wordIn ) {
 //create intentionally blank output, for when there is no conjugation (i.e. passive form of form 7 verb)
 
@@ -161,6 +174,11 @@ return drafts.last();
 
 Array.prototype.last = function () {
 //method returns last item from array
+
+//     if (this === undefined) {
+//         return [];
+//     }
+
     return this[this.length - 1];
 };
 
@@ -932,52 +950,61 @@ return word;
 }
 
 
+function dontGiveHimTheStick(matchChar) {
+//returns true if matchChar looks like an alif, including hamza carriers
+
+    var answer = false,
+        watchList = [ String.fromCharCode(1649), String.fromCharCode(1650), String.fromCharCode(1651),
+                    String.fromCharCode(1652), String.fromCharCode(1653), String.fromCharCode(1570),
+                    String.fromCharCode(1571), String.fromCharCode(1572), String.fromCharCode(1573),
+                    String.fromCharCode(1575) ];
+
+    answer = watchList.some( function(value) {
+        return matchChar === value;
+    });
+
+return answer;
+
+}
+
 function cnjHamzaVerb(wordIn){
 
 var word = clone(wordIn);
 
 word.verbType = "Irregular: hamza in root";
 
-//** is there a more elegant way to collapse all sorts of alif?
-/*
-    if ( hasHamza(word.arRoot[0]) ) {
+    if ( dontGiveHimTheStick( word.rad1.consonant() )) {
 
-// THIS IS ALL NOT WORKING
-        if (( word.formNum === 3 ) || ( word.formNum === 6 ) ) {
-                //replace two alifs with alif madda
-                word.rad1.consonant(ar_Am);
-                word.rad1.consonant("");
-                word.midRight = [];
-        } else if ( word.formNum === 4 ) {
-                //replace two alifs with alif madda
-                word.rad1.consonant(ar_Am);
-                word.rad1.consonant("");
-                word.innerPrefix = [];
-        }
+//      console.log("hamza time " + word.enTense + "/" + word.isActive + ", form" + word.formNum);
 
-        if ( (word.enTense === "imperfect") && ( word.arSubject === pro_i )) {
-            //replace two alifs with alif madda
-            word.rad1.consonant(ar_Am);
-            word.rad1.consonant("");
+        if ( dontGiveHimTheStick( word.prefix.consonant() ) ) {
+            //subject = I & forms 1, 2, 3
+            word.rad1 = [];
+            word.rad1.push([ar_Am, ""]);
             word.prefix = [];
         }
 
-    }
-*/
+        if ( ( dontGiveHimTheStick( word.innerPrefix.consonant() )  ) && ( word.innerPrefix.length === 1 ) ) {
+            //forms 4, 7, 8, 9
+            word.rad1 = [];
+            word.rad1.push([ar_Am, ""]);
+            word.innerPrefix = [];
+        }
 
-    /*
-    } else if ( hasHamza(word.arRoot[1]) ) {
-        //do nothing
-        console.log("hamza on rad 2");
+        if ( dontGiveHimTheStick( word.midRight.consonant() ) ) {
+            //forms 3, 6
+            word.rad1 = [];
+            word.rad1.push([ar_Am, ""]);
+            word.midRight.shift();
+        }
 
-    } else if ( hasHamza(word.arRoot[2]) ) {
-        //do nothing
-        console.log("hamza on rad 3");
     }
-*/
 
 return word;
 }
+
+
+
 
 ////////////////////
 // OLD STUFF BELOW
