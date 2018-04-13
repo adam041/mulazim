@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>LtCactus Conjugates </title>
+    <title>Cactus Conjugates </title>
 
     <link rel="stylesheet" type="text/css" href="style.css">
 
@@ -10,9 +10,11 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sheetrock/1.1.4/dist/sheetrock.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.3/chosen.jquery.min.js"></script>
 
     <script src="cactus.js"></script>
     <script src="verbs.js"></script>
+    <script src="verbs2.js"></script>
     <script src="nouns.js"></script>
     <script src="constants.js"></script>
 
@@ -23,27 +25,46 @@
 
 <body>
 
-
     <table id="masterTable">
     <thead> <tr>
         <th id="thButtons">
+
             <button id="btnVerbs" title="click to toggle showing column group, click twice to focus on verbs only">Verbs</button>
             <button id="btnNouns" title="click to toggle showing  column group, click twice to focus on nouns only">Nouns</button>
             <button id="btnMeaning" title="click to toggle showing column">Meaning</button>
             <button id="btnTranslation" title="click to toggle showing column">Translation</button>
             <button id="btnPrepositions" title="click to toggle showing prepositions in Active Past column">Prepositions</button>
 
-            <button id="btnFoo" title="<table> <tr> <td> A1 </td> <td> A2 </td> </tr> <tr> <td> B1 </td> <td> B2 </td> </tr> </table>">testing</button>
+            <div id="divSelectors">
 
-            <span id="spanSelectRoot">
-            <label for="selectRoot">Select a root:  </label>
-            <select name="selectRoot" id="selectRoot">
-                <option selected="selected">فعل</option>
-            </select> </span>
+                <label>Choose a root: </label>
+
+                <select id="chosenSubject" data-placeholder="Choose a Subject..." class="chosen-select" tabindex="2">
+                    <option value="أنا">I / أنا</option>
+                    <option value="أنتَ">you m / أنتَ</option>
+                    <option value="أنتِ">you f / أنتِ</option>
+                    <option selected value="هو">he / هو</option>
+                    <option value="هي">she / هي</option>
+
+                    <option value="نحن">we / نحن</option>
+                    <option value="أنتم">y'all m / أنتم</option>
+                    <option value="أنتن">y'all f / أنتن</option>
+                    <option value="هم">they m / هم</option>
+                    <option value="هنا">they f / هنا</option>
+                </select>
+
+                <select id="chosenRoot" data-placeholder="Choose a Root..." class="chosen-select" tabindex="1">
+                    <option value=""></option>
+                    <option selected value="فعل">do / فعل</option>
+                </select>
+            </div>
+      </div>
+
+
+            </div>
 
         </th>
-        <th id="activeRootOld" class="hideMe"> </th>
-        <th> </th>
+
       </tr> </thead>
 
     <tbody>
@@ -61,8 +82,8 @@
                 <th class='colVerb'>Passive Present (Imperfect)<br>المضارع<br>is done</th>
                 <th class='colVerb'>Passive Past (Perfect)<br>اسم الماصي<br>was done</th>
                 <th class='colVerb'>Imperative (Command)<br>الأمر<br>do!</th>
-                <th class='colVerb'>Active Present (Imperfect)<br>اسم المضارع<br>he does</th>
-                <th class='colVerb'>Active Past (Perfect)<br>اسم الماصي<br>he did</th>
+                <th class='colVerb'>Active Present (Imperfect)<br>اسم المضارع<br>does</th>
+                <th class='colVerb'>Active Past (Perfect)<br>اسم الماصي<br>did</th>
 
                 <th class='colForm'>Form Number<br> <span class="arHead">الوزن</span></th>
                 <th class='colMeaning'>Meaning, Use, & Relationship <br> <span class="arHead">المعنى والاستعمال والعلاقة</span></th>
@@ -86,14 +107,6 @@
                     </thead>
 
                     <tbody>
-<!--
-                    <tr> <td>
-                            <label for="inputFilter"></label>
-                            <input type="text" name="inputFilterInput" id="inputFilter" placeholder="or enter text" value="">
-                            <button id="btnFilter">Filter</button>
-                        </td>
-                    </tr>
- -->
                     <tr> <td>
                         <ul id="menuOfRoots">
                           <!-- on load, fill in from backend -->
@@ -140,24 +153,45 @@
         </td>
 
     </tr> <!-- end of rows of masterTable -->
+    <tfoot>
+        <tr> <td> &nbsp <br> &nbsp </td> </tr>
+    </tfoot>
+
     </tbody>
     </table>
 
+<div id="divDebug">
+    <table class="hideMe"> <tr>
+        <td id="stage1"> <h3>PreProcessing</h3> </td>
+        <td id="stage2"> <h3>PostProcessing</h3> </td>
+        <td id="stage3"></td>
+        <td id="stage4"></td>
+    </tr> </table>
+<!-- to show debugging info -->
+</div>
 
 <div class="hideMe">
 
-    <table id="menuTable"></table>
-    <table id="dataTable">
+   <table id="dataTable">
         <!--here is some data so initial loading doesn't get dorked up before XHR returned-->
         <thead> <tr>
             <th>Form</th>               <th>Preposition</th>        <th>Root</th>             <th>Masdar</th>
             <th>f1ActivePresentRad2</th><th>f1ActivePastRad2</th>   <th>f1Imperative0Rad2</th> <th>Translation</th>    <th>TBD</th>    <th>Comment</th> </tr>
         </thead>
         <tbody><tr>
-            <td>1</td>                  <td></td>                   <td>فعل</td>            <td></td>
-            <td>i</td>                  <td>a</td>                  <td>do a process</td>   <td></td>       <td></td> </tr>
+            <td>1</td>                  <td></td>                   <td>فعل</td>            <td>فَعَل</td>
+            <td>i</td>                  <td>a</td>      <td></td>   <td>do a process</td>   <td></td>       <td></td> </tr>
+
+            <td>2</td>                  <td></td>                   <td>فعل</td>            <td>ي</td>
+            <td></td>                   <td></td>      <td></td>    <td>activate</td>       <td></td>       <td></td> </tr>
+
+            <td>6</td>                  <td></td>                   <td>فعل</td>             <td></td>
+            <td></td>                   <td></td>      <td></td>    <td>interact</td>        <td></td>       <td></td> </tr>
+
         </tbody>
     </table>
+
+    <div id="divAlert"> <!-- staging area for dialogue box alert content --> </div>
 
 </div>
 

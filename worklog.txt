@@ -1,11 +1,92 @@
 Work list
 
-- styling
+QA
+ok good    cnjAssimilativeVerb( word );
+ok good     cnjHollowVerb( word ); //control by arSubject, not suffix sukkun sniifer
+ok good     doubled
+
+ok mostly   cnjDefective - present tense has ar_A/ar_a & ar_U/ar_u for last chars of pro_he; imperfect is worse (U/u)
+ok mostly   hamza - alif-madda collapse ok, check hamza carrier rules
+
+~~          cnjUltraHollowVerb( word ) - not tested
+
+Needs
+    <verbs>
+        OK  verb form 8 post-processing...
+        jussive / imperative
+        remove legacy verbs.js (keep until nouns.js updated)
+        dual tenses
+
+    <nouns>
+        -   masdar form 2/5 - don't over-shadda
+        -   masdar form 8 - for assimilative
+        -   masdar form 10 - use pop/push to fix vowel over ta
+
+- write out cheat card for data entry - esp. masdar codes...document on git read.me too?
+
+
+##
+  old notes below
+
+nice to have
+-? segmentate (9) Suffix < OuterLeft < R3 < InnerLeft < R2 < InnerRight < R1 < OuterRight < Prefix
+- constants as one big object? or lotsa small vars? ar_A vs r.A vs ar.A vs r.translit(a,r,b)
 
 -core logic
-    -* handling irregular verbs
+    - QA
+        >>   QA irregulars in forms after 1
+        OK   squelch prefix/suffix on null forms (i.e. form 7 passives, recipient)
+        >    function conjPassivePast(root, formNum) // form 9
+        OK   implement word object in earlier irregular functions? ... show user type of irregular verb?
+        OK   nouns.js remove -  Unreachable 'break' after 'return'.
+        OK   chunk (v4) to parse vowels & markings...need for debugging doubled verbs, catching vowel surplus in other use-cases
+                ok   > compare output short vowels to exemplars; trace discrepancies
+        OK   have option to print ALL conjugations from all subjects
+        OK   Added codes for form1 masdar; cleaned up code for form 2/3
+        OK   regex match one of multiple unicode chars - collapse اا into آ
+        OK   objRefs as global -- declare once before backend, and once after.
+        OK   segment() function built...no application a.t.t.?
+
+     > QA conjugations
+        OK  assimilative verbs
+>>          !  fix form 8 (also masdar broke) active present outputs يَتَصِلُ
+                    ...should be يَتَواصِل
+
+        OK  hollow verbs ?
+            OK regulars in active tenses
+            OK irregular in active tenses
+            OK? later past tenses have beginning of stem chopped off / USE String.Prototype.replaceAt() vs char position of root
+                String.prototype.replaceAt=function(index, char) {return this.substr(0, index) + char + this.substr(index+char.length);}
+                Line806
+            OK (auto-squelched) passive tenses have doubled vowels
+
+        ~ defective verbs ?
+            OK in present tense, need to prune lead char of suffix
+>> resume >>  ?? past tense, especially they x2
+
+        > doubled verbs ?
+            OK form 1  -- rad 2 takes place of shadda
+            ?? later forms - need more data to validate...dupe vowels squelched
+            !! NOUN conj needs to stay regular in form2/5
+
+        ~ hamza verbs ?
+            change vowel to match consonant, or hamza consonant to match preceeding vowel (grammatical!) - check hollow present logic
+
+-styling/css
+    OK   style chosen select x 2.  hide search on subject.  increase height & width.  add label.
+    OK   tweak CSS from js console w/ jQ, then lock in
 
 -backend / data quality
+    - SQL join / js to combine & de-dupe both sheets...translations not read if backend has a dupe
+    - on 500
+        - defective - write Ya, not alif maqsura
+        - doubled - using shadda on orig (write out both on 500)
+        - quadrilateral (offload to separate sheet a.t.t.)
+        - جوب - two meanings/rad2 conjugations in form 10
+
+- data quality standards
+    - doubled roots get shadda as rad3, not a repeat of rad2
+    - roots that get hyphens for form 1 vowels: hollow, doubled
     - data entry for imperative
     - QA/QC conjugations for typos
 

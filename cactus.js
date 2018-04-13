@@ -1,7 +1,8 @@
-function setupMenu(error, options, response){
-//callback function once menu data loaded from backend
+jQuery( document ).ready(function() {
+//set up jQuery UI and default conjugation
 
-// console.log(response);
+//need to have some data available for conjugateUpdate before backend loads
+objRefs = makeReferenceObject();
 
 //version A
 $('#menuTable tbody td:first-child').each(function() {
@@ -22,45 +23,47 @@ $('#menuTable tbody td:first-child').each(function() {
     $("#menuOfRoots").append("<li><div>" +  $(this).text() + "</div></li>");
 });
 
-$( "#menuOfRoots" ).menu();
+//conjugate page with default parameters
+conjugateUpdate( ar_Do, pro_he );
 
-$( "#menuOfRoots li" ).click(function() {
-    conjugateUpdate( $(this).text() );
-});
+//activate chosen enhancements for select elements
+$(function() {
 
-}
+    $("#chosenRoot").chosen({
+        rtl: true,
+        width: "45%",
+    });
 
+    $("#chosenSubject").chosen({
+        disable_search_threshold: 10,
+        rtl: false,
+        width: "30%",
+    });
 
+    $("#chosenRoot").chosen().change(function(){
+        conjugateUpdate( $("#chosenRoot").val(), $("#selectSubject").val() );
+    });
 
 jQuery( document ).ready(function() {
 
-//set up jQuery UI and default conjugation
-    conjugateUpdate( ar_Do );
+    $("#chosenSubject").chosen().change(function(){
+        conjugateUpdate( $("#chosenRoot").val(), $("#selectSubject").val() );
+    });
 
-    $( document ).tooltip();
+});
 
 //Pull menu data from backend
     var gSheetID = "1A5YkYEKrReJ3jjAraR4ycbLIOHf3a_k6-3FM6uh-7Gw",
         gURL = "'https://docs.google.com/spreadsheets/d/" + gSheetID + "/edit#gid=0";
-
-$('#menuTable').sheetrock({
-//query for distinct roots
-    url: gURL,
-    query: "select C, COUNT(C) group by C order by C",
-    labels: ['Root'],
-    callback: setupMenu
-});
 
 //wipe dataTable in advance of XHR
 $('#dataTable').html("");
 
 $('#dataTable').sheetrock({
     url: gURL,
-    query: "select A,B,C,D,E,F,G,H,I,J order by C desc",
+    query: "select A,B,C,D,E,F,G,H,I,J order by C asc, A asc",
     labels: ['Form', 'Preposition', 'Root', 'Masdar', 'f1ActivePresentRad2', 'f1ActivePastRad2', 'f1Imperative0Rad2', 'Translation', 'TBD', 'Comment' ],
     callback: setupData
-
-  //where A = 1
 });
 
 //set up buttons to toggle column groups
@@ -95,18 +98,18 @@ $('#dataTable').sheetrock({
         $( ".colNoun" ).show("fast");
     });
 
-    $( "#btnFoo" ).dblclick(function() {
+    $( "tfoot" ).dblclick(function() {
     //** initially opaque button used for testing **
         $( ".hideMe" ).toggle();
-        $( "#btnFoo" ).css({"opacity": "1"});
+
     });
 
-    $( "#btnFilter" ).click(function() {
-        console.log( $( "#inputFilter" ).val() ) ;
-        //** do some jQuery on list
-        // what about a select menu? http://jqueryui.com/selectmenu/
-        // what about auto-complete? http://jqueryui.com/autocomplete/
+    $( "#divSelectors" ).dblclick(function() {
+        drawAllSubjects();
     });
+
+
+$( document ).tooltip();
 
 });
 
@@ -115,8 +118,9 @@ function makeReferenceObject() {
 
     refs = {
     //contains reference data downloaded from backend
-        headers: scrapeReference(false),
-        rows: scrapeReference(true),
+        headers: structureReference("dataTable").header,
+        rows: structureReference("dataTable").rows,
+        json: structureReference("dataTable").json,
 
         indexRow: function( root, form) {
 
@@ -126,7 +130,7 @@ function makeReferenceObject() {
             //rowIndex default is -1, to avoid returning null and match behavior of array.indexOf
 
             refs.rows.forEach(function( currentValue, index ) {
-                if (( currentValue[rootPos] === root ) && ( eval(currentValue[formPos]) === form )) {
+                if ( ( currentValue[rootPos] === root ) && ( parseInt(currentValue[formPos]) === form ) ) {
                     rowIndex = index;
                 }
             });
@@ -159,77 +163,175 @@ function makeReferenceObject() {
 }
 
 
-function conjugateUpdate( root ) {
+function conjugateUpdate( arRoot, arSubject) {
 //Updates data tables with conjugated verbs/nouns
+//Recommended no params passed so function reads from web page.  Need params for initial loading of page.
+
+    if ( arRoot === undefined ) { arRoot = $("#chosenRoot").val(); }
+    if ( arSubject === undefined ) { arSubject = $("#chosenSubject").val(); }
+
+//Wipe debug area
+// $( "#stage1").html( "PreProcessing".wrap("<h3>") );
+// $( "#stage2").html( "PostProcessing".wrap("<h3>") );
+// $( "#stage3").html( "".wrap("<h3>") );
+// $( "#stage4").html( "".wrap("<h3>") );
 
 //Display active root on table and in title
-    document.title = "LtCactus Conjugates " + root;
-    jQuery("#activeRoot").html( root );
+    document.title = "Conjugations of " + arRoot;
+    jQuery("#activeRoot").html( arRoot );
 
 //Force display of all header cells
     $( "#contentTable thead th" ).show();
 
 //Draw table rows
-    jQuery("#contentTable tbody").html( drawRows(root) );
+    jQuery("#contentTable tbody").html( drawRow( arRoot, arSubject ) );
 
 //Update formatting of rows with known-good forms
-
-    var objRefs = makeReferenceObject();
-
     for (var formNum = 1; formNum <= 10; ++formNum ) {
 
-        if ( objRefs.indexRow(root, formNum) > -1) {
+        if ( objRefs.indexRow(arRoot, formNum) > -1) {
             jQuery( "#contentTable tr:nth-child("+formNum+") td").css({"color": "black"});
         } else {
             jQuery( "#contentTable tr:nth-child("+formNum+") td").css({"color": "dimgrey", "font-size": "medium"});
-
         }
     }
 
 }
 
 
-function scrapeReference( blnRowsNotHeader ) {
-//scrapes reference table downloaded from backend into arrays
+function drawAllSubjects() {
+//mostly intended for debugging, the UI is ugly
 
-    var arrRow = [],
-        arrRows = [];
+var arRoot = $("#chosenRoot").val(),
+    arSubject = "",
+    dividerRow = "";
+    dividerRowTemp = "";
 
-   if ( blnRowsNotHeader === false ) {
+for (var i = 1; i <= 11; ++i ) {
+    dividerRow += "<td> </td>";
+}
+  
+  if ( blnRowsNotHeader === false ) {
         $( "#dataTable th" ).each(function(colIndex) {
             arrRow.push( $(this).text() );
         });
 
         return arrRow; //1D array of header (ths)
 
-    } else {
+//wipe table
+    jQuery("#contentTable tbody").html( "" );
 
-        $( "#dataTable tbody tr" ).each(function(rowIndex) {
+//iterate & conjugate through all possible subject choices
+$( "#chosenSubject option").each( function( index, element ) {
+    arSubject = element.value;
+    dividerRowTemp = (dividerRow + element.value.wrap("<td>") ).wrap("<tr>");
+    jQuery("#contentTable tbody").append( dividerRowTemp );
+    jQuery("#contentTable tbody").append( drawRow( arRoot, arSubject ) );
+});
 
-            $(this).find("td").each (function(colIndex) {
-                arrRow.push( $(this).text() );
-            });
+}
 
-            arrRows.push( arrRow );
-            arrRow = [];
+
+function structureReference( tableID ) {
+//organize row into an 1D array of headers, 2D array of data rows, and an array of key-value pairings
+
+var fieldPos = -1,
+    arrHeaderRow = [],
+    arrRow = [],
+    objRow = {},
+    arrRows = [],
+    arrJson = [];
+
+//structure header
+    $( "#" + tableID + " th" ).each(function(colIndex) {
+        arrHeaderRow.push( $(this).text() );
+    });
+
+//get "column" position of fields
+var xForm = $.inArray( "Form", arrHeaderRow ),
+    xPreposition = $.inArray( "Preposition", arrHeaderRow ),
+    xRoot = $.inArray( "Root", arrHeaderRow ),
+    xMasdar = $.inArray( "Masdar", arrHeaderRow ),
+    xf1ActivePresentRad2 = $.inArray( "f1ActivePresentRad2", arrHeaderRow ),
+    xf1ActivePastRad2 = $.inArray( "f1ActivePastRad2", arrHeaderRow ),
+    xf1Imperative0Rad2 = $.inArray( "f1Imperative0Rad2", arrHeaderRow ),
+    xTranslation = $.inArray( "Translation", arrHeaderRow ),
+    xComment = $.inArray( "Comment", arrHeaderRow );
+
+//structure body
+    $( "#" + tableID + " tbody tr" ).each(function(rowIndex) {
+
+        //org table row into an array
+        $(this).find("td").each (function(colIndex) {
+            arrRow.push( $(this).text() );
         });
 
-        return arrRows; //2D array of arrays (rows + tds)
-    }
+        //org array into object
+        objRow = {
+            Root: arrRow[xRoot],
+            Form: arrRow[xForm],
+            Preposition: arrRow[xPreposition],
+            Masdar: arrRow[xMasdar],
+            f1ActivePresentRad2: arrRow[xf1ActivePresentRad2],
+            f1ActivePastRad2: arrRow[xf1ActivePastRad2],
+            f1Imperative0Rad2: arrRow[xf1Imperative0Rad2],
+            Translation: arrRow[xTranslation],
+            //TBD
+            Comment: arrRow[xComment],
+        };
 
+        //save row to arrays, then  wipe row variable
+        arrRows.push( arrRow );
+        arrJson.push( objRow) ;
+
+        arrRow = [];
+        objRow = {};
+
+    });
+
+var output = {
+    header: arrHeaderRow,
+    rows: arrRows,
+    json: arrJson,
+    };
+
+return output;
 }
 
 
 function setupData() {
 //callback function after google sheet query is complete
 
+// console.log(response);
+
+//objRefs should be global!
+    objRefs = makeReferenceObject();
+
+var oldRoot = "placeholder",
+    appendHTML = "";
+
+    objRefs.json.forEach( function( row, index ) {
+    //assumption: json data is sorted by root (asc) and formNum (asc)
+
+        if ( row.Root !== oldRoot ) {
+            appendHTML = (row.Translation + " / " + row.Root).wrap("<option value='" + row.Root + "'>");
+            $("#chosenRoot").append( appendHTML );
+        }
+        oldRoot = row.Root;
+    });
+
+    $("#chosenRoot").trigger("chosen:updated");
+
 }
 
 
-function drawRows(root){
+function drawRow(arRoot, arSubject){
 //controller function for writing out each row
 
-var objRefs = makeReferenceObject();
+if ( arSubject === undefined ) {
+    arSubject = pro_he;
+}
+
 var htmlOut = "";
 
 //Declare data arrays
@@ -261,30 +363,45 @@ var arrMeaning = [
 
 //Write out rows, one td at a time
 
+//but first, generate data
+    var colPassiveImperfect = cnjVerb(arRoot, "imperfect", false,  arSubject),
+        colPassivePerfect = cnjVerb(arRoot, "perfect", false,  arSubject),
+        colImperative;      //  TBD
+
+    var colActiveImperfect = cnjVerb(arRoot, "imperfect", true,  arSubject),
+        colActivePerfect = cnjVerb(arRoot, "perfect", true,  arSubject);
+
 for (var formNum = 1; formNum <= 10; ++formNum ) {
 
-//add checks to re-style row text (color) if verb / noun(s) found
-
 //write noun columns
-    htmlOut += "<tr> ";
-    htmlOut += conjActiveParticiple(root, formNum).replace(/.*/,"<td class='colNoun'>"+ '$&' +"</td>");
-    htmlOut += conjPassiveParticiple(root, formNum).replace(/.*/,"<td class='colNoun'>"+ '$&' +"</td>");
-    htmlOut += conjNounTimePlace(root, formNum).replace(/.*/,"<td class='colNoun'>"+ '$&' +"</td>");
-    htmlOut += conjMasdar(root, formNum, objRefs).replace(/.*/,"<td class='colNoun'>"+ '$&' +"</td>");
+    htmlOut += "<tr>";
+    htmlOut += conjActiveParticiple(arRoot, formNum).wrap("<td class='colNoun'>");
+    htmlOut += conjPassiveParticiple(arRoot, formNum).wrap("<td class='colNoun'>");
+    htmlOut += conjNounTimePlace(arRoot, formNum).wrap("<td class='colNoun'>");
+    htmlOut += conjMasdar(arRoot, formNum).wrap("<td class='colNoun'>");
 
 //write verb columns
-    htmlOut += conjPassivePresent(root, formNum).replace(/.*/,"<td class='colVerb'>"+ '$&' +"</td>");
-    htmlOut += conjPassivePast(root, formNum).replace(/.*/,"<td class='colVerb'>"+ '$&' +"</td>");
-    htmlOut += conjImperative(root, formNum, objRefs).replace(/.*/,"<td class='colVerb'>"+ '$&' +"</td>");
-    htmlOut += conjActivePresent(root, formNum, objRefs).replace(/.*/,"<td class='colVerb'>"+ '$&' +"</td>");
-    htmlOut += "<td class='colVerb'><span>"+ conjActivePast(root, formNum, objRefs);
-        htmlOut += "</span> <span class='spnPreposition'> "+ objRefs.query(root, formNum, "Preposition") + "</span>";
+
+//     htmlOut += "f".wrap("<td class='colVerb'>"); //whole(colPassiveImperfect[formNum]).wrap("<td class='colVerb'>");
+//     htmlOut += "o".wrap("<td class='colVerb'>"); //whole(colPassivePerfect[formNum]).wrap("<td class='colVerb'>");
+//     htmlOut += "o".wrap("<td class='colVerb'>"); //verbalize(arRoot, formNum, "imperative", false, arSubject).wrap("<td class='colVerb'>"); //old way
+
+    htmlOut += whole(colPassiveImperfect[formNum]).wrap("<td class='colVerb'>");
+    htmlOut += whole(colPassivePerfect[formNum]).wrap("<td class='colVerb'>");
+    htmlOut += "jussive?".wrap("<td class='colVerb'>");
+
+    htmlOut += whole(colActiveImperfect[formNum]).wrap("<td class='colVerb'>");
+    htmlOut += "<td class='colVerb'>";
+    htmlOut +=  whole(colActivePerfect[formNum]).wrap("<span>");
+    htmlOut +=  (" " + objRefs.query(arRoot, formNum, "Preposition") ).wrap("<span class='spnPreposition'>") + "</td>";
 
 //write out meta columns
-    htmlOut += arrFormNum[formNum].replace(/.*/,"<td class='colFormNum'>"+ '$&' +"</td>");
-    htmlOut += arrMeaning[formNum].replace(/.*/,"<td class='colMeaning'>"+ '$&' +"</td>");
-    htmlOut += objRefs.query(root, formNum, "Translation").replace(/.*/,"<td class='colTranslation'>"+ '$&' +"</td>");
-    htmlOut += " </tr>";
+    htmlOut += arrFormNum[formNum].wrap("<td class='colFormNum'>");
+    htmlOut += arrMeaning[formNum].wrap("<td class='colMeaning'>");
+    htmlOut += objRefs.query(arRoot, formNum, "Translation").wrap("<td class='colTranslation'>");
+    htmlOut += "</tr>";
+//maintenance note:  htmlOut = htmlOut.wrap("<tr>");  //doesn't work
+
 }
 
 return htmlOut;
@@ -311,6 +428,8 @@ var vowelOut = "";
         vowelOut = ar_Y;
     } else if (enText === "U") {
         vowelOut = ar_U;
+    } else if (enText === "-") {
+        vowelOut = "";
     } else {
         vowelOut = "؟";
     }
@@ -320,72 +439,11 @@ return vowelOut;
 }
 
 
-//crap follows
+function jqAlert( htmlAlert ) {
 
-/*
-objRoot = {
-    root: root,
+    $( "#divAlert" ).html( htmlAlert );
 
-    verb: function(tense, formNum) {
-        var objRefs = makeReferenceObject();
-
-          switch (tense) {
-
-            //Active Tense
-            case "ActivePast":
-                return conjActivePast(objRoot.root, formNum, objRefs);
-                break;
-
-            case "ActivePresent":
-                return conjActivePresent(objRoot.root, formNum, objRefs );
-                break;
-
-            case "Imperative":
-                return conjImperative(objRoot.root, formNum, objRefs);
-                break;
-
-            case "PassivePast":
-                return conjPassivePast(objRoot.root, formNum);
-                break;
-
-            case "PassivePresent":
-                return conjPassivePresent(objRoot.root, formNum);
-                break;
-
-            default:
-              console.log("error, invalid tense entered");
-              break;
-              }
-        }, // verb switch
-
-    noun: function(tense, formNum) {
-      var objRefs = makeReferenceObject();
-
-      switch (tense) {
-
-        case "Masdar":
-            return conjMasdar(objRoot.root, formNum, objRefs);
-            break;
-
-        case "ActiveParticiple":
-            return conjActiveParticiple(objRoot.root, formNum);
-            break;
-
-        case "PassiveParticiple":
-            return conjPassiveParticiple(objRoot.root, formNum);;
-            break;
-
-        case "NounTimePlace":
-            return conjNounTimePlace(objRoot.root, formNum);
-            break;
-
-        default:
-          return "error"
-          break;
-        }
-
-    } //noun switch
-
-
-};  // arRoot
-*/
+    $( function() {
+        $( "#divAlert" ).dialog();
+    });
+}
