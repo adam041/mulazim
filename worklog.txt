@@ -10,12 +10,17 @@ ok mostly   hamza - alif-madda collapse ok, check hamza carrier rules
 
 ~~          cnjUltraHollowVerb( word ) - not tested
 
-need        verb form 8 post-processing...
-            jussive / imperative
-            <nouns>
-            -   masdar form 2/5 - don't over-shadda
-            -   masdar form 8 - for assimilative
-            -   masdar form 10 - use pop/push to fix vowel over ta
+Needs
+    <verbs>
+        OK  verb form 8 post-processing...
+        jussive / imperative
+        remove legacy verbs.js (keep until nouns.js updated)
+        dual tenses
+
+    <nouns>
+        -   masdar form 2/5 - don't over-shadda
+        -   masdar form 8 - for assimilative
+        -   masdar form 10 - use pop/push to fix vowel over ta
 
 - write out cheat card for data entry - esp. masdar codes...document on git read.me too?
 
@@ -82,11 +87,7 @@ nice to have
 >>>> data quality standards
     - doubled roots get shadda as rad3, not a repeat of rad2
     - roots that get hyphens for form 1 vowels: hollow, doubled
-    - defective roots get ? in rad3
 
     - data entry for imperative...jussive? > six ways, varies by subject (person/gender)
-    - dual
-    - handle irregular within conj script?
     - Regex root from masdar? > could manually run through patterns, but current option is simpler
         - correlation b/t form 1/2/3 masdar > no?
-

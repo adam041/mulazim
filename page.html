@@ -14,11 +14,9 @@
 
     <script src="cactus.js"></script>
     <script src="verbs.js"></script>
+    <script src="verbs2.js"></script>
     <script src="nouns.js"></script>
     <script src="constants.js"></script>
-
-
-    <script src="verbs2.js"></script>
 
     <meta charset="utf-8" />
 
@@ -54,12 +52,6 @@
                     <option value="هم">they m / هم</option>
                     <option value="هنا">they f / هنا</option>
                 </select>
-
-<!--
-                <select name="selectRoot" id="selectRoot">
-                    <option selected="selected">فعل</option>
-                </select>
- -->
 
                 <select id="chosenRoot" data-placeholder="Choose a Root..." class="chosen-select" tabindex="1">
                     <option value=""></option>
@@ -112,7 +104,7 @@
     </table>
 
 <div id="divDebug">
-    <table> <tr>
+    <table class="hideMe"> <tr>
         <td id="stage1"> <h3>PreProcessing</h3> </td>
         <td id="stage2"> <h3>PostProcessing</h3> </td>
         <td id="stage3"></td>

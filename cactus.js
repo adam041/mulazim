@@ -149,10 +149,10 @@ function conjugateUpdate( arRoot, arSubject) {
     if ( arSubject === undefined ) { arSubject = $("#chosenSubject").val(); }
 
 //Wipe debug area
-$( "#stage1").html( "PreProcessing".wrap("<h3>") );
-$( "#stage2").html( "PostProcessing".wrap("<h3>") );
-$( "#stage3").html( "".wrap("<h3>") );
-$( "#stage4").html( "".wrap("<h3>") );
+// $( "#stage1").html( "PreProcessing".wrap("<h3>") );
+// $( "#stage2").html( "PostProcessing".wrap("<h3>") );
+// $( "#stage3").html( "".wrap("<h3>") );
+// $( "#stage4").html( "".wrap("<h3>") );
 
 //Display active root on table and in title
     document.title = "Conjugations of " + arRoot;
@@ -360,7 +360,7 @@ for (var formNum = 1; formNum <= 10; ++formNum ) {
 
     htmlOut += whole(colPassiveImperfect[formNum]).wrap("<td class='colVerb'>");
     htmlOut += whole(colPassivePerfect[formNum]).wrap("<td class='colVerb'>");
-    htmlOut += verbalize(arRoot, formNum, "imperative", false, arSubject).wrap("<td class='colVerb'>"); //old way
+    htmlOut += "jussive?".wrap("<td class='colVerb'>");
 
     htmlOut += whole(colActiveImperfect[formNum]).wrap("<td class='colVerb'>");
     htmlOut += "<td class='colVerb'>";

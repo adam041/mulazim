@@ -144,7 +144,7 @@ function nonWord( wordIn ) {
 
 
 function cnjVerb( arRoot, enTense, isActive,  arSubject ){
-//holds developmental scripts...maybe will replace Verbalize in verbs.js
+//master function for verb conjugation
 
 var drafts = [],
     draft = [];
@@ -164,7 +164,8 @@ var word = new Word(arRoot, enTense, isActive, arSubject);
     drafts.push(draft);
 
 //apply QA routines
-    //  tbd
+    draft = draft.x10(qaVerb);
+    drafts.push(draft);
 
 console.log(drafts);
 return drafts.last();
@@ -182,10 +183,12 @@ Array.prototype.last = function () {
     return this[this.length - 1];
 };
 
+
 function clone( objIn ) {
 //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
     return JSON.parse(JSON.stringify(objIn));
 }
+
 
 Array.prototype.x10 = function(callback, isVerbose){
     return x10(this, callback, isVerbose);
@@ -348,7 +351,7 @@ function cnjForm( wordIn, formNum ){
         case 10:
             word.innerPrefix.push( [ar_A, ar_i] );
             word.innerPrefix.push( [ar_s, ar_0] );
-            word.innerPrefix.push( [ar_t, ar_a] );  //need to fill in the final vowel later
+            word.innerPrefix.push( [ar_t, ar_a] );
             break;
     }
 
@@ -365,7 +368,6 @@ var word = clone( wordIn );
     setPrefixSuffix(word);
 
 if ( word.isActive ) {
-//     word.layer = "Perfect, Active";
 
     switch (word.formNum) {
 
@@ -398,7 +400,6 @@ if ( word.isActive ) {
             break;
 
         case 8:
-//          word.rad1.vowel(ar_0);
             word.rad2.vowel(ar_a);
             break;
 
@@ -415,7 +416,6 @@ if ( word.isActive ) {
 
         }
     } else {
-//         word.layer = "Perfect, Passive";
         switch (word.formNum) {
 
         case 1:
@@ -490,7 +490,6 @@ if (word.formNum >= 7) {
 }
 
 if ( word.isActive ) {
-//     word.layer = "Imperfect, Active";
 
     switch (word.formNum) {
 
@@ -549,7 +548,6 @@ if ( word.isActive ) {
 
         }
     } else {
-//         word.layer = "Imperfect, Passive";
         switch (word.formNum) {
 
         case 1:
@@ -965,6 +963,7 @@ return answer;
 
 }
 
+
 function cnjHamzaVerb(wordIn){
 
 var word = clone(wordIn);
@@ -1019,7 +1018,7 @@ function cnjDoubledVerb(wordIn) {
     };
 
     if ( word.enTense  === "perfect" ) {
-    //most subjects get rad3 as letter
+    //most subjects get a letter for rad3
 
         if ( ( word.arSubject === pro_he ) || ( word.arSubject === pro_she ) || (word.arSubject === pro_theyM) ) {
             doubleSauce(word);
@@ -1028,7 +1027,7 @@ function cnjDoubledVerb(wordIn) {
         }
 
     } else if ( word.enTense  === "imperfect" ) {
-    //most subjects get rad3 as shadda
+    //most subjects get a shadda for rad3
 
       if ( ( word.arSubject === pro_youF ) || ( word.arSubject === pro_theyF ) ) {
             word.rad3.consonant( word.rad2.consonant() );
@@ -1044,6 +1043,41 @@ return word;
 }
 
 
+function qaVerb( wordIn ) {
+//performs post-processing and quality assurance on verb conjugations
+
+var word = clone(wordIn);
+
+    //make form 8 adjustments
+    if ( word.formNum === 8 ) {
+
+        if ( ( word.rad1.consonant() === ar_t ) ||
+            ( word.rad1.consonant() === ar_U ) ||
+            ( hasHamza(word.rad1.consonant() ) ) ) {
+                word.midRight.vowel( ar_2v + word.midRight.vowel() );
+
+        } else if ( ( word.rad1.consonant() === ar_z ) ||
+            ( word.rad1.consonant() === ar_dh ) ||
+            ( word.rad1.consonant() === ar_d  ) ) {
+                word.midRight = [];
+                word.rad1.consonant( ar_d );
+                word.rad1.vowel( ar_2v + word.rad1.vowel() );
+
+        } else if ( ( word.rad1.consonant() === ar_Taa ) ||
+            ( word.rad1.consonant() === ar_Zaa ) ) {
+                word.midRight = [];
+                word.rad1.consonant( ar_Taa );
+                word.rad1.vowel( ar_2v + word.rad1.vowel() );
+
+        } else if ( word.rad1.consonant() === ar_Daad ) {
+                word.midRight.consonant( ar_Taa );
+        }
+    }
+
+  return word;
+
+}
+
 
 
 
@@ -1068,6 +1102,7 @@ return word;
 ////////////////////
 
 
+/*
 
 function verbalize(arRoot, formNum, enTense, isActive, arSubject) {
 //finds stem of a verb, and then adds prefixes and suffixes appropriate to tense and subject
@@ -1676,7 +1711,7 @@ function prefixVowel(formNum, isActive) {
 
 }
 
-
+*/
 
 //stuff above here may become garbage
 
