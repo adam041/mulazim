@@ -111,6 +111,9 @@ function conjMasdar(root, formNum) {
         return masdarData;
     }
 
+  var masdarOut = "",
+        masdarCode = "";
+
     switch (formNum) {
 
         case 1:
@@ -132,6 +135,16 @@ function conjMasdar(root, formNum) {
             } else if (masdarData === ar_A) {
                 masdarOut = masdar3;
 
+            //expects masdar will be fully written out
+            masdarOut = objRefs.query(root, formNum, "Masdar");
+
+            if (masdarOut === "") {
+                //offers three common patterns if conjugated masdar not given
+                masdarOut = root[0] + ar_a + root[1] + ar_0 + root[2] + " | ";
+                masdarOut += root[0] + ar_u + root[1] + ar_u + ar_U + root[2] + " | ";
+                masdarOut += root[0] + ar_i + root[1] + ar_a + ar_A + root[2] + ar_a + ar_tb + ar_un;
+            }
+
             } else {
                 //offers three common patterns if masdar code not given
                 masdarOut = masdar1 + " - " + masdar2 + " - " + masdar3;
@@ -146,6 +159,8 @@ function conjMasdar(root, formNum) {
 
             masdar1 = ar_t + ar_a + root[0] + ar_0 + root[1] + ar_i + ar_Y + root[2] + ar_un;
             masdar2 = ar_t + ar_a + root[0] + ar_0 + root[1] + ar_i + root[2] + ar_a + ar_tb + ar_un;
+            masdarCode = objRefs.query(root, formNum, "Masdar");
+            masdarOut = "";
 
             if ( masdarData === ar_Y ) {
                 masdarOut = masdar1;

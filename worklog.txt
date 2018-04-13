@@ -55,7 +55,7 @@ nice to have
         OK  hollow verbs ?
             OK regulars in active tenses
             OK irregular in active tenses
-            OK? later past tenses have beginning of stem chopped off >>>> USE String.Prototype.replaceAt() vs char position of root
+            OK? later past tenses have beginning of stem chopped off / USE String.Prototype.replaceAt() vs char position of root
                 String.prototype.replaceAt=function(index, char) {return this.substr(0, index) + char + this.substr(index+char.length);}
                 Line806
             OK (auto-squelched) passive tenses have doubled vowels
@@ -84,10 +84,11 @@ nice to have
         - quadrilateral (offload to separate sheet a.t.t.)
         - جوب - two meanings/rad2 conjugations in form 10
 
->>>> data quality standards
+- data quality standards
     - doubled roots get shadda as rad3, not a repeat of rad2
     - roots that get hyphens for form 1 vowels: hollow, doubled
+    - data entry for imperative
+    - QA/QC conjugations for typos
 
-    - data entry for imperative...jussive? > six ways, varies by subject (person/gender)
-    - Regex root from masdar? > could manually run through patterns, but current option is simpler
-        - correlation b/t form 1/2/3 masdar > no?
+-secondary features
+    - within tense conjugation (i.e. for all subjects; add column on left)

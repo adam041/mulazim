@@ -30,6 +30,11 @@ label#divSelectors {
     font-size: medium;
 }
 
+#spanSelectRoot {
+    float:right;
+    display:inline;
+}
+
 button {
     background-color: #fff8dc;
     font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
@@ -126,6 +131,7 @@ option {
 #inputTable ul {
     border-radius: 10px;
 }
+
 /* end input menu */
 
 /* style subject conjugation table else */

@@ -4,6 +4,25 @@ jQuery( document ).ready(function() {
 //need to have some data available for conjugateUpdate before backend loads
 objRefs = makeReferenceObject();
 
+//version A
+$('#menuTable tbody td:first-child').each(function() {
+    $("#selectRoot").append("<option>" +  $(this).text() + "</option>");
+});
+
+$(function() {
+    $('#selectRoot').selectmenu({
+        change: function() {
+            conjugateUpdate( $(this).val() );
+        }
+    });
+});
+
+
+//version B
+$('#menuTable tbody td:first-child').each(function() {
+    $("#menuOfRoots").append("<li><div>" +  $(this).text() + "</div></li>");
+});
+
 //conjugate page with default parameters
 conjugateUpdate( ar_Do, pro_he );
 
@@ -24,6 +43,8 @@ $(function() {
     $("#chosenRoot").chosen().change(function(){
         conjugateUpdate( $("#chosenRoot").val(), $("#selectSubject").val() );
     });
+
+jQuery( document ).ready(function() {
 
     $("#chosenSubject").chosen().change(function(){
         conjugateUpdate( $("#chosenRoot").val(), $("#selectSubject").val() );
@@ -80,6 +101,7 @@ $('#dataTable').sheetrock({
     $( "tfoot" ).dblclick(function() {
     //** initially opaque button used for testing **
         $( ".hideMe" ).toggle();
+
     });
 
     $( "#divSelectors" ).dblclick(function() {
@@ -188,6 +210,13 @@ var arRoot = $("#chosenRoot").val(),
 for (var i = 1; i <= 11; ++i ) {
     dividerRow += "<td> </td>";
 }
+  
+  if ( blnRowsNotHeader === false ) {
+        $( "#dataTable th" ).each(function(colIndex) {
+            arrRow.push( $(this).text() );
+        });
+
+        return arrRow; //1D array of header (ths)
 
 //wipe table
     jQuery("#contentTable tbody").html( "" );
@@ -268,7 +297,6 @@ var output = {
 
 return output;
 }
-
 
 
 function setupData() {
@@ -419,21 +447,3 @@ function jqAlert( htmlAlert ) {
         $( "#divAlert" ).dialog();
     });
 }
-
-
-String.prototype.wrap = function ( openTag ) {
-//wraps string in passed html tag
-
-    var closeTag,
-        index = openTag.indexOf(" ");
-
-    if ( index === -1 ) {
-        //tag has no other attributes
-        closeTag = "</" + openTag.slice(1);
-
-    } else {
-        closeTag = "</" + openTag.slice(1, index) + ">";
-    }
-
-    return openTag + this + closeTag;
-};

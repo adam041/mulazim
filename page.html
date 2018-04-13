@@ -64,6 +64,7 @@
             </div>
 
         </th>
+
       </tr> </thead>
 
     <tbody>
@@ -94,6 +95,62 @@
              </tbody>
          </table>
          </td>
+
+         <td>
+        <!--this td/table holds the inputs menu           -->
+        <table id="inputTable" class="hideMe"   >
+            <tbody>
+            <tr> <td>
+                 <table id="inputSubTable">
+                    <thead>
+                        <tr> <th>Select a root below </th> </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr> <td>
+                        <ul id="menuOfRoots">
+                          <!-- on load, fill in from backend -->
+                        </ul>
+                    </td> </tr>
+                    </tbody>
+                </table>
+            </td>
+            </tr>
+            </tbody>
+        </table>
+        </td>
+
+        <td>
+        <table id="tableConjBySubject">
+            <thead>
+                <tr> <th colspan="2" id="activeRoot">فعل</th> </tr>
+                <tr> <th colspan="2">Form
+                                        <span id="activeForm">1</span>
+                                                                        </th> </tr>
+                <tr> <th colspan="2">Conjugated</th> </tr>
+            </thead>
+            <tbody>
+                <tr> <td>I</td> <td id="subjI" class="arCell">انا </td> </tr>
+
+                <tr> <td>You (m)</td> <td id="subjYouM" class="arCell"> </td> </tr>
+                <tr> <td>You (f)</td> <td id="subjYouF" class="arCell"> </td> </tr>
+
+                <tr> <td>He</td> <td id="subjHe" class="arCell"> </td> </tr>
+                <tr> <td>She</td> <td id="subjShe" class="arCell"> </td> </tr>
+
+                <tr> <td>&nbsp</td> </tr>
+
+                <tr> <td>We</td> <td id="subjWe" class="arCell"> </td> </tr>
+
+                <tr> <td>Y'all (m)</td> <td id="subjVousM" class="arCell"> </td> </tr>
+                <tr> <td>Y'all (f)</td> <td id="subjVousF" class="arCell"> </td> </tr>
+
+                <tr> <td>They (m)</td> <td id="subjTheyM" class="arCell"> </td> </tr>
+                <tr> <td>They (f)</td> <td id="subjTheyF" class="arCell"> </td> </tr>
+
+            </tbody>
+        </table>
+        </td>
 
     </tr> <!-- end of rows of masterTable -->
     <tfoot>
