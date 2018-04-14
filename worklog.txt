@@ -9,10 +9,14 @@ ok mostly   cnjDefective - present tense has ar_A/ar_a & ar_U/ar_u for last char
 ok mostly   hamza - alif-madda collapse ok, check hamza carrier rules
 
 ~~          cnjUltraHollowVerb( word ) - not tested
+done not tested     verb form 8 post-processing...
+done not tested     new model nouns
 
 Needs
+    <general>
+        rename verbType to conjType?  to accomodate usage for nouns
+
     <verbs>
-        OK  verb form 8 post-processing...
         jussive / imperative
         remove legacy verbs.js (keep until nouns.js updated)
         dual tenses

@@ -19,6 +19,9 @@
     width: 40%;
     padding-top: 10px;
     padding-left: 10px;
+
+    font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
+    font-size: medium;
 }
 
 .chosen-drop .chosen-results {
@@ -47,6 +50,38 @@ button {
 /* end master table */
 
 /* style content table */
+
+
+.dataRows tr:first-child th:first-child {
+    border-top-left-radius: 0px;
+}
+
+th {
+    text-align:center;
+    vertical-align: top;
+    background-color: #adb6ff;
+    min-width: 60px;
+    min-height: 110px;
+    border: solid black 1px;
+}
+
+.dataRows td {
+   border: solid black 1px;
+}
+
+/* tri-color shade rows */
+.dataRows tr:nth-child(3n+1) {
+    background-color: #bab7ad;
+}
+
+.dataRows tr:nth-child(3n+2) {
+    background-color: #7cd6aa;
+}
+.dataRows tr:nth-child(3n+3) {
+    background-color: #ff7f7f;
+}
+
+
 #contentTable tr:first-child th:first-child {
     border-top-left-radius: 0px;
 }
@@ -60,10 +95,22 @@ button {
     border: solid black 1px;
 }
 
-
 #contentTable td {
    border: solid black 1px;
 }
+
+/* tri-color shade rows */
+#contentTable tr:nth-child(3n+1) {
+    background-color: #bab7ad;
+}
+
+#contentTable tr:nth-child(3n+2) {
+    background-color: #7cd6aa;
+}
+#contentTable tr:nth-child(3n+3) {
+    background-color: #ff7f7f;
+}
+
 
 #divDebug td {
     border: dotted red 1px;
@@ -91,18 +138,6 @@ td.colNoun, td.colVerb  {
     direction: rtl;
 }
 
-/* tri-color shade rows */
-#contentTable tr:nth-child(3n+1) {
-    background-color: #bab7ad;
-}
-
-#contentTable tr:nth-child(3n+2) {
-    background-color: #7cd6aa;
-}
-#contentTable tr:nth-child(3n+3) {
-    background-color: #ff7f7f;
-}
-
 .arHead {
     font-weight: bold;
     direction: rtl;
@@ -124,6 +159,8 @@ option {
     direction: rtl;
 }
 
+
+/*
 #inputTable {
     vertical-align: top;
 }
@@ -135,13 +172,14 @@ option {
 /* end input menu */
 
 /* style subject conjugation table else */
-
+/*
 #tableConjBySubject td.arCell {
     direction: rtl;
     color: black;
     border: solid black 1px;
     font-size: large;
 }
+ */
 
 
 /* style everything else */

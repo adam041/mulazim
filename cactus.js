@@ -4,6 +4,7 @@ jQuery( document ).ready(function() {
 //need to have some data available for conjugateUpdate before backend loads
 objRefs = makeReferenceObject();
 
+/*
 //version A
 $('#menuTable tbody td:first-child').each(function() {
     $("#selectRoot").append("<option>" +  $(this).text() + "</option>");
@@ -16,9 +17,13 @@ $(function() {
         }
     });
 });
-
-
 //version B
+*/
+
+$( function() {
+    $( "#tabs" ).tabs();
+} );
+
 $('#menuTable tbody td:first-child').each(function() {
     $("#menuOfRoots").append("<li><div>" +  $(this).text() + "</div></li>");
 });
@@ -66,6 +71,7 @@ $('#dataTable').sheetrock({
     callback: setupData
 });
 
+/* //deprecate
 //set up buttons to toggle column groups
     $( "#btnVerbs" ).click(function() {
         $( "th.colVerb, td.colVerb" ).toggle("fast");
@@ -98,18 +104,22 @@ $('#dataTable').sheetrock({
         $( ".colNoun" ).show("fast");
     });
 
-    $( "tfoot" ).dblclick(function() {
+    $( "footer" ).dblclick(function() {
     //** initially opaque button used for testing **
         $( ".hideMe" ).toggle();
+*/
 
+    $( "divFooter" ).dblclick(function() {
+        $( ".hideMe" ).toggle();
     });
-
+/*
     $( "#divSelectors" ).dblclick(function() {
         drawAllSubjects();
     });
-
+*/
 
 $( document ).tooltip();
+});
 
 });
 
@@ -159,7 +169,7 @@ function makeReferenceObject() {
 
     }; //end of Refs
 
-    return refs;
+return refs;
 }
 
 
@@ -184,20 +194,30 @@ function conjugateUpdate( arRoot, arSubject) {
     $( "#contentTable thead th" ).show();
 
 //Draw table rows
-    jQuery("#contentTable tbody").html( drawRow( arRoot, arSubject ) );
+    var rowsObj = drawRow( arRoot, arSubject );
+
+    // jQuery("#contentTable tbody").html( drawRow( arRoot, arSubject ) );
+    jQuery("#verbTableRows").html( rowsObj.verb );
+    jQuery("#nounTableRows").html( rowsObj.noun );
+    jQuery("#allTableRows").html( rowsObj.all );
 
 //Update formatting of rows with known-good forms
     for (var formNum = 1; formNum <= 10; ++formNum ) {
 
         if ( objRefs.indexRow(arRoot, formNum) > -1) {
-            jQuery( "#contentTable tr:nth-child("+formNum+") td").css({"color": "black"});
+            //jQuery( "#contentTable tr:nth-child("+formNum+") td").css({"color": "black"});
+            jQuery( ".dataRows tr:nth-child("+formNum+") td").css({"color": "black"});
+
         } else {
-            jQuery( "#contentTable tr:nth-child("+formNum+") td").css({"color": "dimgrey", "font-size": "medium"});
+            //jQuery( "#contentTable tr:nth-child("+formNum+") td").css({"color": "dimgrey", "font-size": "medium"});
+            jQuery( ".dataRows tr:nth-child("+formNum+") td").css({"color": "dimgrey", "font-size": "medium"});
         }
     }
 
 }
 
+
+/*      //* lookout: a curvy bracket is dorked up
 
 function drawAllSubjects() {
 //mostly intended for debugging, the UI is ugly
@@ -210,7 +230,7 @@ var arRoot = $("#chosenRoot").val(),
 for (var i = 1; i <= 11; ++i ) {
     dividerRow += "<td> </td>";
 }
-  
+
   if ( blnRowsNotHeader === false ) {
         $( "#dataTable th" ).each(function(colIndex) {
             arrRow.push( $(this).text() );
@@ -230,7 +250,7 @@ $( "#chosenSubject option").each( function( index, element ) {
 });
 
 }
-
+*/
 
 function structureReference( tableID ) {
 //organize row into an 1D array of headers, 2D array of data rows, and an array of key-value pairings
@@ -332,7 +352,10 @@ if ( arSubject === undefined ) {
     arSubject = pro_he;
 }
 
-var htmlOut = "";
+var rowsOut = {},
+    verbLine = "",
+    nounLine = "",
+    metaLine = "";
 
 //Declare data arrays
 var arrFormNum = [
@@ -362,15 +385,54 @@ var arrMeaning = [
     "Pretending, Requesting Change, Usage "];
 
 //Write out rows, one td at a time
-
 //but first, generate data
+    var colMasdar = cnjNoun(arRoot, "masdar", false,  null),
+        colAgent = cnjNoun(arRoot, "agent", false,  null),
+        colRecipient = cnjNoun(arRoot, "recipient", false,  null),
+        colTimePlace = cnjNoun(arRoot, "time-place", false,  null);
+
     var colPassiveImperfect = cnjVerb(arRoot, "imperfect", false,  arSubject),
         colPassivePerfect = cnjVerb(arRoot, "perfect", false,  arSubject),
-        colImperative;      //  TBD
-
-    var colActiveImperfect = cnjVerb(arRoot, "imperfect", true,  arSubject),
+        colImperative,      //  TBD
+        colActiveImperfect = cnjVerb(arRoot, "imperfect", true,  arSubject),
         colActivePerfect = cnjVerb(arRoot, "perfect", true,  arSubject);
 
+
+for (var formNum = 1; formNum <= 10; ++formNum ) {
+
+    verbLine += whole(colPassiveImperfect[formNum]).wrap("<td class='colVerb'>");
+    verbLine += whole(colPassivePerfect[formNum]).wrap("<td class='colVerb'>");
+    verbLine += "jsv/imp".wrap("<td class='colVerb'>");
+    verbLine += whole(colActiveImperfect[formNum]).wrap("<td class='colVerb'>");
+    verbLine +=  whole(colActivePerfect[formNum]).wrap("<span>");
+    verbLine +=  (" " + objRefs.query(arRoot, formNum, "Preposition") ).wrap("<span class='spnPreposition'>") + "</td>";
+
+//     nounLine += conjActiveParticiple(arRoot, formNum).wrap("<td class='colNoun'>");
+//     nounLine += conjPassiveParticiple(arRoot, formNum).wrap("<td class='colNoun'>");
+//     nounLine += conjNounTimePlace(arRoot, formNum).wrap("<td class='colNoun'>");
+//     nounLine += conjMasdar(arRoot, formNum).wrap("<td class='colNoun'>");
+
+    nounLine += whole(colTimePlace[formNum]).wrap("<td class='colNoun'>");
+    nounLine += whole(colRecipient[formNum]).wrap("<td class='colNoun'>");
+    nounLine += whole(colAgent[formNum]).wrap("<td class='colNoun'>");
+    nounLine += whole(colMasdar[formNum]).wrap("<td class='colNoun'>");
+
+    //write out meta columns in both modes
+    metaLine += arrFormNum[formNum].wrap("<td class='colFormNum'>");
+    metaLine += arrMeaning[formNum].wrap("<td class='colMeaning'>");
+    metaLine += objRefs.query(arRoot, formNum, "Translation").wrap("<td class='colTranslation'>");
+    //maintenance note:  htmlOut = htmlOut.wrap("<tr>");  //doesn't work
+    metaLine += "</tr>";
+
+    rowsOut.noun += "<tr>" + nounLine + metaLine;
+    rowsOut.verb += "<tr>" + verbLine + metaLine;
+//     rowsOut.all += "<tr>" + nounLine + verbLine + metaLine;
+    nounLine = verbLine = metaLine = "";
+}
+
+return rowsOut;
+
+/*
 for (var formNum = 1; formNum <= 10; ++formNum ) {
 
 //write noun columns
@@ -405,8 +467,231 @@ for (var formNum = 1; formNum <= 10; ++formNum ) {
 }
 
 return htmlOut;
+*/
+}
+
+
+Array.prototype.last = function () {
+//method returns last item from array
+
+//     if (this === undefined) {
+//         return [];
+//     }
+
+    return this[this.length - 1];
+};
+
+
+function clone( objIn ) {
+//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+    return JSON.parse(JSON.stringify(objIn));
+}
+
+
+Array.prototype.x10 = function(callback, isVerbose){
+    return x10(this, callback, isVerbose);
+};
+
+
+function x10(arrayIn, callback, isVerbose){
+//somewhat general function for processing a copy of an array containing ten forms of a conjugation
+
+    var arrayOut = [],
+        word = {};
+
+    arrayIn.forEach(function ( value, index ) {
+
+        if ( index === 0 ) {
+            arrayOut.push(value);
+
+            if (isVerbose) { console.log(arrayOut[index]); }
+
+        } else {
+            word = clone(value);
+            arrayOut.push( callback(word)  );
+
+            if (isVerbose) { console.log( whole(arrayOut[index]) ); }
+        }
+    }   );
+
+    return arrayOut;
+}
+
+
+function base10( wordIn, callback ) {
+//returns an size 11 array containing templates of all 10 verb forms (0 is intended for use)
+
+var arrayOut = [],
+    word = {};
+
+    arrayOut.push(ar_ILB);
+
+for(var i=1; i <= 10; ++i) {
+    word = clone(wordIn);
+    word = cnjForm( word, i );
+    arrayOut.push( word );
+    }
+return arrayOut;
+}
+
+
+function arrayOW (array, newValue, x, y) {
+//over-writes new value into specified position in array, then returns the array
+    array[x][y] = newValue;
+    return array;
+}
+
+Array.prototype.vowel = function(vowel){
+//inserts vowel as new value in array position [0][1]
+//OR returns incumbent character if no param passed
+
+//intended use for vowels accompanying Arabic root radicals
+
+    if ( vowel === undefined ) {
+
+        if (this[0] === undefined) {
+            return "";
+
+        } else {
+            return this[0][1];
+        }
+
+    } else {
+        return arrayOW(this, vowel, 0, 1);
+    }
+};
+
+Array.prototype.consonant = function(consonant){
+//inserts consonant as new value in array position [1][0]
+//OR returns incumbent character if no param passed
+
+    if ( consonant === undefined ) {
+
+        if (this[0] === undefined) {
+            return "";
+
+        } else {
+            return this[0][0];
+        }
+
+    } else {
+        return arrayOW(this, consonant, 0, 0);
+    }
+};
+
+
+String.prototype.wrap = function ( openTag ) {
+//wraps string in passed html tag
+
+    var closeTag,
+        index = openTag.indexOf(" ");
+
+    if ( index === -1 ) {
+        //tag has no other attributes
+        closeTag = "</" + openTag.slice(1);
+
+    } else {
+        closeTag = "</" + openTag.slice(1, index) + ">";
+    }
+
+    return openTag + this + closeTag;
+};
+
+
+function flatReduce(arrayIn){
+//takes an array with an arbitrary number of dimensions and returns a string
+//* fails if param is a 1D array?!
+
+    if ( (arrayIn === undefined) || (arrayIn.length === 0) ) {
+        return "";
+    }
+
+    //flatten multi-D array into 1-drafts
+    var flatArray = arrayIn.reduce(function(prev, curr) {
+        return prev.concat(curr);
+    });
+
+    //reduce array to string
+    if ( flatArray.length === 0 ) {
+        return "";
+    } else {
+        return flatArray.reduce(reducer);
+    }
+}
+
+
+function Word( arRoot, enTense, isActive, arSubject ) {
+// Word properties encapsulation.  Keep it dumb (i.e. external functions, not internal methods).
+
+//declare metadata properties (7)
+    this.arRoot = arRoot;
+    this.arSubject = arSubject;
+    this.verbType = null;    //auto-categorize on declaration?
+    this.layer = "initial";  //identifies phase of conjugation processing
+
+    this.formNum = null;
+    this.enTense = enTense;
+    this.isActive = isActive;
+
+//declare data segments (9)
+    this.prefix =  [];
+    this.innerPrefix = [];
+
+    this.rad1 = [];
+    this.midRight = [];
+    this.rad2 = [];
+    this.midLeft = [];
+
+    this.rad3 = [];
+    this.innerSuffix = [];
+    this.suffix = [];
+
+    this.whole = "";
+
+//load radical segments with consonants
+    this.rad1.push( [arRoot.charAt(0), ""] );
+    this.rad2.push( [arRoot.charAt(1), ""] );
+    this.rad3.push( [arRoot.charAt(2), ""] );  //** may get weird on doubled verbs if rad3 is shadda
 
 }
+
+
+function whole(word){
+//assembles all segment arrays of word object, and returns a String
+
+    var theWord  = flatReduce(word.prefix);
+        theWord += flatReduce(word.innerPrefix);
+        theWord += flatReduce(word.rad1);
+        theWord += flatReduce(word.midRight);
+        theWord += flatReduce(word.rad2);
+        theWord += flatReduce(word.midLeft);
+        theWord += flatReduce(word.rad3);
+        theWord += flatReduce(word.innerSuffix);
+        theWord += flatReduce(word.suffix);
+
+    return theWord;
+}
+
+
+function nonWord( wordIn ) {
+//create intentionally blank output, for when there is no conjugation (i.e. passive form of form 7 verb)
+
+    var word = clone(wordIn);
+
+    word.rad1 = ([["-",""]]);
+    word.rad2 = ([["-",""]]);
+    word.rad3 = ([["-",""]]);
+
+    word.prefix = [];
+    word.innerPrefix = [];
+    word.midRight = [];
+    word.midLeft = [];
+    word.innerSuffix = [];
+    word.suffix = [];
+
+    return word;
+}
+
 
 
 function vowelMe(enText) {
@@ -435,7 +720,6 @@ var vowelOut = "";
     }
 
 return vowelOut;
-
 }
 
 

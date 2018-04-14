@@ -14,19 +14,33 @@
 
     <script src="cactus.js"></script>
     <script src="verbs.js"></script>
-    <script src="verbs2.js"></script>
     <script src="nouns.js"></script>
     <script src="constants.js"></script>
 
-    <meta charset="utf-8" />
+
+<!-- legacy scripts -->
+<!--
+    <script src="nouns-legacy.js"></script>
+    <script src="verbs-legacy.js"></script>
+ -->
+<!-- legacy scripts -->
+
+
+    <meta charset="utf-8"/>
 
 </head>
 
 
 <body>
 
+<!--
     <table id="masterTable">
+ -->
+
+<!--
+
     <thead> <tr>
+
         <th id="thButtons">
 
             <button id="btnVerbs" title="click to toggle showing column group, click twice to focus on verbs only">Verbs</button>
@@ -34,7 +48,9 @@
             <button id="btnMeaning" title="click to toggle showing column">Meaning</button>
             <button id="btnTranslation" title="click to toggle showing column">Translation</button>
             <button id="btnPrepositions" title="click to toggle showing prepositions in Active Past column">Prepositions</button>
+ -->
 
+<!--
             <div id="divSelectors">
 
                 <label>Choose a root: </label>
@@ -58,18 +74,147 @@
                     <option selected value="فعل">do / فعل</option>
                 </select>
             </div>
+ -->
 <!--
       </div>
             </div>
- -->
 
         </th>
       </tr> </thead>
+ -->
 
+<!--
     <tbody>
     <tr>
         <td>
+
+ -->
+
+<div id="tabs">
+
+    <div id="divHeaderTabs">
+    <ul>
+        <li><a href="#tabs-1">Nouns</a></li>
+        <li><a href="#tabs-2">Verbs</a></li>
+        <li><a href="#tabs-3">Both</a></li>
+<!-- ul essentially ends here -->
+
+        <div id="divSelectors">
+
+<!--
+            <label>Choose a root: </label>
+ -->
+
+            <select id="chosenSubject" data-placeholder="Choose a Subject..." class="chosen-select" tabindex="2">
+                <option value="أنا">I / أنا</option>
+                <option value="أنتَ">you m / أنتَ</option>
+                <option value="أنتِ">you f / أنتِ</option>
+                <option selected value="هو">he / هو</option>
+                <option value="هي">she / هي</option>
+
+                <option value="نحن">we / نحن</option>
+                <option value="أنتم">y'all m / أنتم</option>
+                <option value="أنتن">y'all f / أنتن</option>
+                <option value="هم">they m / هم</option>
+                <option value="هنا">they f / هنا</option>
+            </select>
+
+            <select id="chosenRoot" data-placeholder="Choose a Root..." class="chosen-select" tabindex="1">
+                <option value=""></option>
+                <option selected value="فعل">do / فعل</option>
+            </select>
+    </div>
+
+    </ul>
+    </div>
+
+
+  <div id="tabs-1">
+        <table>
+            <thead>
+                <tr>
+                    <th class='colNoun'>Noun of Time and Place<br> <span class="arHead">اسم المكان و الزمان</span> </th>
+                    <th class='colNoun'>Recipient (Passive Participle)<br> <span class="arHead">اسم المفعول</span> <br> done</th>
+                    <th class='colNoun'>Agent (Active Participle)<br> <span class="arHead">اسم الفاعل</span> <br> doer</th>
+                    <th class='colNoun'>Verbal Noun (Masdar)<br> <span class="arHead">المصدر</span> <br> doing</th>
+
+                    <th class='colForm'>Form Number<br> <span class="arHead">الوزن</span></th>
+                    <th class='colMeaning'>Meaning, Use, & Relationship <br> <span class="arHead">المعنى والاستعمال والعلاقة</span></th>
+                    <th class='colTranslation'>English Translation</th>
+
+                </tr>
+            </thead>
+
+            <tbody id="nounTableRows" class="dataRows">
+                <!-- programatically fill in -->
+            </tbody>
+        </table>
+  </div>
+
+  <div id="tabs-2">
+        <table>
+            <thead>
+                <tr>
+                    <th class='colVerb'>Passive Present (Imperfect)<br>المضارع<br>is done</th>
+                    <th class='colVerb'>Passive Past (Perfect)<br>اسم الماصي<br>was done</th>
+                    <th class='colVerb'>Imperative (Command)<br>الأمر<br>do!</th>
+                    <th class='colVerb'>Active Present (Imperfect)<br>اسم المضارع<br>does</th>
+                    <th class='colVerb'>Active Past (Perfect)<br>اسم الماصي<br>did</th>
+
+                    <th class='colForm'>Form Number<br> <span class="arHead">الوزن</span></th>
+                    <th class='colMeaning'>Meaning, Use, & Relationship <br> <span class="arHead">المعنى والاستعمال والعلاقة</span></th>
+                    <th class='colTranslation'>English Translation</th>
+                </tr>
+            </thead>
+
+            <tbody id="verbTableRows" class="dataRows">
+                <!-- programatically fill in -->
+            </tbody>
+        </table>
+  </div>
+
+  <div id="tabs-3">
+
+          <table>
+            <thead>
+                <tr>
+                    <th class='colNoun'>Noun of Time and Place<br> <span class="arHead">اسم المكان و الزمان</span> </th>
+                    <th class='colNoun'>Recipient (Passive Participle)<br> <span class="arHead">اسم المفعول</span> <br> done</th>
+                    <th class='colNoun'>Agent (Active Participle)<br> <span class="arHead">اسم الفاعل</span> <br> doer</th>
+                    <th class='colNoun'>Verbal Noun (Masdar)<br> <span class="arHead">المصدر</span> <br> doing</th>
+
+                    <th class='colVerb'>Passive Present (Imperfect)<br>المضارع<br>is done</th>
+                    <th class='colVerb'>Passive Past (Perfect)<br>اسم الماصي<br>was done</th>
+                    <th class='colVerb'>Imperative (Command)<br>الأمر<br>do!</th>
+                    <th class='colVerb'>Active Present (Imperfect)<br>اسم المضارع<br>does</th>
+                    <th class='colVerb'>Active Past (Perfect)<br>اسم الماصي<br>did</th>
+
+                    <th class='colForm'>Form Number<br> <span class="arHead">الوزن</span></th>
+                    <th class='colMeaning'>Meaning, Use, & Relationship <br> <span class="arHead">المعنى والاستعمال والعلاقة</span></th>
+                    <th class='colTranslation'>English Translation</th>
+                </tr>
+            </thead>
+
+            <tbody id="allTableRows" class="dataRows">
+                <!-- programatically fill in -->
+            </tbody>
+        </table>
+  </div>
+
+</div> <!-- end tabs -->
+
+<!--
+
+<hr>
+<br>
+<br>
+<hr>
+ -->
+
+<!-- old stuff below -->
         <!-- This td holds the sub-table containing all conjugations and meta-data.  The next td holds the inputs menu -->
+<!--
+<td>
         <table id="contentTable">
             <thead>
             <tr>
@@ -90,15 +235,15 @@
             </thead>
 
              <tbody>
-                <!-- programatically fill in           -->
+                <!~~ programatically fill in           ~~>
              </tbody>
          </table>
          </td>
-
+<!--
          <td>
         <!--this td/table holds the inputs menu           -->
-<!--
-        <table id="inputTable" class="hideMe"   >
+   <!--
+     <table id="inputTable" class="hideMe"   >
             <tbody>
             <tr> <td>
                  <table id="inputSubTable">
@@ -118,16 +263,21 @@
             </tr>
             </tbody>
         </table>
- -->
         </td>
+ ~~>
 
-    </tr> <!-- end of rows of masterTable -->
+    </tr> <!~~ end of rows of masterTable ~~>
     <tfoot>
         <tr> <td> &nbsp <br> &nbsp </td> </tr>
     </tfoot>
 
     </tbody>
     </table>
+ -->
+
+<div id="divFooter">
+    <!-- for holding messages to user, such as irregular notifications -->
+</div>
 
 <div id="divDebug">
     <table class="hideMe"> <tr>

@@ -2,7 +2,7 @@
 //Variables holding frequently used arabic characters.
 //Holding Arabic strings inside prevents RTF/LTR mismatch dorkery
 
-'esversion: 6'
+'esversion: 6';
 
 //short vowels & diacritics
 const ar_a="َ",         //fatah
@@ -44,7 +44,6 @@ const ar_a="َ",         //fatah
 
 //combos
     ar_mu="مٌ",         //mim + damma
-    ar_Do="فعل",        //verb for debugging
     ar_LM = String.fromCharCode(1564),  //Arabic Language Marker character
     ar_ILB = "---",     //for intentionally left blank stems
 
@@ -62,14 +61,15 @@ const ar_a="َ",         //fatah
     pro_theyM = ar_hEye + ar_m,
     pro_theyF = ar_hEye + ar_n + ar_A;
 
+
+//array.reduce functions
 const   reducer = (accumulator, currentValue) => accumulator + currentValue;
 const   rowReducer = (accumulator, currentValue, currentIndex) => accumulator + currentValue.wrap("<td class='vowelCell" + currentIndex+ "'>").wrap("<tr>");
         //rowReducer note: vowel rows are written to html doc from top to bottom
 
-
-//Irregular exemplars for testing
-
-const arrive = "وصل",
+//root exemplars for testing
+const ar_Do="فعل",
+    arrive = "وصل",
     travel = "زور",
     fly = "طير",
     walk = "مشي",
@@ -90,34 +90,3 @@ Character codes for Arabic short vowel and diacritics:
 
 Arabic Letter Marker for typesetting: 1564
 */
-=======
-//short vowels & diacritics
-ar_a="َ";           //fatah
-ar_i="ِ";           //kasrah
-ar_u="ُ";           //damma
-ar_0="ْ";           //sukkun
-ar_un="ٌ";          //damma + tanwin
-
-ar_2v="ّ";          //shadda
-
-//long vowels
-ar_A="ا";           //alif (plain)
-ar_hA="أ";          //alif w/ upper hamza
-ar_lA="إ";          //alif w/ lower hamza
-ar_Y="ي";           //ya
-ar_am="ى";          //alif maqsura
-ar_U="و";           //wuuw
-
-//consonants
-ar_l="ل";           //lam
-ar_m="م";           //mim
-ar_n="ن";           //nuun
-ar_s="س";           //sin
-ar_t="ت";           //ta
-ar_tb="ة";          //ta-marbuta
-
-ar_h5="ء";          //hamza
-
-//combos
-ar_mu="مٌ";         //mim + damma
-ar_Do="فعل";        //verb for debugging
