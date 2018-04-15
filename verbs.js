@@ -765,7 +765,7 @@ function cnjHamzaVerb(wordIn){
 
 var word = clone(wordIn);
 
-word.verbType = "Irregular: hamza in root";
+word.verbType = "hamza in root";
 
     if ( dontGiveHimTheStick( word.rad1.consonant() )) {
 
@@ -873,6 +873,139 @@ var word = clone(wordIn);
 return word;
 
 }
+
+
+// function segment( word ) {
+// //takes a string, and returns an object containing segments of Arabic word, organized around radicals
+//
+// var seg = {
+//
+//     prefix: word.prefix,
+//     innerPrefix: "",
+//
+//     rad1: word.arRoot.charAt(0),
+//     index1: -1,
+//     rad1Vowel: "",
+//
+//     midRight: "",
+//
+//     rad2: word.arRoot.charAt(1),
+//     index2: -1,
+//     rad2Vowel: "",
+//
+//     midLeft: "",
+//
+//     rad3: word.arRoot.charAt(2),
+//     index3: -1,
+//     rad3Vowel: "",
+//
+//     innerSuffix: "",
+//     suffix: word.suffix,
+//
+//     all: "",
+//
+//     meta: word,
+// };
+//
+// //get radical positions
+//     seg.index1 = word.stem.indexOf( seg.rad1 );
+//     seg.index2 = word.stem.indexOf( seg.rad2 );
+//     seg.index3 = word.stem.indexOf( seg.rad3 );
+//
+// if ( seg.index1 > 0 ) {
+//     seg.innerPrefix = word.stem.slice(0, seg.index1 );
+// } else {
+//     seg.innerPrefix = "";
+// }
+//
+// seg.midRight = word.stem.slice(seg.index1 + 1, seg.index2);
+//
+// //take vowels from midRight
+// var i = 0;
+// while ( isShortVowel( seg.midRight.charAt(i), true) ) {
+//     seg.rad1Vowel += seg.midRight.charAt(i);
+//     seg.midRight = seg.midRight.slice(1);
+//     i++;
+// }
+//
+// if ( seg.index3 === ar_2v ) {
+//     seg.rad3 = seg.rad2;
+// }
+//
+// seg.midLeft = word.stem.slice(seg.index2 + 1, seg.index3);
+// //take vowels from midLeft
+// i = 0;
+// while ( isShortVowel( seg.midLeft.charAt(i), true) ) {
+//     seg.rad2Vowel += seg.midLeft.charAt(i);
+//     seg.midLeft = seg.midLeft.slice(1);
+//     i++;
+// }
+//
+// //create innerSuffix and take rad3 vowel away (or from Suffix)
+// i = 0;
+// if ( word.stem.length > seg.index3 ) {
+//     seg.innerSuffix = word.stem.slice(seg.index3 + 1);
+//     while ( isShortVowel( seg.innerSuffix.charAt(i), true) ) {
+//         seg.rad3Vowel += seg.innerSuffix.charAt(i);
+//         seg.innerSuffix = seg.innerSuffix.slice(1);
+//         i++;
+//     }
+//
+// } else {
+//     seg.innerSuffix = "";
+//     while ( isShortVowel( seg.suffix.charAt(i), true) ) {
+//         seg.rad3Vowel += seg.suffix.charAt(i);
+//         seg.suffix = seg.suffix.slice(1);
+//         i++;
+//     }
+//
+// }
+//
+// seg.all = seg.prefix + seg.innerPrefix + seg.rad1 + seg.rad1Vowel + seg.midRight + seg.rad2 + seg.rad2Vowel;
+// seg.all += seg.midLeft + seg.rad3 + seg.rad3Vowel + seg.innerSuffix + seg.suffix;
+//
+// return seg;
+// }
+
+
+function hasHamza(aString) {
+//returns true if any character in the root contains a hamza
+
+if ( aString === undefined) { aString = ""; }
+
+var hasHamza = false;
+
+if (
+    ( -1 < aString.indexOf("ء") ) ||
+    ( -1 < aString.indexOf("إ") ) ||
+    ( -1 < aString.indexOf("أ") ) ||
+    ( -1 < aString.indexOf("ئ") ) ||
+    ( -1 < aString.indexOf("ؤ") ) ){
+        hasHamza = true;
+    }
+
+return hasHamza;
+}
+
+
+function isHollowIrregular(arRoot){
+//returns true if verb is very irregular
+
+var arrIrregulars = [];
+    arrIrregulars.push (ar_n + ar_U + ar_m);    //to sleep
+
+var isMatch = function(element) {
+        return element === arRoot;
+    };
+
+return arrIrregulars.some(isMatch);
+
+}
+
+
+//////////////////////////////////
+//Keep Everything ABOVE This Line
+
 
 
 
@@ -1313,99 +1446,7 @@ return table;
 }
 
 
-function segment( word ) {
-//takes a word object, returns an object containing segments of Arabic word, organized around radicals
 
-//rad1Vowel?
-
-var seg = {
-
-    prefix: word.prefix,
-    innerPrefix: "",
-
-    rad1: word.arRoot.charAt(0),
-    index1: -1,
-    rad1Vowel: "",
-
-    midRight: "",
-
-    rad2: word.arRoot.charAt(1),
-    index2: -1,
-    rad2Vowel: "",
-
-    midLeft: "",
-
-    rad3: word.arRoot.charAt(2),
-    index3: -1,
-    rad3Vowel: "",
-
-    innerSuffix: "",
-    suffix: word.suffix,
-
-    all: "",
-
-    meta: word,
-};
-
-//get radical positions
-    seg.index1 = word.stem.indexOf( seg.rad1 );
-    seg.index2 = word.stem.indexOf( seg.rad2 );
-    seg.index3 = word.stem.indexOf( seg.rad3 );
-
-if ( seg.index1 > 0 ) {
-    seg.innerPrefix = word.stem.slice(0, seg.index1 );
-} else {
-    seg.innerPrefix = "";
-}
-
-seg.midRight = word.stem.slice(seg.index1 + 1, seg.index2);
-
-//take vowels from midRight
-var i = 0;
-while ( isShortVowel( seg.midRight.charAt(i), true) ) {
-    seg.rad1Vowel += seg.midRight.charAt(i);
-    seg.midRight = seg.midRight.slice(1);
-    i++;
-}
-
-if ( seg.index3 === ar_2v ) {
-    seg.rad3 = seg.rad2;
-}
-
-seg.midLeft = word.stem.slice(seg.index2 + 1, seg.index3);
-//take vowels from midLeft
-i = 0;
-while ( isShortVowel( seg.midLeft.charAt(i), true) ) {
-    seg.rad2Vowel += seg.midLeft.charAt(i);
-    seg.midLeft = seg.midLeft.slice(1);
-    i++;
-}
-
-//create innerSuffix and take rad3 vowel away (or from Suffix)
-i = 0;
-if ( word.stem.length > seg.index3 ) {
-    seg.innerSuffix = word.stem.slice(seg.index3 + 1);
-    while ( isShortVowel( seg.innerSuffix.charAt(i), true) ) {
-        seg.rad3Vowel += seg.innerSuffix.charAt(i);
-        seg.innerSuffix = seg.innerSuffix.slice(1);
-        i++;
-    }
-
-} else {
-    seg.innerSuffix = "";
-    while ( isShortVowel( seg.suffix.charAt(i), true) ) {
-        seg.rad3Vowel += seg.suffix.charAt(i);
-        seg.suffix = seg.suffix.slice(1);
-        i++;
-    }
-
-}
-
-seg.all = seg.prefix + seg.innerPrefix + seg.rad1 + seg.rad1Vowel + seg.midRight + seg.rad2 + seg.rad2Vowel;
-seg.all += seg.midLeft + seg.rad3 + seg.rad3Vowel + seg.innerSuffix + seg.suffix;
-
-return seg;
-}
 
 
 function chunk( stringIn ) {
@@ -1510,40 +1551,3 @@ function prefixVowel(formNum, isActive) {
 */
 
 //stuff above here may become garbage
-
-//////////////////////////////////
-//Keep Everything Below This Line
-
-function hasHamza(aString) {
-//returns true if any character in the root contains a hamza
-
-if ( aString === undefined) { aString = ""; }
-
-var hasHamza = false;
-
-if (
-    ( -1 < aString.indexOf("ء") ) ||
-    ( -1 < aString.indexOf("إ") ) ||
-    ( -1 < aString.indexOf("أ") ) ||
-    ( -1 < aString.indexOf("ئ") ) ||
-    ( -1 < aString.indexOf("ؤ") ) ){
-        hasHamza = true;
-    }
-
-return hasHamza;
-}
-
-
-function isHollowIrregular(arRoot){
-//returns true if verb is very irregular
-
-var arrIrregulars = [];
-    arrIrregulars.push (ar_n + ar_U + ar_m);    //to sleep
-
-var isMatch = function(element) {
-        return element === arRoot;
-    };
-
-return arrIrregulars.some(isMatch);
-
-}

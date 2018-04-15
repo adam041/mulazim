@@ -94,16 +94,12 @@
 
     <div id="divHeaderTabs">
     <ul>
-        <li><a href="#tabs-1">Nouns</a></li>
-        <li><a href="#tabs-2">Verbs</a></li>
+        <li><a href="#tabs-1">Verbs</a></li>
+        <li><a href="#tabs-2">Nouns</a></li>
         <li><a href="#tabs-3">Both</a></li>
 <!-- ul essentially ends here -->
 
         <div id="divSelectors">
-
-<!--
-            <label>Choose a root: </label>
- -->
 
             <select id="chosenSubject" data-placeholder="Choose a Subject..." class="chosen-select" tabindex="2">
                 <option value="أنا">I / أنا</option>
@@ -130,6 +126,28 @@
 
 
   <div id="tabs-1">
+          <table>
+            <thead>
+                <tr>
+                    <th class='colVerb'>Passive Present (Imperfect)<br>المضارع<br>is done</th>
+                    <th class='colVerb'>Passive Past (Perfect)<br>اسم الماصي<br>was done</th>
+                    <th class='colVerb'>Imperative (Command)<br>الأمر<br>do!</th>
+                    <th class='colVerb'>Active Present (Imperfect)<br>اسم المضارع<br>does</th>
+                    <th class='colVerb'>Active Past (Perfect)<br>اسم الماصي<br>did</th>
+
+                    <th class='colForm'>Form Number<br> <span class="arHead">الوزن</span></th>
+                    <th class='colMeaning'>Meaning, Use, & Relationship <br> <span class="arHead">المعنى والاستعمال والعلاقة</span></th>
+                    <th class='colTranslation'>English Translation</th>
+                </tr>
+            </thead>
+
+            <tbody id="verbTableRows" class="dataRows">
+                <!-- programatically fill in -->
+            </tbody>
+        </table>
+  </div>
+
+  <div id="tabs-2">
         <table>
             <thead>
                 <tr>
@@ -149,28 +167,7 @@
                 <!-- programatically fill in -->
             </tbody>
         </table>
-  </div>
 
-  <div id="tabs-2">
-        <table>
-            <thead>
-                <tr>
-                    <th class='colVerb'>Passive Present (Imperfect)<br>المضارع<br>is done</th>
-                    <th class='colVerb'>Passive Past (Perfect)<br>اسم الماصي<br>was done</th>
-                    <th class='colVerb'>Imperative (Command)<br>الأمر<br>do!</th>
-                    <th class='colVerb'>Active Present (Imperfect)<br>اسم المضارع<br>does</th>
-                    <th class='colVerb'>Active Past (Perfect)<br>اسم الماصي<br>did</th>
-
-                    <th class='colForm'>Form Number<br> <span class="arHead">الوزن</span></th>
-                    <th class='colMeaning'>Meaning, Use, & Relationship <br> <span class="arHead">المعنى والاستعمال والعلاقة</span></th>
-                    <th class='colTranslation'>English Translation</th>
-                </tr>
-            </thead>
-
-            <tbody id="verbTableRows" class="dataRows">
-                <!-- programatically fill in -->
-            </tbody>
-        </table>
   </div>
 
   <div id="tabs-3">
@@ -298,7 +295,7 @@
             <th>f1ActivePresentRad2</th><th>f1ActivePastRad2</th>   <th>f1Imperative0Rad2</th> <th>Translation</th>    <th>TBD</th>    <th>Comment</th> </tr>
         </thead>
         <tbody><tr>
-            <td>1</td>                  <td></td>                   <td>فعل</td>            <td>فَعَل</td>
+            <td>1</td>                  <td></td>                   <td>فعل</td>            <td></td>    <!-- <td>فَعَل</td> -->
             <td>i</td>                  <td>a</td>      <td></td>   <td>do a process</td>   <td></td>       <td></td> </tr>
 
             <td>2</td>                  <td></td>                   <td>فعل</td>            <td>ي</td>

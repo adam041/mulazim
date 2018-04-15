@@ -4,22 +4,6 @@ jQuery( document ).ready(function() {
 //need to have some data available for conjugateUpdate before backend loads
 objRefs = makeReferenceObject();
 
-/*
-//version A
-$('#menuTable tbody td:first-child').each(function() {
-    $("#selectRoot").append("<option>" +  $(this).text() + "</option>");
-});
-
-$(function() {
-    $('#selectRoot').selectmenu({
-        change: function() {
-            conjugateUpdate( $(this).val() );
-        }
-    });
-});
-//version B
-*/
-
 $( function() {
     $( "#tabs" ).tabs();
 } );
@@ -384,8 +368,7 @@ var arrMeaning = [
     "Colors, Defects ",
     "Pretending, Requesting Change, Usage "];
 
-//Write out rows, one td at a time
-//but first, generate data
+//First generate data
     var colMasdar = cnjNoun(arRoot, "masdar", false,  null),
         colAgent = cnjNoun(arRoot, "agent", false,  null),
         colRecipient = cnjNoun(arRoot, "recipient", false,  null),
@@ -397,27 +380,21 @@ var arrMeaning = [
         colActiveImperfect = cnjVerb(arRoot, "imperfect", true,  arSubject),
         colActivePerfect = cnjVerb(arRoot, "perfect", true,  arSubject);
 
-
+//Then write out rows, one td at a time
 for (var formNum = 1; formNum <= 10; ++formNum ) {
 
     verbLine += whole(colPassiveImperfect[formNum]).wrap("<td class='colVerb'>");
     verbLine += whole(colPassivePerfect[formNum]).wrap("<td class='colVerb'>");
     verbLine += "jsv/imp".wrap("<td class='colVerb'>");
     verbLine += whole(colActiveImperfect[formNum]).wrap("<td class='colVerb'>");
-    verbLine +=  whole(colActivePerfect[formNum]).wrap("<span>");
+    verbLine += "<td class='colVerb'>" + whole(colActivePerfect[formNum]).wrap("<span>");
     verbLine +=  (" " + objRefs.query(arRoot, formNum, "Preposition") ).wrap("<span class='spnPreposition'>") + "</td>";
-
-//     nounLine += conjActiveParticiple(arRoot, formNum).wrap("<td class='colNoun'>");
-//     nounLine += conjPassiveParticiple(arRoot, formNum).wrap("<td class='colNoun'>");
-//     nounLine += conjNounTimePlace(arRoot, formNum).wrap("<td class='colNoun'>");
-//     nounLine += conjMasdar(arRoot, formNum).wrap("<td class='colNoun'>");
 
     nounLine += whole(colTimePlace[formNum]).wrap("<td class='colNoun'>");
     nounLine += whole(colRecipient[formNum]).wrap("<td class='colNoun'>");
     nounLine += whole(colAgent[formNum]).wrap("<td class='colNoun'>");
     nounLine += whole(colMasdar[formNum]).wrap("<td class='colNoun'>");
 
-    //write out meta columns in both modes
     metaLine += arrFormNum[formNum].wrap("<td class='colFormNum'>");
     metaLine += arrMeaning[formNum].wrap("<td class='colMeaning'>");
     metaLine += objRefs.query(arRoot, formNum, "Translation").wrap("<td class='colTranslation'>");
@@ -426,48 +403,11 @@ for (var formNum = 1; formNum <= 10; ++formNum ) {
 
     rowsOut.noun += "<tr>" + nounLine + metaLine;
     rowsOut.verb += "<tr>" + verbLine + metaLine;
-//     rowsOut.all += "<tr>" + nounLine + verbLine + metaLine;
+    rowsOut.all += "<tr>" + nounLine + verbLine + metaLine;
     nounLine = verbLine = metaLine = "";
 }
 
 return rowsOut;
-
-/*
-for (var formNum = 1; formNum <= 10; ++formNum ) {
-
-//write noun columns
-    htmlOut += "<tr>";
-    htmlOut += conjActiveParticiple(arRoot, formNum).wrap("<td class='colNoun'>");
-    htmlOut += conjPassiveParticiple(arRoot, formNum).wrap("<td class='colNoun'>");
-    htmlOut += conjNounTimePlace(arRoot, formNum).wrap("<td class='colNoun'>");
-    htmlOut += conjMasdar(arRoot, formNum).wrap("<td class='colNoun'>");
-
-//write verb columns
-
-//     htmlOut += "f".wrap("<td class='colVerb'>"); //whole(colPassiveImperfect[formNum]).wrap("<td class='colVerb'>");
-//     htmlOut += "o".wrap("<td class='colVerb'>"); //whole(colPassivePerfect[formNum]).wrap("<td class='colVerb'>");
-//     htmlOut += "o".wrap("<td class='colVerb'>"); //verbalize(arRoot, formNum, "imperative", false, arSubject).wrap("<td class='colVerb'>"); //old way
-
-    htmlOut += whole(colPassiveImperfect[formNum]).wrap("<td class='colVerb'>");
-    htmlOut += whole(colPassivePerfect[formNum]).wrap("<td class='colVerb'>");
-    htmlOut += "jussive?".wrap("<td class='colVerb'>");
-
-    htmlOut += whole(colActiveImperfect[formNum]).wrap("<td class='colVerb'>");
-    htmlOut += "<td class='colVerb'>";
-    htmlOut +=  whole(colActivePerfect[formNum]).wrap("<span>");
-    htmlOut +=  (" " + objRefs.query(arRoot, formNum, "Preposition") ).wrap("<span class='spnPreposition'>") + "</td>";
-
-//write out meta columns
-    htmlOut += arrFormNum[formNum].wrap("<td class='colFormNum'>");
-    htmlOut += arrMeaning[formNum].wrap("<td class='colMeaning'>");
-    htmlOut += objRefs.query(arRoot, formNum, "Translation").wrap("<td class='colTranslation'>");
-    htmlOut += "</tr>";
-//maintenance note:  htmlOut = htmlOut.wrap("<tr>");  //doesn't work
-
-}
-
-return htmlOut;
-*/
 }
 
 
@@ -691,7 +631,6 @@ function nonWord( wordIn ) {
 
     return word;
 }
-
 
 
 function vowelMe(enText) {
