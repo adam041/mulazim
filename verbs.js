@@ -274,7 +274,7 @@ if ( word.isActive ) {
 
 
 function cnjImperfect( wordIn ) {
-//returns conjugated trilateral verb in Perfect (past) tense
+//returns conjugated trilateral verb in imperfect (present) tense
 
 var word = clone( wordIn );
 
@@ -393,6 +393,69 @@ if ( word.isActive ) {
 }//end if (active / else passive)
 
     return word;
+}
+
+
+function cnjJussive( wordIn ) {
+//returns conjugated trilateral verb in jussive tense
+
+//get vanilla imperfect/present verb
+    word = clone(wordIn);
+    word.isActive = true;
+    word = cnjImperfect( clone(word) );
+    word.verbType = "jussive";
+
+//modify suffix
+    if ( word.suffix.last() === ["", ar_u] ) {
+        word.suffix.pop();
+        word.suffix.push(["", ar_0]);
+    }
+
+    if ( (word.arSubject === pro_vousM) || (word.arSubject === pro_theyM ) ) {
+        word.suffix.pop();
+        word.suffix.push([ar_A, ""]);
+
+    }  else if ( word.arSubject === pro_youF ) {
+        word.suffix.pop();
+    }
+
+//hollow out hollow verbs
+    if ( ( word.rad2.consonant()=== ar_U ) || ( word.rad2.consonant()=== ar_Y ) ) {
+        if (( word.arSubject === pro_youF ) || ( word.arSubject === pro_vousM )  || ( word.arSubject === pro_theyM ) ) {
+        //do nothing
+        } else {
+            word.rad2 = [];
+        }
+    }
+
+//handle defective verbs
+    if ( ( word.rad3.consonant()=== ar_U ) || ( word.rad3.consonant()=== ar_Y ) ) {
+
+        word.rad3 = [];
+
+        if  ( word.rad3.consonant()=== ar_U ) {
+            word.rad3.push(["", ar_u]);
+        } else {
+            word.rad3.push(["", ar_i]);
+        }
+
+//         if (( word.arSubject === pro_youF ) || ( word.arSubject === pro_vousF )  || ( word.arSubject === pro_theyF ) ) {
+//             //drop N in suffix...already done?
+//
+//         } else if ( (word.arSubject === pro_vousM) || (word.arSubject === pro_theyM ) ) {
+//             word.suffix.pop();
+//             word.suffix.push([ar_A, ""]);
+//
+//         } else {
+//
+//         }
+
+    }
+
+//handle doubled verbs
+    // **   TBD     **
+
+return word;
 }
 
 

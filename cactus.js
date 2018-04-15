@@ -376,7 +376,7 @@ var arrMeaning = [
 
     var colPassiveImperfect = cnjVerb(arRoot, "imperfect", false,  arSubject),
         colPassivePerfect = cnjVerb(arRoot, "perfect", false,  arSubject),
-        colImperative,      //  TBD
+        colJussive = cnjVerb(arRoot, "jussive", true,  arSubject),
         colActiveImperfect = cnjVerb(arRoot, "imperfect", true,  arSubject),
         colActivePerfect = cnjVerb(arRoot, "perfect", true,  arSubject);
 
@@ -385,7 +385,7 @@ for (var formNum = 1; formNum <= 10; ++formNum ) {
 
     verbLine += whole(colPassiveImperfect[formNum]).wrap("<td class='colVerb'>");
     verbLine += whole(colPassivePerfect[formNum]).wrap("<td class='colVerb'>");
-    verbLine += "jsv/imp".wrap("<td class='colVerb'>");
+    verbLine += whole(colJussive[formNum]).wrap("<td class='colVerb'>");
     verbLine += whole(colActiveImperfect[formNum]).wrap("<td class='colVerb'>");
     verbLine += "<td class='colVerb'>" + whole(colActivePerfect[formNum]).wrap("<span>");
     verbLine +=  (" " + objRefs.query(arRoot, formNum, "Preposition") ).wrap("<span class='spnPreposition'>") + "</td>";
