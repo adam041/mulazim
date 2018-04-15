@@ -4,6 +4,14 @@ jQuery( document ).ready(function() {
 //need to have some data available for conjugateUpdate before backend loads
 objRefs = makeReferenceObject();
 
+$( function() {
+    $( "#tabs" ).tabs();
+} );
+
+$('#menuTable tbody td:first-child').each(function() {
+    $("#menuOfRoots").append("<li><div>" +  $(this).text() + "</div></li>");
+});
+
 //conjugate page with default parameters
 conjugateUpdate( ar_Do, pro_he );
 
@@ -25,6 +33,8 @@ $(function() {
         conjugateUpdate( $("#chosenRoot").val(), $("#selectSubject").val() );
     });
 
+jQuery( document ).ready(function() {
+
     $("#chosenSubject").chosen().change(function(){
         conjugateUpdate( $("#chosenRoot").val(), $("#selectSubject").val() );
     });
@@ -45,6 +55,7 @@ $('#dataTable').sheetrock({
     callback: setupData
 });
 
+/* //deprecate
 //set up buttons to toggle column groups
     $( "#btnVerbs" ).click(function() {
         $( "th.colVerb, td.colVerb" ).toggle("fast");
@@ -77,17 +88,22 @@ $('#dataTable').sheetrock({
         $( ".colNoun" ).show("fast");
     });
 
-    $( "tfoot" ).dblclick(function() {
+    $( "footer" ).dblclick(function() {
     //** initially opaque button used for testing **
         $( ".hideMe" ).toggle();
-    });
+*/
 
+    $( "divFooter" ).dblclick(function() {
+        $( ".hideMe" ).toggle();
+    });
+/*
     $( "#divSelectors" ).dblclick(function() {
         drawAllSubjects();
     });
-
+*/
 
 $( document ).tooltip();
+});
 
 });
 
@@ -137,7 +153,7 @@ function makeReferenceObject() {
 
     }; //end of Refs
 
-    return refs;
+return refs;
 }
 
 
@@ -149,10 +165,10 @@ function conjugateUpdate( arRoot, arSubject) {
     if ( arSubject === undefined ) { arSubject = $("#chosenSubject").val(); }
 
 //Wipe debug area
-$( "#stage1").html( "PreProcessing".wrap("<h3>") );
-$( "#stage2").html( "PostProcessing".wrap("<h3>") );
-$( "#stage3").html( "".wrap("<h3>") );
-$( "#stage4").html( "".wrap("<h3>") );
+// $( "#stage1").html( "PreProcessing".wrap("<h3>") );
+// $( "#stage2").html( "PostProcessing".wrap("<h3>") );
+// $( "#stage3").html( "".wrap("<h3>") );
+// $( "#stage4").html( "".wrap("<h3>") );
 
 //Display active root on table and in title
     document.title = "Conjugations of " + arRoot;
@@ -162,20 +178,30 @@ $( "#stage4").html( "".wrap("<h3>") );
     $( "#contentTable thead th" ).show();
 
 //Draw table rows
-    jQuery("#contentTable tbody").html( drawRow( arRoot, arSubject ) );
+    var rowsObj = drawRow( arRoot, arSubject );
+
+    // jQuery("#contentTable tbody").html( drawRow( arRoot, arSubject ) );
+    jQuery("#verbTableRows").html( rowsObj.verb );
+    jQuery("#nounTableRows").html( rowsObj.noun );
+    jQuery("#allTableRows").html( rowsObj.all );
 
 //Update formatting of rows with known-good forms
     for (var formNum = 1; formNum <= 10; ++formNum ) {
 
         if ( objRefs.indexRow(arRoot, formNum) > -1) {
-            jQuery( "#contentTable tr:nth-child("+formNum+") td").css({"color": "black"});
+            //jQuery( "#contentTable tr:nth-child("+formNum+") td").css({"color": "black"});
+            jQuery( ".dataRows tr:nth-child("+formNum+") td").css({"color": "black"});
+
         } else {
-            jQuery( "#contentTable tr:nth-child("+formNum+") td").css({"color": "dimgrey", "font-size": "medium"});
+            //jQuery( "#contentTable tr:nth-child("+formNum+") td").css({"color": "dimgrey", "font-size": "medium"});
+            jQuery( ".dataRows tr:nth-child("+formNum+") td").css({"color": "dimgrey", "font-size": "medium"});
         }
     }
 
 }
 
+
+/*      //* lookout: a curvy bracket is dorked up
 
 function drawAllSubjects() {
 //mostly intended for debugging, the UI is ugly
@@ -189,6 +215,13 @@ for (var i = 1; i <= 11; ++i ) {
     dividerRow += "<td> </td>";
 }
 
+  if ( blnRowsNotHeader === false ) {
+        $( "#dataTable th" ).each(function(colIndex) {
+            arrRow.push( $(this).text() );
+        });
+
+        return arrRow; //1D array of header (ths)
+
 //wipe table
     jQuery("#contentTable tbody").html( "" );
 
@@ -201,7 +234,7 @@ $( "#chosenSubject option").each( function( index, element ) {
 });
 
 }
-
+*/
 
 function structureReference( tableID ) {
 //organize row into an 1D array of headers, 2D array of data rows, and an array of key-value pairings
@@ -270,7 +303,6 @@ return output;
 }
 
 
-
 function setupData() {
 //callback function after google sheet query is complete
 
@@ -304,7 +336,10 @@ if ( arSubject === undefined ) {
     arSubject = pro_he;
 }
 
-var htmlOut = "";
+var rowsOut = {},
+    verbLine = "",
+    nounLine = "",
+    metaLine = "";
 
 //Declare data arrays
 var arrFormNum = [
@@ -333,36 +368,268 @@ var arrMeaning = [
     "Colors, Defects ",
     "Pretending, Requesting Change, Usage "];
 
-//Write out rows, one td at a time
+//First generate data
+    var colMasdar = cnjNoun(arRoot, "masdar", false,  null),
+        colAgent = cnjNoun(arRoot, "agent", false,  null),
+        colRecipient = cnjNoun(arRoot, "recipient", false,  null),
+        colTimePlace = cnjNoun(arRoot, "time-place", false,  null);
 
+    var colPassiveImperfect = cnjVerb(arRoot, "imperfect", false,  arSubject),
+        colPassivePerfect = cnjVerb(arRoot, "perfect", false,  arSubject),
+        colImperative,      //  TBD
+        colActiveImperfect = cnjVerb(arRoot, "imperfect", true,  arSubject),
+        colActivePerfect = cnjVerb(arRoot, "perfect", true,  arSubject);
+
+//Then write out rows, one td at a time
 for (var formNum = 1; formNum <= 10; ++formNum ) {
 
-//write noun columns
-    htmlOut += "<tr>";
-    htmlOut += conjActiveParticiple(arRoot, formNum).wrap("<td class='colNoun'>");
-    htmlOut += conjPassiveParticiple(arRoot, formNum).wrap("<td class='colNoun'>");
-    htmlOut += conjNounTimePlace(arRoot, formNum).wrap("<td class='colNoun'>");
-    htmlOut += conjMasdar(arRoot, formNum).wrap("<td class='colNoun'>");
+    verbLine += whole(colPassiveImperfect[formNum]).wrap("<td class='colVerb'>");
+    verbLine += whole(colPassivePerfect[formNum]).wrap("<td class='colVerb'>");
+    verbLine += "jsv/imp".wrap("<td class='colVerb'>");
+    verbLine += whole(colActiveImperfect[formNum]).wrap("<td class='colVerb'>");
+    verbLine += "<td class='colVerb'>" + whole(colActivePerfect[formNum]).wrap("<span>");
+    verbLine +=  (" " + objRefs.query(arRoot, formNum, "Preposition") ).wrap("<span class='spnPreposition'>") + "</td>";
 
-//write verb columns
-    htmlOut += verbalize(arRoot, formNum, "present", false, arSubject).wrap("<td class='colVerb'>");
-    htmlOut += verbalize(arRoot, formNum, "past", false, arSubject).wrap("<td class='colVerb'>");
-    htmlOut += verbalize(arRoot, formNum, "imperative", false, arSubject).wrap("<td class='colVerb'>");
-    htmlOut += verbalize(arRoot, formNum, "present", true, arSubject).wrap("<td class='colVerb'>");
-    htmlOut += "<td class='colVerb'>" + verbalize(arRoot, formNum, "past", true, arSubject).wrap("<span>");
-    htmlOut +=    (" " + objRefs.query(arRoot, formNum, "Preposition") ).wrap("<span class='spnPreposition'>") + "</td>";
+    nounLine += whole(colTimePlace[formNum]).wrap("<td class='colNoun'>");
+    nounLine += whole(colRecipient[formNum]).wrap("<td class='colNoun'>");
+    nounLine += whole(colAgent[formNum]).wrap("<td class='colNoun'>");
+    nounLine += whole(colMasdar[formNum]).wrap("<td class='colNoun'>");
 
-//write out meta columns
-    htmlOut += arrFormNum[formNum].wrap("<td class='colFormNum'>");
-    htmlOut += arrMeaning[formNum].wrap("<td class='colMeaning'>");
-    htmlOut += objRefs.query(arRoot, formNum, "Translation").wrap("<td class='colTranslation'>");
-    htmlOut += "</tr>";
-//maintenance note:  htmlOut = htmlOut.wrap("<tr>");  //doesn't work
+    metaLine += arrFormNum[formNum].wrap("<td class='colFormNum'>");
+    metaLine += arrMeaning[formNum].wrap("<td class='colMeaning'>");
+    metaLine += objRefs.query(arRoot, formNum, "Translation").wrap("<td class='colTranslation'>");
+    //maintenance note:  htmlOut = htmlOut.wrap("<tr>");  //doesn't work
+    metaLine += "</tr>";
+
+    rowsOut.noun += "<tr>" + nounLine + metaLine;
+    rowsOut.verb += "<tr>" + verbLine + metaLine;
+    rowsOut.all += "<tr>" + nounLine + verbLine + metaLine;
+    nounLine = verbLine = metaLine = "";
+}
+
+return rowsOut;
+}
+
+
+Array.prototype.last = function () {
+//method returns last item from array
+
+//     if (this === undefined) {
+//         return [];
+//     }
+
+    return this[this.length - 1];
+};
+
+
+function clone( objIn ) {
+//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+    return JSON.parse(JSON.stringify(objIn));
+}
+
+
+Array.prototype.x10 = function(callback, isVerbose){
+    return x10(this, callback, isVerbose);
+};
+
+
+function x10(arrayIn, callback, isVerbose){
+//somewhat general function for processing a copy of an array containing ten forms of a conjugation
+
+    var arrayOut = [],
+        word = {};
+
+    arrayIn.forEach(function ( value, index ) {
+
+        if ( index === 0 ) {
+            arrayOut.push(value);
+
+            if (isVerbose) { console.log(arrayOut[index]); }
+
+        } else {
+            word = clone(value);
+            arrayOut.push( callback(word)  );
+
+            if (isVerbose) { console.log( whole(arrayOut[index]) ); }
+        }
+    }   );
+
+    return arrayOut;
+}
+
+
+function base10( wordIn, callback ) {
+//returns an size 11 array containing templates of all 10 verb forms (0 is intended for use)
+
+var arrayOut = [],
+    word = {};
+
+    arrayOut.push(ar_ILB);
+
+for(var i=1; i <= 10; ++i) {
+    word = clone(wordIn);
+    word = cnjForm( word, i );
+    arrayOut.push( word );
+    }
+return arrayOut;
+}
+
+
+function arrayOW (array, newValue, x, y) {
+//over-writes new value into specified position in array, then returns the array
+    array[x][y] = newValue;
+    return array;
+}
+
+Array.prototype.vowel = function(vowel){
+//inserts vowel as new value in array position [0][1]
+//OR returns incumbent character if no param passed
+
+//intended use for vowels accompanying Arabic root radicals
+
+    if ( vowel === undefined ) {
+
+        if (this[0] === undefined) {
+            return "";
+
+        } else {
+            return this[0][1];
+        }
+
+    } else {
+        return arrayOW(this, vowel, 0, 1);
+    }
+};
+
+Array.prototype.consonant = function(consonant){
+//inserts consonant as new value in array position [1][0]
+//OR returns incumbent character if no param passed
+
+    if ( consonant === undefined ) {
+
+        if (this[0] === undefined) {
+            return "";
+
+        } else {
+            return this[0][0];
+        }
+
+    } else {
+        return arrayOW(this, consonant, 0, 0);
+    }
+};
+
+
+String.prototype.wrap = function ( openTag ) {
+//wraps string in passed html tag
+
+    var closeTag,
+        index = openTag.indexOf(" ");
+
+    if ( index === -1 ) {
+        //tag has no other attributes
+        closeTag = "</" + openTag.slice(1);
+
+    } else {
+        closeTag = "</" + openTag.slice(1, index) + ">";
+    }
+
+    return openTag + this + closeTag;
+};
+
+
+function flatReduce(arrayIn){
+//takes an array with an arbitrary number of dimensions and returns a string
+//* fails if param is a 1D array?!
+
+    if ( (arrayIn === undefined) || (arrayIn.length === 0) ) {
+        return "";
+    }
+
+    //flatten multi-D array into 1-drafts
+    var flatArray = arrayIn.reduce(function(prev, curr) {
+        return prev.concat(curr);
+    });
+
+    //reduce array to string
+    if ( flatArray.length === 0 ) {
+        return "";
+    } else {
+        return flatArray.reduce(reducer);
+    }
+}
+
+
+function Word( arRoot, enTense, isActive, arSubject ) {
+// Word properties encapsulation.  Keep it dumb (i.e. external functions, not internal methods).
+
+//declare metadata properties (7)
+    this.arRoot = arRoot;
+    this.arSubject = arSubject;
+    this.verbType = null;    //auto-categorize on declaration?
+    this.layer = "initial";  //identifies phase of conjugation processing
+
+    this.formNum = null;
+    this.enTense = enTense;
+    this.isActive = isActive;
+
+//declare data segments (9)
+    this.prefix =  [];
+    this.innerPrefix = [];
+
+    this.rad1 = [];
+    this.midRight = [];
+    this.rad2 = [];
+    this.midLeft = [];
+
+    this.rad3 = [];
+    this.innerSuffix = [];
+    this.suffix = [];
+
+    this.whole = "";
+
+//load radical segments with consonants
+    this.rad1.push( [arRoot.charAt(0), ""] );
+    this.rad2.push( [arRoot.charAt(1), ""] );
+    this.rad3.push( [arRoot.charAt(2), ""] );  //** may get weird on doubled verbs if rad3 is shadda
 
 }
 
-return htmlOut;
 
+function whole(word){
+//assembles all segment arrays of word object, and returns a String
+
+    var theWord  = flatReduce(word.prefix);
+        theWord += flatReduce(word.innerPrefix);
+        theWord += flatReduce(word.rad1);
+        theWord += flatReduce(word.midRight);
+        theWord += flatReduce(word.rad2);
+        theWord += flatReduce(word.midLeft);
+        theWord += flatReduce(word.rad3);
+        theWord += flatReduce(word.innerSuffix);
+        theWord += flatReduce(word.suffix);
+
+    return theWord;
+}
+
+
+function nonWord( wordIn ) {
+//create intentionally blank output, for when there is no conjugation (i.e. passive form of form 7 verb)
+
+    var word = clone(wordIn);
+
+    word.rad1 = ([["-",""]]);
+    word.rad2 = ([["-",""]]);
+    word.rad3 = ([["-",""]]);
+
+    word.prefix = [];
+    word.innerPrefix = [];
+    word.midRight = [];
+    word.midLeft = [];
+    word.innerSuffix = [];
+    word.suffix = [];
+
+    return word;
 }
 
 
@@ -392,41 +659,6 @@ var vowelOut = "";
     }
 
 return vowelOut;
-
-}
-
-
-function prefixVowel(formNum, isActive) {
-//returns vowel accompanying prefix of present stem of verb
-
-    if ( isActive === undefined ) {
-        isActive = true;
-    }
-
-    if ( isActive === true ) {
-        switch (formNum) {
-
-            case 2:
-            case 3:
-            case 4:
-                return ar_u;
-
-            case 1:
-            case 5:
-            case 6:
-            case 7:
-            case 8:
-            case 9:
-            case 10:
-                return ar_a;
-
-            default:
-                return "؟";
-        }
-    } else {
-        return ar_u;
-    }
-
 }
 
 
@@ -437,39 +669,4 @@ function jqAlert( htmlAlert ) {
     $( function() {
         $( "#divAlert" ).dialog();
     });
-}
-
-
-function isShortVowel( charIn, shaddaToo ) {
-//returns true if string is Arabic short vowel or sukkun
-//     smaller sized vowels: 1560-1562 << true
-//     regular sized short vowels and markings: 1611-1616 << true
-//     shadda: 1617 << it depends
-//     sukkun: 1618 << true
-
-if ( charIn === undefined ) {
-    console.log("Error, null passed to isShortVowel");
-    return false;
-}
-
-if ( shaddaToo === undefined ) {
-    shaddaToo = false;
-}
-
-var answer = false;
-
-if  ( ( ( charIn.charCodeAt(0) >= 1560 ) && ( charIn.charCodeAt(0) <= 1562 ) ) ||
-      ( ( charIn.charCodeAt(0) >= 1611 ) && ( charIn.charCodeAt(0) <= 1616 ) ) || ( charIn.charCodeAt(0) === 1618 )
-    ) { answer = true;}
-
-if (( shaddaToo ) && ( charIn.charCodeAt(0) === 1617 )) {
-    answer = true;
-}
-
-return answer;
-}
-
-
-String.prototype.replaceAt=function(index, replacement) {
-    return this.substr(0, index) + replacement+ this.substr(index + replacement.length);
 }

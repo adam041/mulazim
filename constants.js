@@ -2,6 +2,8 @@
 //Variables holding frequently used arabic characters.
 //Holding Arabic strings inside prevents RTF/LTR mismatch dorkery
 
+'esversion: 6';
+
 //short vowels & diacritics
 const ar_a="َ",         //fatah
     ar_i="ِ",           //kasrah
@@ -42,7 +44,6 @@ const ar_a="َ",         //fatah
 
 //combos
     ar_mu="مٌ",         //mim + damma
-    ar_Do="فعل",        //verb for debugging
     ar_LM = String.fromCharCode(1564),  //Arabic Language Marker character
     ar_ILB = "---",     //for intentionally left blank stems
 
@@ -60,9 +61,22 @@ const ar_a="َ",         //fatah
     pro_theyM = ar_hEye + ar_m,
     pro_theyF = ar_hEye + ar_n + ar_A;
 
+
+//array.reduce functions
 const   reducer = (accumulator, currentValue) => accumulator + currentValue;
 const   rowReducer = (accumulator, currentValue, currentIndex) => accumulator + currentValue.wrap("<td class='vowelCell" + currentIndex+ "'>").wrap("<tr>");
         //rowReducer note: vowel rows are written to html doc from top to bottom
+
+//root exemplars for testing
+const ar_Do="فعل",
+    arrive = "وصل",
+    travel = "زور",
+    fly = "طير",
+    walk = "مشي",
+    complain = "",
+    take = "أخذ",
+    replyA = "ردد",
+    replyB = "ردّ";
 
 /*
 Notes
