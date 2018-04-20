@@ -13,11 +13,11 @@ var word = new Word(arRoot, enTense, isActive, arSubject);
     drafts.push(draft);
 
 //get regular verb conj, for all 10 forms
-    draft = draft.x10(cnjRegularVerb, true);
+    draft = draft.x10(cnjRegularVerb, false);
     drafts.push(draft);
 
 //adjust conj if irregular, for all 10 forms
-    draft = draft.x10(cnjIrregularVerb, true);
+    draft = draft.x10(cnjIrregularVerb, false);
     drafts.push(draft);
 
 //apply QA routines
@@ -77,8 +77,8 @@ var word = clone(wordIn);
     } if ( ( word.arRoot.indexOf(ar_2v) > -1) || ( word.arRoot[1] === word.arRoot[2] ) ) {
         word = cnjDoubledVerb(word);
 
-    } else if ( hasHamza( word.arRoot ) ) {
-        word = cnjHamzaVerb( word );
+//     } else if ( hasHamza( word.arRoot ) ) {
+//         word = cnjHamzaVerb( word );
 
     } else {
         word.layer = "confirmed regular";
@@ -782,7 +782,7 @@ var word = clone(wordIn);
         if ( ( word.arSubject === pro_she ) || ( word.arSubject === pro_theyM ) ) {
 
             console.log("defective she/theyM");
-            console.log(word);
+//             console.log(word);
 
             word.rad3 = [];
 
@@ -801,61 +801,6 @@ var word = clone(wordIn);
         }
 
     } else { /* what about jussive/imperative?*/ }
-
-return word;
-}
-
-
-function dontGiveHimTheStick(matchChar) {
-//returns true if matchChar looks like an alif, including hamza carriers
-
-    var answer = false,
-        watchList = [ String.fromCharCode(1649), String.fromCharCode(1650), String.fromCharCode(1651),
-                    String.fromCharCode(1652), String.fromCharCode(1653), String.fromCharCode(1570),
-                    String.fromCharCode(1571), String.fromCharCode(1572), String.fromCharCode(1573),
-                    String.fromCharCode(1575) ];
-
-    answer = watchList.some( function(value) {
-        return matchChar === value;
-    });
-
-return answer;
-
-}
-
-
-function cnjHamzaVerb(wordIn){
-
-var word = clone(wordIn);
-
-word.verbType = "hamza in root";
-
-    if ( dontGiveHimTheStick( word.rad1.consonant() )) {
-
-//      console.log("hamza time " + word.enTense + "/" + word.isActive + ", form" + word.formNum);
-
-        if ( dontGiveHimTheStick( word.prefix.consonant() ) ) {
-            //subject = I & forms 1, 2, 3
-            word.rad1 = [];
-            word.rad1.push([ar_Am, ""]);
-            word.prefix = [];
-        }
-
-        if ( ( dontGiveHimTheStick( word.innerPrefix.consonant() )  ) && ( word.innerPrefix.length === 1 ) ) {
-            //forms 4, 7, 8, 9
-            word.rad1 = [];
-            word.rad1.push([ar_Am, ""]);
-            word.innerPrefix = [];
-        }
-
-        if ( dontGiveHimTheStick( word.midRight.consonant() ) ) {
-            //forms 3, 6
-            word.rad1 = [];
-            word.rad1.push([ar_Am, ""]);
-            word.midRight.shift();
-        }
-
-    }
 
 return word;
 }
@@ -932,6 +877,8 @@ var word = clone(wordIn);
                 word.midRight.consonant( ar_Taa );
         }
     }
+
+    //note: hamza carriers will get QA'd in whole() function
 
 return word;
 
@@ -1030,25 +977,6 @@ return word;
 // return seg;
 // }
 
-
-function hasHamza(aString) {
-//returns true if any character in the root contains a hamza
-
-if ( aString === undefined) { aString = ""; }
-
-var hasHamza = false;
-
-if (
-    ( -1 < aString.indexOf("ء") ) ||
-    ( -1 < aString.indexOf("إ") ) ||
-    ( -1 < aString.indexOf("أ") ) ||
-    ( -1 < aString.indexOf("ئ") ) ||
-    ( -1 < aString.indexOf("ؤ") ) ){
-        hasHamza = true;
-    }
-
-return hasHamza;
-}
 
 
 function isHollowIrregular(arRoot){

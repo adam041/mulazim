@@ -599,38 +599,103 @@ function Word( arRoot, enTense, isActive, arSubject ) {
 function whole(word){
 //assembles all segment arrays of word object, and returns a String
 
-    var theWord  = flatReduce(word.prefix);
-        theWord += flatReduce(word.innerPrefix);
-        theWord += flatReduce(word.rad1);
-        theWord += flatReduce(word.midRight);
-        theWord += flatReduce(word.rad2);
-        theWord += flatReduce(word.midLeft);
-        theWord += flatReduce(word.rad3);
-        theWord += flatReduce(word.innerSuffix);
-        theWord += flatReduce(word.suffix);
+    var wordString = "";
 
-    return theWord;
+    arrWordSegments.forEach( function (value, index) {
+        wordString += flatReduce( word[value] );
+    });
+
+    //qa Hamza carriers
+    wordString = hailHamza(wordString);
+
+    //collapse adjoining alifs to alif madda
+    wordString = collapseAlifs(wordString);
+
+return wordString;
 }
 
 
-function nonWord( wordIn ) {
+function nonWord(wordIn) {
 //create intentionally blank output, for when there is no conjugation (i.e. passive form of form 7 verb)
 
     var word = clone(wordIn);
 
-    word.rad1 = ([["-",""]]);
-    word.rad2 = ([["-",""]]);
-    word.rad3 = ([["-",""]]);
+    arrWordSegments.forEach( function (value, index) {
+        value = [];
+    });
 
-    word.prefix = [];
-    word.innerPrefix = [];
-    word.midRight = [];
-    word.midLeft = [];
-    word.innerSuffix = [];
-    word.suffix = [];
+    word.rad1.push(["-",""]);
+    word.rad2.push(["-",""]);
+    word.rad3.push(["-",""]);
 
-    return word;
+return word;
 }
+
+
+function nextSeg(word, currentSegment) {
+//returns the next segment within the word object
+//does this even have a use?
+    var index = arrWordSegments.indexOf(currentSegment),
+        arrSegs = [],
+        objOut = {
+        name: "",
+        data: [],
+//         consonant: "",
+//         vowel: ""
+        };
+
+    if ( index === arrWordSegments.length) {
+        arrSegs = arrWordSegments[index];
+    } else {
+        arrSegs = arrWordSegments.slice(index + 1);
+    }
+
+
+   arrSegs.forEach( function(value, index) {
+
+        if (( objOut.name === "" ) && ( word[value].length > 0 )) {
+            objOut.name = value;
+            objOut.data = word[value];
+//             objOut.consonant = word[value][0][0];
+//             objOut.vowel = word[value][0][1];
+        }
+    });
+
+return objOut.data;
+}
+
+
+function priorSeg(word, currentSegment) {
+//returns the next segment within the word object
+//does this even have a use?
+    var index = arrWordSegments.lastIndexOf(currentSegment),
+        arrSegs = [],
+        objOut = {
+        name: "",
+        data: [],
+//         consonant: "",
+//         vowel: ""
+        };
+
+    if ( index => 1) {
+        arrSegs = arrWordSegments.slice(0, index - 1);
+    } else {
+        arrSegs = arrWordSegments[0];
+    }
+
+   arrSegs.reverse().forEach( function(value, index) {
+
+        if (( objOut.name === "" ) && ( word[value].length > 0 )) {
+            objOut.name = value;
+            objOut.data = word[value];
+//             objOut.consonant = word[value][0][0];
+//             objOut.vowel = word[value][0][1];
+        }
+    });
+
+return objOut.data;
+}
+
 
 
 function vowelMe(enText) {
@@ -669,4 +734,218 @@ function jqAlert( htmlAlert ) {
     $( function() {
         $( "#divAlert" ).dialog();
     });
+}
+
+
+function hasHamza(aString) {
+//returns true if any character in the root contains a hamza
+
+if ( aString === undefined) { aString = ""; }
+
+var hasHamza = false;
+
+if (
+    ( -1 < aString.indexOf("ء") ) ||
+    ( -1 < aString.indexOf("إ") ) ||
+    ( -1 < aString.indexOf("أ") ) ||
+    ( -1 < aString.indexOf("ئ") ) ||
+    ( -1 < aString.indexOf("ؤ") ) ){
+        hasHamza = true;
+    }
+
+return hasHamza;
+}
+
+
+function hailHamza(strWord){
+//parse word in string format and adjust hamza carriers
+//split function seems obvious, but dorks up RTL / LTR
+
+if ( strWord === undefined ) {
+    return "hailHamza did not receive valid string input";
+}
+
+    var strWord = strWord,
+        index = -1,
+        charX = strWord.charAt(0),
+        charPrior = "",
+        charNext = "",
+        lastIndex = -1;
+
+//leading hamza
+    if ( hasHamza(charX) ) {
+
+        switch ( charX ) {
+            case ar_a:
+            case ar_u:
+            case ar_0:
+                strWord = ar_hA + strWord.slice(1);
+                break;
+
+            case ar_i:
+                strWord = ar_lA + strWord.slice(1);
+                break;
+            }
+    }
+
+//trailing hamza
+    index = strWord.length;
+    charX = strWord.charAt(index);
+
+    //if last char is a short vowel, evaluate whether the penultimate char has hamza
+    if ( isShortVowel(charX) ) {
+        index = index - 1;
+        charX = strWord.charAt(index);
+    }
+
+    charPrior = strWord.charAt(index - 1);
+    charPrior2 = strWord.charAt(index - 2);
+    charNext = strWord.charAt(index + 1);
+
+if ( hasHamza(charX) ) {
+
+    if ( ( charNext === ar_Y ) || ( charNext === ar_i ) || ( charPrior === ar_i ) || ( charPrior === ar_0 ) ) {
+        //carrier >> ئ
+        strWord = overWrite(strWord, index, ar_hY);
+
+    } else if ( ( charPrior === ar_u ) || ( charPrior === ar_U ) ) {
+        // carrier >> ؤ
+        strWord = overWrite(strWord, index, ar_hU);
+
+    } else if ( ( ( charPrior2 === ar_U ) && ( isShortVowel(charPrior) ) ) ||
+                ( ( charPrior2 === ar_hA ) && ( charPrior === ar_a )     ) ) {
+        // carrier >> aloof ء
+        strWord = overWrite(strWord, index, ar_h5);
+
+    } else if ( charPrior === ar_a ) {
+        // carrier >> أ
+        strWord = overWrite(strWord, index, ar_hA);
+    }
+
+}
+
+//medial hamza
+    for (var i = 1; i < index /* index is position of last consonant */; i++) {
+        charPrior = strWord.charAt(i-1);
+        charX = strWord.charAt(i);
+
+        if ( hasHamza(charX) ) {
+            switch (charPrior) {
+
+                case ar_u:
+                    console.log("medial hU from " + strWord);
+                    strWord = overWrite(strWord, i, ar_hU);
+                    break;
+
+                case ar_a:
+                    strWord = overWrite(strWord, i, ar_hA);
+                    break;
+
+                case ar_i:
+                    strWord = overWrite(strWord, i, ar_hY);
+                    break;
+
+                case ar_0:
+                case ar_A:
+                case ar_U:
+                case ar_Y:
+                    strWord = overWrite(strWord, i, ar_h5);
+                    break;
+            }//switch
+        }//if hasHamza
+    }//for
+
+return strWord;
+}
+
+
+function giveHimTheStick(matchChar) {
+//returns true if matchChar looks like an alif, including hamza carriers
+
+    var answer = false,
+        watchList = [ String.fromCharCode(1649), String.fromCharCode(1650), String.fromCharCode(1651),
+                    String.fromCharCode(1652), String.fromCharCode(1653), String.fromCharCode(1570),
+                    String.fromCharCode(1571), String.fromCharCode(1572), String.fromCharCode(1573),
+                    String.fromCharCode(1575) ];
+
+    answer = watchList.some( function(value) {
+        return matchChar === value;
+    });
+
+return answer;
+
+}
+
+
+function collapseAlifs(strWord) {
+//parse word in string format and collapse adjoining alifs into an alif madda
+
+    var charX,
+        charPrior,
+        char2Prior;
+
+    for (var i = 1; i < strWord.length; i++) {
+        charX = strWord.charAt(i);
+        charPrior = strWord.charAt(i-1);
+        char2Prior = strWord.charAt(i-2);
+
+        if ( giveHimTheStick(charX) && giveHimTheStick(charPrior) ) {
+            strWord = overWrite(strWord, i, ar_Am);
+            strWord = overWrite(strWord, i - 1, "");
+        } else if ( giveHimTheStick(charX) && isShortVowel(charPrior) && giveHimTheStick(char2Prior) ) {
+            strWord = overWrite(strWord, i, ar_Am);
+            strWord = overWrite(strWord, i - 1, "");    //** validate whether to preserve vowel
+            strWord = overWrite(strWord, i - 2, "");
+        }
+    }
+
+return strWord;
+}
+
+
+function overWrite(stringIn, index, newChar) {
+
+var stringOut = "",
+    stringPrior = "",
+    stringAfter = "";
+
+    if ( ( index < 0 ) || (index > stringIn.length) ) {
+        return "bad index";
+    }
+
+    stringPrior = stringIn.slice(0, index);
+    stringAfter = stringIn.slice(index + 1);
+    stringOut = stringPrior + newChar + stringAfter;
+
+return stringOut;
+}
+
+
+function isShortVowel( charIn, shaddaToo ) {
+//returns true if single character string is an Arabic short vowel or sukkun
+//     smaller sized vowels: 1560-1562 << true
+//     regular sized short vowels and markings: 1611-1616 << true
+//     shadda: 1617 << it depends
+//     sukkun: 1618 << true
+
+if ( charIn === undefined ) {
+    console.log("Error, null passed to isShortVowel");
+    return false;
+}
+
+if ( shaddaToo === undefined ) {
+    shaddaToo = false;
+}
+
+var answer = false;
+
+if  ( ( ( charIn.charCodeAt(0) >= 1560 ) && ( charIn.charCodeAt(0) <= 1562 ) ) ||
+      ( ( charIn.charCodeAt(0) >= 1611 ) && ( charIn.charCodeAt(0) <= 1616 ) ) || ( charIn.charCodeAt(0) === 1618 )
+    ) { answer = true; }
+
+if (( shaddaToo ) && ( charIn.charCodeAt(0) === 1617 )) {
+    answer = true;
+}
+
+return answer;
 }

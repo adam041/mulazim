@@ -8,22 +8,25 @@
 const ar_a="َ",         //fatah
     ar_i="ِ",           //kasrah
     ar_u="ُ",           //damma
-
     ar_an="ً",          //fatah + tanwin
     ar_in="ٍ",          //kasrah + tanwin
     ar_un="ٌ",          //damma + tanwin
-
     ar_0="ْ",           //sukkun
     ar_2v="ّ",          //shadda
 
 //long vowels
     ar_A="ا",           //alif (plain)
-    ar_hA="أ",          //alif w/ upper hamza
-    ar_lA="إ",          //alif w/ lower hamza
     ar_Am = "آ",        //alif with madda hat
     ar_Y="ي",           //ya
     ar_am="ى",          //alif maqsura
     ar_U="و",           //wuuw
+
+//hamza
+    ar_h5="ء",          //hamza
+    ar_hA="أ",          //alif w/ upper hamza
+    ar_lA="إ",          //alif w/ lower hamza
+    ar_hU="ؤ",          //hamza over wuw
+    ar_hY="ئ",          //hamza over Ya
 
 //consonants
     ar_hHat = "ح",
@@ -34,7 +37,6 @@ const ar_a="َ",         //fatah
     ar_s="س",           //sin
     ar_t="ت",           //ta
     ar_tb="ة",          //ta-marbuta
-    ar_h5="ء",          //hamza
     ar_d="د",
     ar_dh="ذ",
     ar_z="ز",
@@ -43,7 +45,7 @@ const ar_a="َ",         //fatah
     ar_Daad="ض",
 
 //combos
-    ar_mu="مٌ",         //mim + damma
+//     ar_mu="مٌ",         //mim + damma
     ar_LM = String.fromCharCode(1564),  //Arabic Language Marker character
     ar_ILB = "---",     //for intentionally left blank stems
 
@@ -63,6 +65,7 @@ const ar_a="َ",         //fatah
 
 
 //array.reduce functions
+const   arrWordSegments = ["prefix", "innerPrefix", "innerRight", "rad1", "midRight", "rad2", "midLeft", "rad3", "innerSuffix", "suffix"];
 const   reducer = (accumulator, currentValue) => accumulator + currentValue;
 const   rowReducer = (accumulator, currentValue, currentIndex) => accumulator + currentValue.wrap("<td class='vowelCell" + currentIndex+ "'>").wrap("<tr>");
         //rowReducer note: vowel rows are written to html doc from top to bottom

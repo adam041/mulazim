@@ -13,7 +13,7 @@ var word = new Word(arRoot, enTense);       //, isActive, arSubject);
     drafts.push(draft);
 
 //get regular verb conj, for all 10 forms
-    draft = draft.x10(cnjRegularNoun, true);
+    draft = draft.x10(cnjRegularNoun, false);
     drafts.push(draft);
 
 //adjust conj if irregular, for all 10 forms
@@ -125,9 +125,9 @@ var masdar1 = clone(word),
         return word;
 
     } else if (masdarData.length === 1) {
-        console.log("Use masdar code");
+//        console.log("Use masdar code");
     } else if (masdarData === "") {
-        console.log("No masdar code, use default setting");
+//        console.log("No masdar code, use default setting");
     }
 
 //continue to conjugation
