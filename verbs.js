@@ -48,7 +48,7 @@ if ( word.enTense === "perfect" ) {
     //what about imperative?
 }
 
-return word;
+//return word;
 
 // handle irregulars in separate function, in order
 // to compare & debug differences in processing
@@ -59,6 +59,11 @@ function cnjIrregularVerb( wordIn ) {
 //switchboard function to call irregular modifications
 
 var word = clone(wordIn);
+
+    if ( word.rad1[0].indexOf("-") > -1 ) {
+        //early exit if verb form was intentionally left blank
+        return word;
+    }
 
     word.layer = "irregular";
 
@@ -782,7 +787,6 @@ var word = clone(wordIn);
         if ( ( word.arSubject === pro_she ) || ( word.arSubject === pro_theyM ) ) {
 
             console.log("defective she/theyM");
-//             console.log(word);
 
             word.rad3 = [];
 
@@ -1477,34 +1481,7 @@ arrOut.push(arrConsonants, arrVowels);
 return arrOut;
 }
 
-function isShortVowel( charIn, shaddaToo ) {
-//returns true if string is Arabic short vowel or sukkun
-//     smaller sized vowels: 1560-1562 << true
-//     regular sized short vowels and markings: 1611-1616 << true
-//     shadda: 1617 << it depends
-//     sukkun: 1618 << true
 
-if ( charIn === undefined ) {
-    console.log("Error, null passed to isShortVowel");
-    return false;
-}
-
-if ( shaddaToo === undefined ) {
-    shaddaToo = false;
-}
-
-var answer = false;
-
-if  ( ( ( charIn.charCodeAt(0) >= 1560 ) && ( charIn.charCodeAt(0) <= 1562 ) ) ||
-      ( ( charIn.charCodeAt(0) >= 1611 ) && ( charIn.charCodeAt(0) <= 1616 ) ) || ( charIn.charCodeAt(0) === 1618 )
-    ) { answer = true; }
-
-if (( shaddaToo ) && ( charIn.charCodeAt(0) === 1617 )) {
-    answer = true;
-}
-
-return answer;
-}
 
 function prefixVowel(formNum, isActive) {
 //returns vowel accompanying prefix of present stem of verb

@@ -621,7 +621,7 @@ function nonWord(wordIn) {
     var word = clone(wordIn);
 
     arrWordSegments.forEach( function (value, index) {
-        value = [];
+        word[value] = [];
     });
 
     word.rad1.push(["-",""]);
