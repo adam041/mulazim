@@ -566,7 +566,7 @@ function Word( arRoot, enTense, isActive, arSubject ) {
 //declare metadata properties (7)
     this.arRoot = arRoot;
     this.arSubject = arSubject;
-    this.verbType = null;    //auto-categorize on declaration?
+    this.type = null;    //regular verb (noun), irregular type of verb (noun)
     this.layer = "initial";  //identifies phase of conjugation processing
 
     this.formNum = null;
@@ -632,9 +632,40 @@ return word;
 }
 
 
+function nextVowel(word, radSegment) {
+//takes word and a string corresponding to one of the radical segments, and returns the next short vowel character
+
+var arrSeg = word[radSegment],
+    charX = "";
+
+    if ( word[radSegment].length === 0 ) {
+        charX = "";
+    } else {
+        charX = arrSeg[0][1];
+    }
+
+if ( isShortVowel(charX) ) {
+    //return vowel if paired with radical's consonant
+    return charX;
+
+} else {
+    //return vowel from next word segment containing data
+    arrSeg = nextSeg(word, radSegment);
+
+    if (arrSeg.length > 0) {
+        return arrSeg[0][1];
+
+    }   else {
+        return "";
+    }
+}
+
+}
+
+
 function nextSeg(word, currentSegment) {
 //returns the next segment within the word object
-//does this even have a use?
+
     var index = arrWordSegments.indexOf(currentSegment),
         arrSegs = [],
         objOut = {
@@ -833,7 +864,6 @@ if ( hasHamza(charX) ) {
             switch (charPrior) {
 
                 case ar_u:
-                    console.log("medial hU from " + strWord);
                     strWord = overWrite(strWord, i, ar_hU);
                     break;
 
@@ -891,11 +921,15 @@ function collapseAlifs(strWord) {
 
         if ( giveHimTheStick(charX) && giveHimTheStick(charPrior) ) {
             strWord = overWrite(strWord, i, ar_Am);
-            strWord = overWrite(strWord, i - 1, "");
+            strWord = overWrite(strWord, i-1, "");
         } else if ( giveHimTheStick(charX) && isShortVowel(charPrior) && giveHimTheStick(char2Prior) ) {
             strWord = overWrite(strWord, i, ar_Am);
-            strWord = overWrite(strWord, i - 1, "");    //** validate whether to preserve vowel
-            strWord = overWrite(strWord, i - 2, "");
+            strWord = overWrite(strWord, i-1, "");
+            strWord = overWrite(strWord, i-2, "");
+
+            if ( isShortVowel(strWord.charAt(i+1) ) ) {
+                strWord = overWrite(strWord, i+1 , "");
+            }
         }
     }
 
@@ -928,10 +962,12 @@ function isShortVowel( charIn, shaddaToo ) {
 //     shadda: 1617 << it depends
 //     sukkun: 1618 << true
 
+
 if ( charIn === undefined ) {
     console.log("Error, null passed to isShortVowel");
     return false;
 }
+// console.log("iSV " + charIn);
 
 if ( shaddaToo === undefined ) {
     shaddaToo = false;
@@ -948,4 +984,16 @@ if (( shaddaToo ) && ( charIn.charCodeAt(0) === 1617 )) {
 }
 
 return answer;
+}
+
+function debug(word, useConsole){
+//writes info about word object to console
+
+var stringy = word.arRoot + " /f" + word.formNum  + " / " + word.enTense + "-" + word.isActive + " / " + whole(word);
+
+if (useConsole) {
+    console.log(stringy);
+}
+
+return stringy;
 }

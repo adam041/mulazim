@@ -129,27 +129,7 @@ option {
     direction: rtl;
 }
 
-
-/*
-#inputTable {
-    vertical-align: top;
-}
-
-#inputTable ul {
-    border-radius: 10px;
-}
-
 /* end input menu */
-
-/* style subject conjugation table else */
-/*
-#tableConjBySubject td.arCell {
-    direction: rtl;
-    color: black;
-    border: solid black 1px;
-    font-size: large;
-}
- */
 
 
 /* style everything else */

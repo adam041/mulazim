@@ -36,7 +36,6 @@ function cnjRegularVerb( wordIn ) {
 var word = clone(wordIn);
     word.layer = "preliminary regular";
 
-//get Regular conjugation
 if ( word.enTense === "perfect" ) {
     return cnjPerfect( word );
 
@@ -87,16 +86,16 @@ var word = clone(wordIn);
 
     } else {
         word.layer = "confirmed regular";
-        word.verbType = "regular";
+        word.type = "regular";
     }
 
     //inform user if verb is irregular
-    if ( ( word.verbType === null ) || ( word.verbType === "regular" ) ){
+    if ( ( word.type === null ) || ( word.type === "regular" ) ){
 //         $("tfoot tr td:nth-child(1) ").html( "&nbsp <br> &nbsp " );
         $("#divFooter").html( "&nbsp" );
     } else {
-        $("#divFooter").html( "Irregular " + word.verbType + " conjugation applied to " + ar_LM + word.arRoot );
-//        $("tfoot tr td:nth-child(1) ").html( "Irregular " + word.verbType + " conjugation applied to " + ar_LM + word.arRoot );
+        $("#divFooter").html( "Irregular " + word.type + " conjugation applied to " + ar_LM + word.arRoot );
+//        $("tfoot tr td:nth-child(1) ").html( "Irregular " + word.type + " conjugation applied to " + ar_LM + word.arRoot );
     }
 
 return word;
@@ -403,15 +402,19 @@ if ( word.isActive ) {
 
 function cnjJussive( wordIn ) {
 //returns conjugated trilateral verb in jussive tense
+//start with verb in imperfect/active tense, and then modify it
 
-//get vanilla imperfect/present verb
-    word = clone(wordIn);
-    word.isActive = true;
-    word = cnjImperfect( clone(word) );
-    word.verbType = "jussive";
+var regWord = clone(wordIn);
+    regWord.isActive = true;
+    regWord.enTense = "imperfect";
+    regWord = cnjImperfect( regWord );
+
+var word = clone(regWord);
+    regWord.enTense = "jussive";
+    word.type = "jussive prelim"; //**
 
 //modify suffix
-    if ( word.suffix.last() === ["", ar_u] ) {
+    if ( ( word.suffix[0][0] === "" ) && ( word.suffix[0][1] === ar_u ) ) {
         word.suffix.pop();
         word.suffix.push(["", ar_0]);
     }
@@ -435,7 +438,6 @@ function cnjJussive( wordIn ) {
 
 //handle defective verbs
     if ( ( word.rad3.consonant()=== ar_U ) || ( word.rad3.consonant()=== ar_Y ) ) {
-
         word.rad3 = [];
 
         if  ( word.rad3.consonant()=== ar_U ) {
@@ -443,22 +445,10 @@ function cnjJussive( wordIn ) {
         } else {
             word.rad3.push(["", ar_i]);
         }
-
-//         if (( word.arSubject === pro_youF ) || ( word.arSubject === pro_vousF )  || ( word.arSubject === pro_theyF ) ) {
-//             //drop N in suffix...already done?
-//
-//         } else if ( (word.arSubject === pro_vousM) || (word.arSubject === pro_theyM ) ) {
-//             word.suffix.pop();
-//             word.suffix.push([ar_A, ""]);
-//
-//         } else {
-//
-//         }
-
     }
 
 //handle doubled verbs
-    // **   TBD     **
+    word = cnjDoubledVerb(word);
 
 return word;
 }
@@ -604,7 +594,7 @@ var prefix = "",
 
         case pro_she:
             word.suffix.push(["", ar_a]);
-            word.suffix.push([ar_t, ""]);
+            word.suffix.push([ar_t, ar_0]);
             break;
 
         case pro_theyM:
@@ -637,7 +627,7 @@ var word = clone(wordIn);
         case 5:
         case 6:
         case 10:
-            word.verbType = "regular in this form, root matches assimilative pattern";
+            word.type = "regular in this form, root matches assimilative pattern";
             return word;
 
         case 4:
@@ -655,7 +645,7 @@ var word = clone(wordIn);
             break;
     }
 
-    word.verbType = "assimilative";
+    word.type = "assimilative";
 
 //continue to process verb as irregular
 
@@ -688,7 +678,7 @@ var word = clone(wordIn);
         break;
     }
 
-    word.verbType = "hollow";
+    word.type = "hollow";
 
 //continue to process verb as irregular
 
@@ -737,7 +727,7 @@ function cnjUltraHollowVerb(wordIn) {
 
     var word = clone(wordIn);
 
-    word.verbType = "hollow, especially irregular";
+    word.type = "hollow, especially irregular";
 
     if ( word.enTense  === "perfect" ) {
         //conj as if it is hollow, with ar_Y in the 2nd radical
@@ -814,38 +804,23 @@ function cnjDoubledVerb(wordIn) {
 // modifies stem in accordance with irregular verb rules
 // code works whether verb radical 2 and 3 are the same, OR rad3 is a shadda
 
-    var word = clone(wordIn);
+    var word = clone(wordIn),
+        nextChar = nextVowel(word, "rad3");
 
-    word.verbType = "doubled";
+    word.type = "doubled";
 
-    function doubleSauce(word) {
+    if ( nextChar === ar_0 ) {
+        word.rad3.consonant( word.rad2.consonant() );
+
+    } else if ( isShortVowel(nextChar) )  {
         //move rad2 vowel to rad1, collapse rad3 into rad2 shadda
         word.rad1.vowel( word.rad2.vowel() );
-        word.rad1.vowel( word.rad1.vowel().replace(ar_2v,"") ); //remove dupe shadda for form 2 & 5
+        word.rad1.vowel( word.rad1.vowel().replace(ar_2v, "") ); //remove dupe shadda for form 2 & 5
         word.rad2.vowel( ar_2v );
         word.rad3 = [];
+    } else {
+        console.log("doubled nextVowel failed on " + debug(word) );
     }
-
-    if ( word.enTense  === "perfect" ) {
-    //most subjects get a letter for rad3
-
-        if ( ( word.arSubject === pro_he ) || ( word.arSubject === pro_she ) || (word.arSubject === pro_theyM) ) {
-            doubleSauce(word);
-        } else {
-            word.rad3.consonant( word.rad2.consonant() );
-        }
-
-    } else if ( word.enTense  === "imperfect" ) {
-    //most subjects get a shadda for rad3
-
-      if ( ( word.arSubject === pro_youF ) || ( word.arSubject === pro_theyF ) ) {
-            word.rad3.consonant( word.rad2.consonant() );
-
-        } else {
-            doubleSauce(word);
-        }
-
-    } else { /* what about jussive/imperative?*/ }
 
 return word;
 }
@@ -1002,357 +977,10 @@ return arrIrregulars.some(isMatch);
 //Keep Everything ABOVE This Line
 
 
-
-
-
 ////////////////////
 // OLD STUFF BELOW
 ////////////////////
-
-
-
-
-
-////////////////////
-// OLD STUFF BELOW
-////////////////////
-
-
-
-
-
-////////////////////
-// OLD STUFF BELOW
-////////////////////
-
-
 /*
-
-function verbalize(arRoot, formNum, enTense, isActive, arSubject) {
-//finds stem of a verb, and then adds prefixes and suffixes appropriate to tense and subject
-//root and formNum are required parameters.  Active/Present/3rd person masculine single assumed if no param passed
-// enTense parameter should be "present" or "past", english language string
-// isActive is boolean
-// arSubject parameter should be Arabic language string.  Omit short vowels except to distinguish singular forms of you
-
-//console.log("Verbalize called with args: " + Object.entries(arguments) );
-
-//ensure optional variables are not null
-if ( enTense === undefined ) {
-    enTense = "present";
-}
-
-if ( isActive === undefined ) {
-    isActive = true;
-}
-
-if ( arSubject === undefined ) {
-    arSubject = "هو";
-}
-
-//Declare string variables for internal use
-var word = {
-        arRoot: arRoot,
-        formNum: parseInt(formNum),
-        enTense: enTense,
-        isActive: isActive,
-        arSubject: arSubject,
-        verbType: "regular",
-        prefix: "",
-        stem: "",
-        suffix: "",
-        whole: function() {
-            return this.prefix + this.stem + this.suffix;
-        },
-    };
-
-//Build object holding reference info needed to fill in details for forms 1-3
-// var objRefs = makeReferenceObject();
-
-//Get the stem
-
-if ( enTense === "present" ) {
-
-    if ( isActive ) {
-        word.stem = conjActivePresent(arRoot, formNum);
-    } else {
-        word.stem = conjPassivePresent(arRoot, formNum);
-    }
-
-} else if ( enTense === "past" ) {
-
-    if ( isActive ) {
-        word.stem = conjActivePast(arRoot, formNum);
-    } else {
-        word.stem = conjPassivePast(arRoot, formNum);
-    }
-
-} else if ( enTense === "imperative" ) {
-    word.stem = conjImperative(arRoot, formNum);
-}
-
-//Get Present Prefix/Suffix
-word.prefix = getPrefixSuffix(enTense, isActive, arSubject, true, formNum);
-word.suffix = getPrefixSuffix(enTense,isActive, arSubject, false, formNum);
-
-//squelch prefix/suffix if stem intentionally left blank
-    if ( word.stem === ar_ILB ) {
-        word.prefix = "";
-        word.suffix = "";
-    }
-
-///////////////////////////////////
-//perform post-processing QA checks
-
-//check if irregular
-word = irregularizer( word );
-
-var wholeWord = word.whole();
-
-// if ( word.formNum === 10 ) {
-//    console.log( segment(word) );
-// }
-
-//Catch double alifs and combine to alif w/ madda. Needed for hollow verbs in form 6.
-    var re2Alif = new RegExp(/[\u{0622}|\u{0623}|\u{0625}|\u{0627}]{2}/ug);
-    wholeWord = wholeWord.replace(re2Alif, ar_Am);
-
-//make form 8 adjustments
-if ( word.formNum === 8 ) {
-
-    if (( word.arRoot.charAt(0) === ar_t ) || ( hasHamza( word.arRoot.charAt(0) ) )) {
-        wholeWord = wholeWord.replace(ar_t, ar_t + ar_2v);
-    }
-
-    if ( word.arRoot.charAt(0) === ar_U ) {
-        wholeWord = wholeWord.replace(ar_U, "");
-        wholeWord = wholeWord.replace(ar_t, ar_t + ar_2v);
-    }
-
-    if ( word.arRoot.charAt(0) === ar_z ) {
-        wholeWord = wholeWord.replace(ar_t, ar_d);
-    }
-
-    if (( word.arRoot.charAt(0) === ar_d ) || ( word.arRoot.charAt(0) === ar_dh )) {
-        wholeWord = wholeWord.replace(ar_t, ar_d + ar_2v);
-    }
-
-    if ( word.arRoot.charAt(0) === ar_Daad ) {
-        wholeWord = wholeWord.replace(ar_t, ar_Taa);
-    }
-
-    if (( word.arRoot.charAt(0) === ar_Taa ) || ( word.arRoot.charAt(0) === ar_Zaa )) {
-        wholeWord = wholeWord.replace(ar_t, ar_Taa + ar_2v);
-    }
-
-}
-
-
-//Chunk string to array
-var arrChunky = [];
-    arrChunky = chunk(wholeWord);
-                //consonants sub array stored at position 0
-                //vowels sub array stored at position 1
-
-////    ////    Debuggery
-var htmlDebug = chunkTable( arrChunky, "", word );
-////    ////    Debuggery
-
-//write out initial conjugations to debug review area
- $( "#stage1" ).append( htmlDebug );
-
-//de-dupe vowels
-arrChunky[1].forEach(function ( subArray, index ) {
-    arrChunky[1][index] = Array.from(new Set( subArray ));
-});
-
-//write out post-processed conjugations to debug review area
-    htmlDebug = chunkTable( arrChunky, "", word );
-    $( "#stage2" ).append( htmlDebug );
-
-//flag excess vowels  ** it would be nicer if formatting didn't include shadda in overload count, but this is close enough
-    $( ".vowelCell2" ).css({ "background-color": "yellow" });
-    $( ".vowelCell3" ).css({ "background-color": "orange" });
-    $( ".vowelCell4" ).css({ "background-color": "red" });
-
-//Reassemble array to string
-    wholeWord = "";
-
-    var consonant = "",
-        vowel = "";
-
-//reverse() removed **
-    arrChunky[0].forEach(function ( value, index ) {
-
-        consonant = value;
-
-        if ( arrChunky[1][index].length > 0 ) {
-            vowel = arrChunky[1][index].reduce(reducer);
-        } else { vowel = ""; }
-
-        wholeWord += consonant + vowel;
-        consonant = vowel = "";
-    });
-
-return wholeWord;
-}
-
-
-function getPrefixSuffix(enTense, isActive, arSubject, blnPrefixNotSuffix, formNum) {
-
-if ( blnPrefixNotSuffix === "undefined" ) {
-    blnPrefixNotSuffix = true;
-}
-
-if ( isActive === "undefined" ) {
-    isActive = true;
-}
-
-var prefix = "",
-    suffix = "";
-
-    //Get Present Prefix/Suffix
-    if ( enTense === "present" ) {
-
-        //Present Prefixes
-        switch ( arSubject ) {
-
-            case pro_i:
-                prefix = ar_hA + prefixVowel(formNum, isActive);
-                break;
-
-            case pro_we:
-                prefix = ar_n + prefixVowel(formNum, isActive);
-                break;
-
-            case pro_youM:
-            case pro_youF:
-            case pro_she:
-            case pro_vousM:
-            case pro_vousF:
-                prefix = ar_t + prefixVowel(formNum, isActive);
-                break;
-
-            case pro_he:
-            case pro_theyM:
-            case pro_theyF:
-                prefix = ar_Y + prefixVowel(formNum, isActive);
-                break;
-        }
-
-        //Present Suffixes
-        switch ( arSubject ) {
-
-            case pro_youF:
-                suffix = ar_i + ar_Y + ar_n + ar_a;
-                break;
-
-            case pro_theyM:
-                suffix = ar_u + ar_U + ar_n;
-                break;
-
-            case pro_vousM:
-                suffix = ar_u + ar_U + ar_n + ar_a;
-                break;
-
-            case pro_vousF:
-            case pro_theyF:
-                suffix = ar_0 + ar_n + ar_a;
-                break;
-
-            default:
-                suffix = ar_u;
-                break;
-        }
-
-    } else if ( enTense === "past" ) {
-    //Get Past Suffix
-
-        switch ( arSubject ) {
-
-            case pro_i:
-                suffix = ar_0 + ar_t + ar_u;
-                break;
-
-            case pro_we:
-                suffix = ar_0 + ar_n + ar_a + ar_A;
-                break;
-
-            case pro_youM:
-                suffix = ar_0 + ar_t + ar_a;
-                break;
-
-            case pro_youF:
-                suffix = ar_0 + ar_t + ar_i;
-                break;
-
-            case pro_vousM:
-                suffix = ar_0 + ar_t + ar_u + ar_m;
-                break;
-
-            case pro_vousF:
-                suffix = ar_0 + ar_t + ar_u + ar_n + ar_2v + ar_a;
-                break;
-
-            case pro_he:
-                suffix = ar_a;
-                break;
-
-            case pro_she:
-                suffix = ar_a + ar_t;
-                break;
-
-            case pro_theyM:
-                suffix = ar_u + ar_U + ar_A;
-                break;
-
-            case pro_theyF:
-                suffix = ar_0 + ar_n + ar_a;
-                break;
-        }
-
-    }
-
-if ( blnPrefixNotSuffix ) {
-    return prefix;
-} else {
-    return suffix;
-}
-
-}
-
-
-function prefixVowel(formNum, isActive) {
-//returns vowel accompanying prefix of present stem of verb
-
-if ( isActive === undefined ) {
-    isActive = true;
-}
-
-if ( isActive === true ) {
-    switch (formNum) {
-
-        case 2:
-        case 3:
-        case 4: return ar_u;
-
-        case 1:
-        case 5:
-        case 6:
-        case 7:
-        case 8:
-        case 9:
-        case 10: return ar_a;
-
-        default: return "؟";
-    }
-
-} else {
-    return ar_u;
-}
-
-}
-
 
 function conjImperative(arRoot, formNum) {
 //returns conjugated trilateral verb in Imperative
@@ -1393,129 +1021,4 @@ function conjImperative(arRoot, formNum) {
       }
 }
 
-
-function chunkTable( array, title, word ) {
-//takes an array of Arabic where array[0] has all the consonants and array[1] has all the vowels
-//and outputs a html table showing individual characters, split by consonant and vowel/diacritic rows
-
-//optional param - title of table
-if ( title === undefined ) { title = ""; }
-
-    var vowel = "",
-        frame = "",
-        wholeWord = ""; //vowel(s)
-
-    var table = "",
-        trConsonants = "",
-        trVowels = "",
-        tdVowel = "";
-
-    array[0].forEach(function ( consonant, index ) {
-
-        if ( array[1][index].length > 0 ) {
-            vowel = array[1][index].reduce(reducer);
-            trVowels += array[1][index].reduce(rowReducer).wrap("<table>").wrap("<td style='vertical-align: bottom'>");
-        } else {
-            vowel = "";
-            trVowels = "".wrap("<table>").wrap("<td>");
-        }
-
-        trConsonants += consonant.wrap("<td>");
-
-        frame = consonant + vowel;
-        wholeWord += frame;
-
-    });
-
-    trConsonants = trConsonants.wrap("<tr>");
-    trVowels = trVowels.wrap("<tr>");
-
-    var params = " ( f" + word.formNum + "-" + word.enTense + "-" + word.isActive + " ) ";
-
-    table += ( ar_LM + wholeWord + ar_LM + params + title ).wrap("<th colspan='99'>").wrap("<tr>").wrap("<thead>");
-    table += ( trVowels + trConsonants ).wrap("<tbody>");
-    table = table.wrap("<table>");
-
-return table;
-
-}
-
-
-
-
-
-function chunk( stringIn ) {
-//takes a stringIn, returns a 2D array containing all chars
-// array[consonant string][array of vowel(s)]
-
-var arrConsonants = [],
-    arrVowels = [],
-    arrOut = [],
-    vBuffer = [""]; //,
-//     c = ""; //holds active character from stringIn
-
-for (var i = 0, c = ""; i < stringIn.length; i++) {
-    c = stringIn.charAt(i);
-
-    if (( isShortVowel(c) ) || ( c === ar_2v )) {
-        vBuffer.push(c);
-    } else {
-
-        arrConsonants.push(c);
-        if ( i !== 0 ) {
-            arrVowels.push(vBuffer);
-            vBuffer = [""];
-        }
-    }
-}
-
-//push vowels one last time to maintain symmetry with consonants, and to account for trailing vowel characters
-    arrVowels.push(vBuffer);
-
-if ( arrConsonants.length !== arrVowels.length ) {
-    console.log("!  Frame mismatch error in chunk(" + stringIn + ")");
-}
-
-arrOut.push(arrConsonants, arrVowels);
-
-return arrOut;
-}
-
-
-
-function prefixVowel(formNum, isActive) {
-//returns vowel accompanying prefix of present stem of verb
-
-    if ( isActive === undefined ) {
-        isActive = true;
-    }
-
-    if ( isActive === true ) {
-        switch (formNum) {
-
-            case 2:
-            case 3:
-            case 4:
-                return ar_u;
-
-            case 1:
-            case 5:
-            case 6:
-            case 7:
-            case 8:
-            case 9:
-            case 10:
-                return ar_a;
-
-            default:
-                return "؟";
-        }
-    } else {
-        return ar_u;
-    }
-
-}
-
 */
-
-//stuff above here may become garbage
