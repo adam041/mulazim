@@ -103,7 +103,7 @@ var masdar1 = clone(word),
     masdarData = objRefs.query(word.arRoot, word.formNum, "Masdar");
                 //may be a fully conjugated word, single character code, or null
 
-    if (masdarData.length > 1) {
+    if (masdarData.length > 2) {
         //Coerce string from masdarData to a word object, chunk words between hyphens
         //and insert word as a radical "character".  Then exit.
 
@@ -124,11 +124,12 @@ var masdar1 = clone(word),
         //early exit with coerced word object
         return word;
 
-    } else if (masdarData.length === 1) {
+    } /* else if ( ( masdarData.length === 1) || (masdarData.length === 2) ) {
 //        console.log("Use masdar code");
     } else if (masdarData === "") {
 //        console.log("No masdar code, use default setting");
     }
+*/
 
 //continue to conjugation
 
@@ -228,19 +229,51 @@ var masdar1 = clone(word),
             word.innerPrefix = [];
             word.innerPrefix.push([ar_lA, ar_i]); //overwrite default
 
-            word.rad1.vowel(ar_0);
-            word.rad2.vowel(ar_a);
-            word.midLeft.push([ar_A, ""]);
+            switch (word.type) {
+                case "hollow":
+                case "hollow2":
+                    word.rad1.vowel(ar_a);
+                    word.midRight.push([ar_A, ""]);
+                    word.rad2.vowel(ar_a);
+                    word.innerSuffix.push([ar_tb, ""]);
+                    break;
+
+                case "defective":
+                    word.rad1.vowel(ar_0);
+                    word.rad2.vowel(ar_a);
+                    word.midLeft.push([ar_A, ""]);
+                    word.innerSuffix.push([ar_h5, ""]);
+                    break;
+
+                default:
+                    word.rad1.vowel(ar_0);
+                    word.rad2.vowel(ar_a);
+                    word.midLeft.push([ar_A, ""]);
+                    break;
+            }
+
             break;
 
         case 5:
-            word.rad1.vowel(ar_a);
-            word.rad2.vowel(ar_2v + ar_u);
+            if (word.type === "defective") {
+                word.rad1.vowel(ar_a);
+                word.rad2.vowel(ar_2v + ar_un);
+                word.rad3 = [];
+            } else {
+                word.rad1.vowel(ar_a);
+                word.rad2.vowel(ar_2v + ar_u);
+            }
             break;
 
         case 6:
-            word.rad1.vowel(ar_a);
-            word.rad2.vowel(ar_u);
+            if (word.type === "defective") {
+                word.rad1.vowel(ar_a);
+                word.rad2.vowel(ar_un);
+                word.rad3 = [];
+            } else {
+                word.rad1.vowel(ar_a);
+                word.rad2.vowel(ar_u);
+            }
             break;
 
         case 7:
@@ -270,6 +303,34 @@ var masdar1 = clone(word),
             word.midLeft.push([ar_A, ""]);
             break;
         }
+
+//consolidated irregular post-processing
+if (( word.formNum === 7 ) || (word.formNum === 8) || (word.formNum === 10) ){
+
+var hollowFill = ar_Y;
+
+    if (word.formNum === 10) {
+        hollowFill = ar_A;
+    }
+
+    switch (word.type) {
+        case "hollow":
+        case "hollow2":
+             word.rad2.consonant(hollowFill);
+             word.rad2.vowel("");
+             break;
+
+        case "defective":
+            word.rad3.consonant(ar_h5);
+            word.rad3.vowel("");
+            break;
+    }
+
+    if (masdarData === ar_lA) {
+        word.innerPrefix.consonant( ar_lA );
+    }
+
+}
 
 return word;
 }

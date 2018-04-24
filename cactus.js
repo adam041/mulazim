@@ -567,7 +567,7 @@ function Word( arRoot, enTense, isActive, arSubject ) {
 //declare metadata properties (7)
     this.arRoot = arRoot;
     this.arSubject = arSubject;
-    this.type = null;    //regular verb (noun), irregular type of verb (noun)
+    this.type = typeRoot(arRoot);    //regular verb (noun), irregular type of verb (noun)
     this.layer = "initial";  //identifies phase of conjugation processing
 
     this.formNum = null;
@@ -594,6 +594,33 @@ function Word( arRoot, enTense, isActive, arSubject ) {
     this.rad2.push( [arRoot.charAt(1), ""] );
     this.rad3.push( [arRoot.charAt(2), ""] );  //** may get weird on doubled verbs if rad3 is shadda
 
+}
+
+
+function typeRoot(arRoot) {
+//classifies whether trilateral root is regular, assimilative, hollow, defective, or doubled.
+//roots containing hamza are treated as regular, and hamza carrier is adjusted after conjugation.
+//returns a string
+
+var rootType = "regular";
+
+    if ( ( arRoot[0] === ar_Y ) || ( arRoot[0] === ar_U ) ){
+        rootType = "assimilative";
+
+    } else if ( isHollowIrregular(arRoot) ) {
+        rootType = "hollow2";
+
+    } else if ( ( arRoot[1] === ar_Y ) || ( arRoot[1] === ar_U ) ){
+        rootType = "hollow";
+
+    } else if ( ( arRoot[2] === ar_Y ) || ( arRoot[2] === ar_U ) ) {
+        rootType = "defective";
+
+    } if ( ( arRoot.indexOf(ar_2v) > -1) || ( arRoot[1] === arRoot[2] ) ) {
+        rootType = "doubled";
+    }
+
+return rootType;
 }
 
 

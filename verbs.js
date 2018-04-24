@@ -57,7 +57,8 @@ if ( word.enTense === "perfect" ) {
 function cnjIrregularVerb( wordIn ) {
 //switchboard function to call irregular modifications
 
-var word = clone(wordIn);
+var word = clone(wordIn),
+    footNote = "";
 
     if ( word.rad1[0].indexOf("-") > -1 ) {
         //early exit if verb form was intentionally left blank
@@ -66,6 +67,42 @@ var word = clone(wordIn);
 
     word.layer = "irregular";
 
+    switch (word.type) {
+
+        case "regular":
+            //no op
+            break;
+
+        case "assimilative":
+            word = cnjAssimilativeVerb(word);
+            break;
+
+        case "hollow":
+            word = cnjHollowVerb(word);
+            break;
+
+        case "hollow2":
+            word = cnjUltraHollowVerb(word);
+            break;
+
+        case "defective":
+            word = cnjDefectiveVerb(word);
+            break;
+
+        case "doubled":
+            word = cnjDoubledVerb(word);
+            break;
+    }
+
+    if (word.type !== "regular") {
+        footNote = "Irregular " + word.type + " conjugation applied to " + ar_LM + word.arRoot
+    }
+
+    $("#divFooter").html( footNote );
+
+return word;
+
+/*
     if ( ( word.arRoot[0] === ar_Y ) || ( word.arRoot[0] === ar_U ) ){
         word = cnjAssimilativeVerb( word );
 
@@ -86,9 +123,8 @@ var word = clone(wordIn);
 
     } else {
         word.layer = "confirmed regular";
-        word.type = "regular";
+//         word.type = "regular";
     }
-
     //inform user if verb is irregular
     if ( ( word.type === null ) || ( word.type === "regular" ) ){
 //         $("tfoot tr td:nth-child(1) ").html( "&nbsp <br> &nbsp " );
@@ -98,7 +134,7 @@ var word = clone(wordIn);
 //        $("tfoot tr td:nth-child(1) ").html( "Irregular " + word.type + " conjugation applied to " + ar_LM + word.arRoot );
     }
 
-return word;
+*/
 
 } // end irregularizer
 
@@ -411,7 +447,7 @@ var regWord = clone(wordIn);
 
 var word = clone(regWord);
     regWord.enTense = "jussive";
-    word.type = "jussive prelim"; //**
+//     word.type = "jussive prelim"; //**
 
 //modify suffix
     if ( ( word.suffix[0][0] === "" ) && ( word.suffix[0][1] === ar_u ) ) {
@@ -627,7 +663,7 @@ var word = clone(wordIn);
         case 5:
         case 6:
         case 10:
-            word.type = "regular in this form, root matches assimilative pattern";
+            console.log("regular in this form, root matches assimilative pattern");
             return word;
 
         case 4:
@@ -645,7 +681,7 @@ var word = clone(wordIn);
             break;
     }
 
-    word.type = "assimilative";
+//     word.type = "assimilative";
 
 //continue to process verb as irregular
 
@@ -678,7 +714,7 @@ var word = clone(wordIn);
         break;
     }
 
-    word.type = "hollow";
+//     word.type = "hollow";
 
 //continue to process verb as irregular
 
@@ -727,7 +763,7 @@ function cnjUltraHollowVerb(wordIn) {
 
     var word = clone(wordIn);
 
-    word.type = "hollow, especially irregular";
+//     word.type = "hollow, especially irregular";
 
     if ( word.enTense  === "perfect" ) {
         //conj as if it is hollow, with ar_Y in the 2nd radical
@@ -807,7 +843,7 @@ function cnjDoubledVerb(wordIn) {
     var word = clone(wordIn),
         nextChar = nextVowel(word, "rad3");
 
-    word.type = "doubled";
+//     word.type = "doubled";
 
     if ( nextChar === ar_0 ) {
         word.rad3.consonant( word.rad2.consonant() );
@@ -860,6 +896,21 @@ var word = clone(wordIn);
     //note: hamza carriers will get QA'd in whole() function
 
 return word;
+
+}
+
+
+function isHollowIrregular(arRoot){
+//returns true if verb is very irregular
+
+var arrIrregulars = [];
+    arrIrregulars.push (ar_n + ar_U + ar_m);    //to sleep
+
+var isMatch = function(element) {
+        return element === arRoot;
+    };
+
+return arrIrregulars.some(isMatch);
 
 }
 
@@ -957,22 +1008,6 @@ return word;
 // }
 
 
-
-function isHollowIrregular(arRoot){
-//returns true if verb is very irregular
-
-var arrIrregulars = [];
-    arrIrregulars.push (ar_n + ar_U + ar_m);    //to sleep
-
-var isMatch = function(element) {
-        return element === arRoot;
-    };
-
-return arrIrregulars.some(isMatch);
-
-}
-
-
 //////////////////////////////////
 //Keep Everything ABOVE This Line
 
@@ -984,7 +1019,6 @@ return arrIrregulars.some(isMatch);
 
 function conjImperative(arRoot, formNum) {
 //returns conjugated trilateral verb in Imperative
-
 
 //six possible outputs (gender & quantity), derived from jussive (implied task...)
 
@@ -1020,5 +1054,4 @@ function conjImperative(arRoot, formNum) {
             return "Error";
       }
 }
-
 */
