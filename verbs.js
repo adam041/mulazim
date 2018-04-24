@@ -82,7 +82,7 @@ var word = clone(wordIn);
         word = cnjDoubledVerb(word);
 
 //     } else if ( hasHamza( word.arRoot ) ) {
-//         word = cnjHamzaVerb( word );
+//         handle hamza in post-processing
 
     } else {
         word.layer = "confirmed regular";

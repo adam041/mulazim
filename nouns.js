@@ -251,7 +251,8 @@ var masdar1 = clone(word),
 
         case 8:
             word.rad2.vowel(ar_a);
-            word.midLeft.push([ar_A, ""]);
+//          word.midLeft.push([ar_A, ""]);
+            word.midLeft.push([ar_lA, ar_i]);
             break;
 
         case 9:

@@ -20,7 +20,7 @@ $(function() {
 
     $("#chosenRoot").chosen({
         rtl: true,
-        width: "45%",
+        width: "60%",
     });
 
     $("#chosenSubject").chosen({
@@ -321,6 +321,7 @@ var oldRoot = "placeholder",
             appendHTML = (row.Translation + " / " + row.Root).wrap("<option value='" + row.Root + "'>");
             $("#chosenRoot").append( appendHTML );
         }
+
         oldRoot = row.Root;
     });
 
@@ -961,7 +962,6 @@ function isShortVowel( charIn, shaddaToo ) {
 //     regular sized short vowels and markings: 1611-1616 << true
 //     shadda: 1617 << it depends
 //     sukkun: 1618 << true
-
 
 if ( charIn === undefined ) {
     console.log("Error, null passed to isShortVowel");
