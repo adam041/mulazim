@@ -153,6 +153,91 @@ var masdar1 = clone(word),
             masdar3.midLeft.push([ar_A, ""]);
             masdar3.innerSuffix.push([ar_tb, ""]);
 
+            switch (masdarData) {
+
+                case ar_0:
+                case "٠":
+                    word = masdar1;
+                    break;
+
+                case ar_U:
+                    word = masdar2;
+                    break;
+
+                case ar_A:
+                    word = masdar3;
+                    break;
+
+                case ar_h5:     //for some roots ending in hamza or defective
+                    word.rad1.vowel(ar_u);
+                    word.rad2.vowel(ar_0);
+                    word.rad3.consonant(ar_h5);
+                    word.rad3.vowel("")
+                    break;
+
+                case ar_a:
+                    word.rad1.vowel(ar_a);
+                    word.rad2.vowel(ar_a);
+                    break;
+
+                case ar_tb:
+                    word.rad1.vowel(ar_a);
+                    word.rad2.vowel(ar_0);
+                    word.rad3.vowel(ar_a);
+                    word.innerSuffix.push([ar_tb, ""]);
+                    break;
+
+                case ar_tb + ar_a:
+                    word.rad1.vowel(ar_a);
+                    word.rad2.vowel(ar_a);
+                    word.rad3.vowel(ar_a);
+                    word.innerSuffix.push([ar_tb, ""]);
+                    break;
+
+                case ar_U + ar_tb:
+                    word.rad1.vowel(ar_u);
+                    word.rad2.vowel(ar_u);
+                    word.midLeft.push([ar_U, ""]);
+                    word.rad3.vowel(ar_a);
+                    word.innerSuffix.push([ar_tb, ""]);
+                    break;
+
+                case ar_A + ar_tb:
+                    word.rad1.vowel(ar_i);
+                    word.rad2.vowel(ar_a);
+                    word.midLeft.push([ar_A, ""]);
+                    word.rad3.vowel(ar_a);
+                    word.innerSuffix.push([ar_tb, ""]);
+                    break;
+
+                case ar_2v:
+                    word.rad1.vowel(ar_a);
+                    word.rad2 = [];
+                    word.rad3.vowel(ar_2v + ar_u);
+                    break;
+
+                case ar_m:
+                    word.innerPrefix([ar_m, ar_a]);
+                    word.rad1.vowel(ar_0);
+                    word.rad2.vowel(ar_i);
+                    word.rad3.vowel(ar_a);
+                    word.innerSuffix([ar_tb, ""]);
+                    break;
+
+                case ar_n:
+                    word.rad1.vowel(ar_u);
+                    word.rad2.vowel(ar_0);
+                    word.rad3.vowel(ar_a);
+                    word.innerSuffix([ar_A, ""]);
+                    word.innerSuffix([ar_n, ""]);
+                    break;
+
+                default:
+                   //show most common possibilities if no data found on backend
+                    word = coerceWord(word, whole(masdar1), " - ", whole(masdar2), " - ", whole(masdar3) );
+            }
+
+/*
             if (( masdarData === ar_0 ) || ( masdarData === "٠" ) ) {
                 word = masdar1;
             } else if (masdarData === ar_U) {
@@ -160,69 +245,69 @@ var masdar1 = clone(word),
             } else if (masdarData === ar_A) {
                 word = masdar3;
             } else {
-                //show all common possibilities if no data found on backend
+                //show most common possibilities if no data found on backend
                 word = coerceWord(word, whole(masdar1), " - ", whole(masdar2), " - ", whole(masdar3) );
             }
-
+*/
             break;
 
         case 2:
             //expects a single character code representing masdar pattern
-            // ي = تفعيل / ar_Y
-            // ة = تفعلة / ar_tb
-            //if no code found, outputs both patterns
+            // ي = تفعيل / ar_Y     ~ 99% of cases
+            // ة = تفعلة / ar_tb    ~ may be associated with defective roots
+            //if no code found, outputs first option with question mark
+                word.prefix.push([ar_t, ar_a]);
+                word.rad1.vowel(ar_0);
+                word.rad2.vowel(ar_i);
 
-            word.prefix.push([ar_t, ar_a]);
-            word.rad1.vowel(ar_0);
-            word.rad2.vowel(ar_i);
-
-            masdar1 = clone(word);
-            masdar2 = clone(word);
-
-            masdar1.midLeft.push([ar_Y, ""]);
-            masdar2.rad3.vowel(ar_a);
-            masdar2.innerSuffix.push([ar_tb, ""]);
-
-            if ( masdarData === ar_Y ) {
-                word = masdar1;
-            } else if (masdarData === ar_tb) {
-                word = masdar2;
+            if ( masdarData == ar_tb ) {
+                masdar2.rad3.vowel(ar_a);
+                masdar2.innerSuffix.push([ar_tb, ""]);
             } else {
-                //show all common possibilities if no data found on backend
-                word = coerceWord(word, whole(masdar1), " - ", whole(masdar2) );
+                word.midLeft.push([ar_Y, ""]);
             }
+
+            if ( masdarData === "") {
+                word.suffix.push(["؟", ""]);
+            }
+
             break;
 
         case 3:
           //expects a single character code representing masdar pattern
-          // م = مفاعلة / ar_m
-          // ا = فعال / ar_A
-          //if no code found, outputs both patterns
+          // م = مفاعلة / ar_m ~ 90% of cases
+          // ا = فعال / ar_A ~ 5-10% of cases
+          //if no code found, outputs first option with question mark
 
-            masdar1.innerPrefix.push([ar_m, ar_u]);
-            masdar1.rad1.vowel(ar_a);
-            masdar1.midRight.push([ar_A, ""]);
-            masdar1.rad2.vowel(ar_a);
-            masdar1.rad3.vowel(ar_a);
-            masdar1.innerSuffix.push([ar_tb, ""]);
+            if ( masdarData === ar_m ) {
+                masdar2.rad1.vowel(ar_i);
+                masdar2.rad2.vowel(ar_a);
+                masdar2.midLeft.push([ar_A, ""]);
+                masdar2.innerSuffix.push([ar_tb, ""]);
 
-            masdar2.rad1.vowel(ar_i);
-            masdar2.rad2.vowel(ar_a);
-            masdar2.midLeft.push([ar_A, ""]);
-            masdar2.innerSuffix.push([ar_tb, ""]);
+            } else {
+                word.innerPrefix.push([ar_m, ar_u]);
+                word.rad1.vowel(ar_a);
+                word.midRight.push([ar_A, ""]);
+                word.rad2.vowel(ar_a);
+                word.rad3.vowel(ar_a);
+                word.innerSuffix.push([ar_tb, ""]);
+            }
 
+            if ( masdarData === "") {
+                word.suffix.push(["؟", ""]);
+            }
+
+/*
             if ( masdarData === ar_m ) {
                 word = masdar1;
             } else if (masdarData === ar_A) {
                 word = masdar2;
              } else {
-                //show all common possibilities if no data found on backend
+                //show most common possibilities if no data found on backend
                 word = coerceWord(word, whole(masdar1), " - ", whole(masdar2) );
-//                 word = new Word(word.arRoot, word.enTense, word.isActive, word.arSubject);
-//                 word.rad1.push(whole(masdar1));
-//                 word.midRight.push(["-", " "]);
-//                 word.rad2.push(whole(masdar2));
             }
+*/
             break;
 
         case 4:
@@ -305,31 +390,26 @@ var masdar1 = clone(word),
         }
 
 //consolidated irregular post-processing
-if (( word.formNum === 7 ) || (word.formNum === 8) || (word.formNum === 10) ){
+if ( ( word.formNum === 7 ) || (word.formNum === 8) || (word.formNum === 10) ){
 
-var hollowFill = ar_Y;
+    var hollowFill = ar_Y;
 
-    if (word.formNum === 10) {
-        hollowFill = ar_A;
-    }
+        if (word.formNum === 10) {
+            hollowFill = ar_A;
+        }
 
-    switch (word.type) {
-        case "hollow":
-        case "hollow2":
-             word.rad2.consonant(hollowFill);
-             word.rad2.vowel("");
-             break;
-
-        case "defective":
+        if ( ( word.type === "hollow" ) || ( word.type === "hollow2" ) ) {
+            word.rad2.consonant(hollowFill);
+            word.rad2.vowel("");
+        } else if ( word.type === "defective") {
             word.rad3.consonant(ar_h5);
             word.rad3.vowel("");
-            break;
-    }
+        }
 
-    if (masdarData === ar_lA) {
-        word.innerPrefix.consonant( ar_lA );
-    }
-
+        if (masdarData === ar_lA) {
+            word.innerPrefix.consonant( ar_lA );
+            word.innerPrefix.vowel( ar_i );
+        }
 }
 
 return word;

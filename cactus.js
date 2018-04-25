@@ -567,7 +567,7 @@ function Word( arRoot, enTense, isActive, arSubject ) {
 //declare metadata properties (7)
     this.arRoot = arRoot;
     this.arSubject = arSubject;
-    this.type = typeRoot(arRoot);    //regular verb (noun), irregular type of verb (noun)
+    this.type = typeRoot(arRoot);
     this.layer = "initial";  //identifies phase of conjugation processing
 
     this.formNum = null;
@@ -592,8 +592,12 @@ function Word( arRoot, enTense, isActive, arSubject ) {
 //load radical segments with consonants
     this.rad1.push( [arRoot.charAt(0), ""] );
     this.rad2.push( [arRoot.charAt(1), ""] );
-    this.rad3.push( [arRoot.charAt(2), ""] );  //** may get weird on doubled verbs if rad3 is shadda
 
+    if ( arRoot.charAt(2) === ar_2v ) {
+        this.rad3.push( [arRoot.charAt(1), ""] );
+    } else {
+        this.rad3.push( [arRoot.charAt(2), ""] );
+    } //write out third radical of doubled verb
 }
 
 
