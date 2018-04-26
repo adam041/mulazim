@@ -56,9 +56,9 @@ $('#dataTable').sheetrock({
     callback: setupData
 });
 
-$( "divFooter" ).dblclick(function() {
-    $( ".hideMe" ).toggle();
-});
+// $( "divFooter" ).dblclick(function() {
+//     $( ".hideMe" ).toggle();
+// });
 
 
 $( document ).tooltip();
@@ -217,7 +217,7 @@ var xForm = $.inArray( "Form", arrHeaderRow ),
     xMasdar = $.inArray( "Masdar", arrHeaderRow ),
     xf1ActivePresentRad2 = $.inArray( "f1ActivePresentRad2", arrHeaderRow ),
     xf1ActivePastRad2 = $.inArray( "f1ActivePastRad2", arrHeaderRow ),
-    xf1Imperative0Rad2 = $.inArray( "f1Imperative0Rad2", arrHeaderRow ),
+//     xf1Imperative0Rad2 = $.inArray( "f1Imperative0Rad2", arrHeaderRow ),
     xTranslation = $.inArray( "Translation", arrHeaderRow ),
     xComment = $.inArray( "Comment", arrHeaderRow );
 
@@ -237,9 +237,8 @@ var xForm = $.inArray( "Form", arrHeaderRow ),
             Masdar: arrRow[xMasdar],
             f1ActivePresentRad2: arrRow[xf1ActivePresentRad2],
             f1ActivePastRad2: arrRow[xf1ActivePastRad2],
-            f1Imperative0Rad2: arrRow[xf1Imperative0Rad2],
+//             f1Imperative0Rad2: arrRow[xf1Imperative0Rad2],
             Translation: arrRow[xTranslation],
-            //TBD
             Comment: arrRow[xComment],
         };
 
@@ -337,6 +336,7 @@ var arrMeaning = [
     var colPassiveImperfect = cnjVerb(arRoot, "imperfect", false,  arSubject),
         colPassivePerfect = cnjVerb(arRoot, "perfect", false,  arSubject),
         colJussive = cnjVerb(arRoot, "jussive", true,  arSubject),
+        colImperative = cnjVerb(arRoot, "imperative", true,  arSubject),
         colActiveImperfect = cnjVerb(arRoot, "imperfect", true,  arSubject),
         colActivePerfect = cnjVerb(arRoot, "perfect", true,  arSubject);
 
@@ -346,6 +346,7 @@ for (var formNum = 1; formNum <= 10; ++formNum ) {
     verbLine += whole(colPassiveImperfect[formNum]).wrap("<td class='colVerb'>");
     verbLine += whole(colPassivePerfect[formNum]).wrap("<td class='colVerb'>");
     verbLine += whole(colJussive[formNum]).wrap("<td class='colVerb'>");
+    verbLine += whole(colImperative[formNum]).wrap("<td class='colVerb'>");
     verbLine += whole(colActiveImperfect[formNum]).wrap("<td class='colVerb'>");
     verbLine += "<td class='colVerb'>" + whole(colActivePerfect[formNum]).wrap("<span>");
     verbLine +=  (" " + objRefs.query(arRoot, formNum, "Preposition") ).wrap("<span class='spnPreposition'>") + "</td>";

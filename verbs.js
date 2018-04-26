@@ -44,10 +44,11 @@ if ( word.enTense === "perfect" ) {
 
 } else if ( word.enTense === "jussive" ) {
     return cnjJussive( word );
-    //what about imperative?
-}
 
-//return word;
+} else if ( word.enTense === "imperative" ) {
+    var jussiveWord = cnjJussive( word );
+    return cnjImperative(jussiveWord);
+}
 
 // handle irregulars in separate function, in order
 // to compare & debug differences in processing
@@ -101,40 +102,6 @@ var word = clone(wordIn),
     $("#divFooter").html( footNote );
 
 return word;
-
-/*
-    if ( ( word.arRoot[0] === ar_Y ) || ( word.arRoot[0] === ar_U ) ){
-        word = cnjAssimilativeVerb( word );
-
-    } else if ( isHollowIrregular(word.arRoot) ) {
-        word = cnjUltraHollowVerb( word );
-
-    } else if ( ( word.arRoot[1] === ar_Y ) || ( word.arRoot[1] === ar_U ) ){
-        word = cnjHollowVerb( word );
-
-    } else if ( ( word.arRoot[2] === ar_Y ) || ( word.arRoot[2] === ar_U ) ) {
-        word = cnjDefectiveVerb( word );
-
-    } if ( ( word.arRoot.indexOf(ar_2v) > -1) || ( word.arRoot[1] === word.arRoot[2] ) ) {
-        word = cnjDoubledVerb(word);
-
-//     } else if ( hasHamza( word.arRoot ) ) {
-//         handle hamza in post-processing
-
-    } else {
-        word.layer = "confirmed regular";
-//         word.type = "regular";
-    }
-    //inform user if verb is irregular
-    if ( ( word.type === null ) || ( word.type === "regular" ) ){
-//         $("tfoot tr td:nth-child(1) ").html( "&nbsp <br> &nbsp " );
-        $("#divFooter").html( "&nbsp" );
-    } else {
-        $("#divFooter").html( "Irregular " + word.type + " conjugation applied to " + ar_LM + word.arRoot );
-//        $("tfoot tr td:nth-child(1) ").html( "Irregular " + word.type + " conjugation applied to " + ar_LM + word.arRoot );
-    }
-
-*/
 
 } // end irregularizer
 
@@ -447,7 +414,6 @@ var regWord = clone(wordIn);
 
 var word = clone(regWord);
     regWord.enTense = "jussive";
-//     word.type = "jussive prelim"; //**
 
 //modify suffix
     if ( ( word.suffix[0][0] === "" ) && ( word.suffix[0][1] === ar_u ) ) {
@@ -485,6 +451,32 @@ var word = clone(regWord);
 
 //handle doubled verbs
     word = cnjDoubledVerb(word);
+
+return word;
+}
+
+
+function cnjImperative(jussiveWord) {
+//returns conjugated trilateral verb in imperative tense
+//assumes input is word in jussive
+
+var word = clone(jussiveWord);
+    word.prefix = [];
+
+if ( word.rad1.vowel() === ar_0 ) {
+
+    switch ( word.rad2.vowel() ) {
+
+        case ar_a:
+        case ar_i:
+            word.prefix.push([ ar_A, ar_i ]);
+            break;
+
+        case ar_u:
+            word.prefix.push([ ar_A, ar_u ]);
+            break;
+    }
+}
 
 return word;
 }
@@ -681,8 +673,6 @@ var word = clone(wordIn);
             break;
     }
 
-//     word.type = "assimilative";
-
 //continue to process verb as irregular
 
     if ( word.enTense  === "perfect" ) {
@@ -695,10 +685,9 @@ var word = clone(wordIn);
             word.rad1 = [];
         }
 
-    } else { /* what about jussive/imperative?*/ }
+    }
 
 return word;
-
 }
 
 
@@ -713,8 +702,6 @@ var word = clone(wordIn);
         default:
         break;
     }
-
-//     word.type = "hollow";
 
 //continue to process verb as irregular
 
@@ -750,10 +737,9 @@ var word = clone(wordIn);
             word.rad1.vowel(ar_u);
         }
 
-    } else { /* what about jussive/imperative?*/ }
+    }
 
 return word;
-
 }
 
 
@@ -783,8 +769,7 @@ function cnjUltraHollowVerb(wordIn) {
 
         word = cnjHollowVerb(word);
 
-    } else { /* what about jussive/imperative?*/ }
-
+    } else
 
 return word;
 }
@@ -830,7 +815,7 @@ var word = clone(wordIn);
             word.rad2.vowel("");
         }
 
-    } else { /* what about jussive/imperative?*/ }
+    }
 
 return word;
 }
