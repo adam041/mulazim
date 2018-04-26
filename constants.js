@@ -45,7 +45,6 @@ const ar_a="َ",         //fatah
     ar_Daad="ض",
 
 //combos
-//     ar_mu="مٌ",         //mim + damma
     ar_LM = String.fromCharCode(1564),  //Arabic Language Marker character
     ar_ILB = "---",     //for intentionally left blank stems
 

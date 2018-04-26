@@ -43,64 +43,23 @@ jQuery( document ).ready(function() {
 
 //Pull menu data from backend
     var gSheetID = "1A5YkYEKrReJ3jjAraR4ycbLIOHf3a_k6-3FM6uh-7Gw",
-        gURL = "'https://docs.google.com/spreadsheets/d/" + gSheetID + "/edit#gid=0";
+        gid= "952647012", //for 'stage' sheet
+        gURL = "'https://docs.google.com/spreadsheets/d/" + gSheetID + "/edit#gid=" + gid;
 
 //wipe dataTable in advance of XHR
 $('#dataTable').html("");
 
 $('#dataTable').sheetrock({
     url: gURL,
-    query: "select A,B,C,D,E,F,G,H,I,J order by C asc, A asc",
-    labels: ['Form', 'Preposition', 'Root', 'Masdar', 'f1ActivePresentRad2', 'f1ActivePastRad2', 'f1Imperative0Rad2', 'Translation', 'TBD', 'Comment' ],
+    query: "select A,B,C,D,E,F,G,H,I order by C asc, A asc",
+    labels: ['Form', 'Preposition', 'Root', 'Masdar', 'ImperfectRad2Vowel',	'PerfectRad2Vowel', 'Translation', 'Comment' ],
     callback: setupData
 });
 
-/* //deprecate
-//set up buttons to toggle column groups
-    $( "#btnVerbs" ).click(function() {
-        $( "th.colVerb, td.colVerb" ).toggle("fast");
-    });
+$( "divFooter" ).dblclick(function() {
+    $( ".hideMe" ).toggle();
+});
 
-    $( "#btnNouns" ).click(function() {
-        $( "th.colNoun, td.colNoun" ).toggle("fast");
-    });
-
-    $( "#btnMeaning" ).click(function() {
-        $( ".colMeaning" ).toggle("fast");
-    });
-
-    $( "#btnTranslation" ).click(function() {
-        $( "th.colTranslation, td.colTranslation" ).toggle("fast");
-    });
-
-    $( "#btnPrepositions" ).click(function() {
-        $( ".spnPreposition" ).toggle("fast");
-    });
-
-//set up double-click to focus on verbs/nouns
-    $( "#btnVerbs" ).dblclick(function() {
-        $( ".colVerb" ).show("fast");
-        $( ".colNoun" ).hide("fast");
-    });
-
-    $( "#btnNouns" ).dblclick(function() {
-        $( ".colVerb" ).hide("fast");
-        $( ".colNoun" ).show("fast");
-    });
-
-    $( "footer" ).dblclick(function() {
-    //** initially opaque button used for testing **
-        $( ".hideMe" ).toggle();
-*/
-
-    $( "divFooter" ).dblclick(function() {
-        $( ".hideMe" ).toggle();
-    });
-/*
-    $( "#divSelectors" ).dblclick(function() {
-        drawAllSubjects();
-    });
-*/
 
 $( document ).tooltip();
 });

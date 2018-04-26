@@ -210,7 +210,7 @@ if ( word.isActive ) {
 
         case 1:
             word.rad1.vowel(ar_a);
-            var rad2vowel = vowelMe(objRefs.query(word.arRoot, word.formNum, "f1ActivePastRad2"));
+            var rad2vowel = vowelMe(objRefs.query(word.arRoot, word.formNum, "PerfectRad2Vowel"));
             word.rad2.vowel(rad2vowel);
             break;
 
@@ -332,7 +332,7 @@ if ( word.isActive ) {
 
         case 1:
             word.rad1.vowel(ar_0);
-            var rad2vowel = vowelMe(objRefs.query(word.arRoot, word.formNum, "f1ActivePresentRad2"));
+            var rad2vowel = vowelMe(objRefs.query(word.arRoot, word.formNum, "ImperfectRad2Vowel"));
             word.rad2.vowel(rad2vowel);
             break;
 
