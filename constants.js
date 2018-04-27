@@ -46,10 +46,10 @@ const ar_a="َ",         //fatah
 
 //combos
     ar_LM = String.fromCharCode(1564),  //Arabic Language Marker character
-    ar_ILB = "---",     //for intentionally left blank stems
+    ar_ILB = "---";     //for intentionally left blank stems
 
 //pronouns - no short vowels except to distinguish you-singular
-    pro_i = ar_hA + ar_n + ar_A,
+const pro_i = ar_hA + ar_n + ar_A,
     pro_we = ar_n + ar_hHat + ar_n,
 
     pro_youM = ar_hA + ar_n + ar_t + ar_a,
@@ -62,6 +62,9 @@ const ar_a="َ",         //fatah
     pro_theyM = ar_hEye + ar_m,
     pro_theyF = ar_hEye + ar_n + ar_A;
 
+    pro_dualYou = ar_hA + ar_n + ar_t + ar_m + ar_A,
+    pro_dualM = ar_hEye + ar_m + ar_A,
+    pro_dualF = ar_hEye + ar_m + ar_A + "٢";
 
 //array.reduce functions
 const   arrWordSegments = ["prefix", "innerPrefix", "innerRight", "rad1", "midRight", "rad2", "midLeft", "rad3", "innerSuffix", "suffix"];

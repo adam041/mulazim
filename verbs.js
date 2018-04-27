@@ -551,11 +551,18 @@ var prefix = "",
             word.suffix.push([ar_n, ar_a]);
             break;
 
+        case pro_dualYou:
+            word.prefix.push([ar_t, prefixVowel]);
+            word.suffix.push(["", ar_a]);
+            word.suffix.push([ar_A, ""]);
+            word.suffix.push([ar_n, ""]);
+            break;
+
         case pro_vousM:
             word.prefix.push([ar_t, prefixVowel]);
             word.suffix.push(["", ar_u]);
             word.suffix.push([ar_U, ""]);
-            word.suffix.push([ar_n, ar_a]);
+            word.suffix.push([ar_n, ar_i]);
             break;
 
         case pro_vousF:
@@ -583,9 +590,21 @@ var prefix = "",
 
         case pro_theyF:
             word.prefix.push([ar_Y, prefixVowel]);
-//          word.suffix.push(["", ar_0]);
             word.suffix.push([ar_n, ar_a]);
             break;
+
+        case pro_dualM:
+            word.prefix.push([ar_Y, prefixVowel]);
+            word.suffix.push([ar_A, ""]);
+            word.suffix.push([ar_n, ar_i]);
+            break;
+
+        case pro_dualF:
+            word.prefix.push([ar_t, prefixVowel]);
+            word.suffix.push([ar_A, ""]);
+            word.suffix.push([ar_n, ar_i]);
+            break;
+
     }//end switch (imperfect)
 
     } else if (( word.enTense === "perfect" ) ||  (word.enTense === "past" )) {
@@ -610,6 +629,13 @@ var prefix = "",
         case pro_youF:
             word.suffix.push(["", ar_0]);
             word.suffix.push([ar_t, ar_i]);
+            break;
+
+        case pro_dualYou:
+            word.suffix.push(["", ar_0]);
+            word.suffix.push([ar_t, ar_u]);
+            word.suffix.push([ar_m, ar_a]);
+            word.suffix.push([ar_A, ""]);
             break;
 
         case pro_vousM:
@@ -643,6 +669,17 @@ var prefix = "",
             word.suffix.push(["", ar_0]);
             word.suffix.push([ar_n, ar_a]);
             break;
+
+        case pro_dualM:
+            word.suffix.push(["", ar_a]);
+            word.suffix.push([ar_A, ""]);
+            break;
+
+        case pro_dualF:
+            word.suffix.push(["", ar_a]);
+            word.suffix.push([ar_t, ar_a]);
+            break;
+
     }//end switch (perfect)
     }
 
