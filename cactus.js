@@ -215,9 +215,8 @@ var xForm = $.inArray( "Form", arrHeaderRow ),
     xPreposition = $.inArray( "Preposition", arrHeaderRow ),
     xRoot = $.inArray( "Root", arrHeaderRow ),
     xMasdar = $.inArray( "Masdar", arrHeaderRow ),
-    xf1ActivePresentRad2 = $.inArray( "f1ActivePresentRad2", arrHeaderRow ),
-    xf1ActivePastRad2 = $.inArray( "f1ActivePastRad2", arrHeaderRow ),
-//     xf1Imperative0Rad2 = $.inArray( "f1Imperative0Rad2", arrHeaderRow ),
+    xImperfectRad2Vowel = $.inArray( "ImperfectRad2Vowel", arrHeaderRow ),
+    xPerfectRad2Vowel = $.inArray( "PerfectRad2Vowel", arrHeaderRow ),
     xTranslation = $.inArray( "Translation", arrHeaderRow ),
     xComment = $.inArray( "Comment", arrHeaderRow );
 
@@ -235,9 +234,8 @@ var xForm = $.inArray( "Form", arrHeaderRow ),
             Form: arrRow[xForm],
             Preposition: arrRow[xPreposition],
             Masdar: arrRow[xMasdar],
-            f1ActivePresentRad2: arrRow[xf1ActivePresentRad2],
-            f1ActivePastRad2: arrRow[xf1ActivePastRad2],
-//             f1Imperative0Rad2: arrRow[xf1Imperative0Rad2],
+            ImperfectRad2Vowel: arrRow[xImperfectRad2Vowel],
+            PerfectRad2Vowel: arrRow[xPerfectRad2Vowel],
             Translation: arrRow[xTranslation],
             Comment: arrRow[xComment],
         };
@@ -405,13 +403,13 @@ function x10(arrayIn, callback, isVerbose){
         if ( index === 0 ) {
             arrayOut.push(value);
 
-            if (isVerbose) { console.log(arrayOut[index]); }
+            if (isVerbose) { console.log(debug(arrayOut[index]), false ) ; }
 
         } else {
             word = clone(value);
             arrayOut.push( callback(word)  );
 
-            if (isVerbose) { console.log( whole(arrayOut[index]) ); }
+            if (isVerbose) { console.log( debug(arrayOut[index], false) ); }
         }
     }   );
 
@@ -724,26 +722,26 @@ return objOut.data;
 function vowelMe(enText) {
 //generates Arabic (short) vowels corresponding to English text input
 
-var vowelOut = "";
+$("#divFooter2").html("");
 
-    if (( enText === undefined) || (enText === "") ) {
-        vowelOut = "؟";
+var vowelOut = "";
+    if ( enText === undefined ) {
+        enText = "";
+    }
+
+    if ( isShortVowel(enText) ) {
+        vowelOut = enText;
     } else if (enText === "a") {
         vowelOut = ar_a;
     } else if (enText === "i") {
         vowelOut = ar_i;
     } else if (enText === "u") {
         vowelOut = ar_u;
-    } else if (enText === "A") {
-        vowelOut = ar_A;
-    } else if (enText === "Y") {
-        vowelOut = ar_Y;
-    } else if (enText === "U") {
-        vowelOut = ar_U;
     } else if (enText === "-") {
         vowelOut = "";
     } else {
-        vowelOut = "؟";
+        vowelOut = "";
+        $("#divFooter2").html("Radical 2 vowel in form 1 is missing or invalid");
     }
 
 return vowelOut;
@@ -867,12 +865,33 @@ if ( hasHamza(charX) ) {
                     strWord = overWrite(strWord, i, ar_hY);
                     break;
 
-                case ar_0:
                 case ar_A:
                 case ar_U:
                 case ar_Y:
                     strWord = overWrite(strWord, i, ar_h5);
                     break;
+
+                case ar_0:
+
+                    switch ( strWord.charAt(i+1) ) {
+                        case ar_a:
+                            strWord = overWrite(strWord, i, ar_hA);
+                            break;
+
+                        case ar_i:
+                            strWord = overWrite(strWord, i, ar_hY);
+                            break;
+
+                        case ar_u:
+                            strWord = overWrite(strWord, i, ar_hU);
+                            break;
+
+                        default:
+                            strWord = overWrite(strWord, i, ar_h5);
+                            break;
+                    }//sub-switch
+                    break;
+
             }//switch
         }//if hasHamza
     }//for
@@ -914,14 +933,14 @@ function collapseAlifs(strWord) {
         if ( giveHimTheStick(charX) && giveHimTheStick(charPrior) ) {
             strWord = overWrite(strWord, i, ar_Am);
             strWord = overWrite(strWord, i-1, "");
+
         } else if ( giveHimTheStick(charX) && isShortVowel(charPrior) && giveHimTheStick(char2Prior) ) {
-            strWord = overWrite(strWord, i, ar_Am);
-            strWord = overWrite(strWord, i-1, "");
-            strWord = overWrite(strWord, i-2, "");
 
             if ( isShortVowel(strWord.charAt(i+1) ) ) {
                 strWord = overWrite(strWord, i+1 , "");
             }
+
+            strWord = strWord.slice(0, i-2) + ar_Am + strWord.slice(i+1);
         }
     }
 
@@ -958,7 +977,6 @@ if ( charIn === undefined ) {
     console.log("Error, null passed to isShortVowel");
     return false;
 }
-// console.log("iSV " + charIn);
 
 if ( shaddaToo === undefined ) {
     shaddaToo = false;

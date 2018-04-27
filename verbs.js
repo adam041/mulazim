@@ -17,8 +17,9 @@ var word = new Word(arRoot, enTense, isActive, arSubject);
     drafts.push(draft);
 
 //adjust conj if irregular, for all 10 forms
-    draft = draft.x10(cnjIrregularVerb, false);
+    draft = draft.x10(cnjIrregularVerb, true);
     drafts.push(draft);
+
 
 //apply QA routines
     draft = draft.x10(qaVerb);
@@ -407,6 +408,7 @@ function cnjJussive( wordIn ) {
 //returns conjugated trilateral verb in jussive tense
 //start with verb in imperfect/active tense, and then modify it
 
+//begin with imperfect tense
 var regWord = clone(wordIn);
     regWord.isActive = true;
     regWord.enTense = "imperfect";
@@ -429,28 +431,31 @@ var word = clone(regWord);
         word.suffix.pop();
     }
 
-//hollow out hollow verbs
-    if ( ( word.rad2.consonant()=== ar_U ) || ( word.rad2.consonant()=== ar_Y ) ) {
-        if (( word.arSubject === pro_youF ) || ( word.arSubject === pro_vousM )  || ( word.arSubject === pro_theyM ) ) {
-        //do nothing
-        } else {
-            word.rad2 = [];
-        }
+//process irregulars
+
+    switch (word.type) {
+
+        case "hollow":
+        case "hollow2":
+            if (!( word.arSubject === pro_youF ) && !( word.arSubject === pro_vousM )  && !( word.arSubject === pro_theyM ) ) {
+                word.rad2 = [];
+            }
+            break;
+
+        case "defective":
+            word.rad3 = [];
+
+            if  ( word.rad3.consonant()=== ar_U ) {
+                word.rad3.push(["", ar_u]);
+            } else {
+                word.rad3.push(["", ar_i]);
+            }
+            break;
+
+        case "doubled":
+            word = cnjDoubledVerb(word);
+            break;
     }
-
-//handle defective verbs
-    if ( ( word.rad3.consonant()=== ar_U ) || ( word.rad3.consonant()=== ar_Y ) ) {
-        word.rad3 = [];
-
-        if  ( word.rad3.consonant()=== ar_U ) {
-            word.rad3.push(["", ar_u]);
-        } else {
-            word.rad3.push(["", ar_i]);
-        }
-    }
-
-//handle doubled verbs
-    word = cnjDoubledVerb(word);
 
 return word;
 }
@@ -476,6 +481,11 @@ if ( word.rad1.vowel() === ar_0 ) {
             word.prefix.push([ ar_A, ar_u ]);
             break;
     }
+
+}
+
+if (word.formNum === 7) {
+    word.prefix.push([ ar_A, ar_i ]);
 }
 
 return word;
@@ -509,8 +519,6 @@ var prefix = "",
             case 10:
                 prefixVowel = ar_a;
                 break;
-
-            default: prefixVowel = "؟";
         }
 
     } else {
@@ -578,7 +586,7 @@ var prefix = "",
 //          word.suffix.push(["", ar_0]);
             word.suffix.push([ar_n, ar_a]);
             break;
-    }//end switch (present)
+    }//end switch (imperfect)
 
     } else if (( word.enTense === "perfect" ) ||  (word.enTense === "past" )) {
       switch ( word.arSubject ) {
@@ -635,7 +643,7 @@ var prefix = "",
             word.suffix.push(["", ar_0]);
             word.suffix.push([ar_n, ar_a]);
             break;
-    }//end switch (past)
+    }//end switch (perfect)
     }
 
 }
