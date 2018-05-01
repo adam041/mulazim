@@ -52,7 +52,7 @@ $('#dataTable').html("");
 $('#dataTable').sheetrock({
     url: gURL,
     query: "select A,B,C,D,E,F,G,H,I order by C asc, A asc",
-    labels: ['Form', 'Preposition', 'Root', 'Masdar', 'ImperfectRad2Vowel',	'PerfectRad2Vowel', 'Translation', 'Comment' ],
+    labels: ['Form', 'Preposition', 'Root', 'Masdar', 'ImperfectRad2Vowel', 'PerfectRad2Vowel', 'Translation', 'Comment' ],
     callback: setupData
 });
 
@@ -718,13 +718,13 @@ return objOut.data;
 }
 
 
-
 function vowelMe(enText) {
 //generates Arabic (short) vowels corresponding to English text input
 
 $("#divFooter2").html("");
 
 var vowelOut = "";
+
     if ( enText === undefined ) {
         enText = "";
     }
@@ -739,9 +739,15 @@ var vowelOut = "";
         vowelOut = ar_u;
     } else if (enText === "-") {
         vowelOut = "";
+    } else if (enText === "-") {
+        vowelOut = "";
+    } else if (enText === "") {
+        vowelOut = "";
+        alert("No value found for radical 2 vowel in form 1.");
     } else {
         vowelOut = "";
-        $("#divFooter2").html("Radical 2 vowel in form 1 is missing or invalid");
+        alert("Invalid value (" + enText + ") found for radical 2 vowel in form 1.");
+//        $("#divFooter2").html("Radical 2 vowel in form 1 is missing or invalid");
     }
 
 return vowelOut;

@@ -14,22 +14,68 @@ done not tested     new model nouns
 
 Needs
     <general>
-        rename verbType to conjType?  to accomodate usage for nouns
+        no   do not want. vowels as part of base form (voweling specified in 5 of 10 forms) or cnjVerb (meh)
+        ok   rename verbType to conjType?  to accomodate usage for nouns
+        ok     css - restrict chosen lists to single column, h-align chosen elements within div.  Reason for fault was CSS from jQ ui tabs was overriding chosen CSS.
+        ok   Regression on divFooter alerts for irregular verbs.  Floating overlay fixed.
+        ok   union query of both backend tabs-done!
+        !!   what's up with      أيد   ?
+        ??   VOWELS
+                hollow - use hyphens as filler for both vowels to suppress error message
+                defective -
+                doubled - NEED rad2 vowel for youM/F & theyF
+                are hyphens still needed as filler (why not be smart)?  vowel rad2 vowel - shorter field name (ok)
 
     <verbs>
-        jussive / imperative
-        remove legacy verbs.js (keep until nouns.js updated)
-        dual tenses
+        ?    add trailing fatha to suffix for pro_theyM?
+        ok   jussive
+        ok    imperative
+        ok    dual tenses > coded dual you, and dual they M...need dual they F?
 
     <nouns>
-        -   masdar form 2/5 - don't over-shadda
         -   masdar form 8 - for assimilative
-        -   masdar form 10 - use pop/push to fix vowel over ta
+        ~~  validate more masdar patterns to form 1
+        ~~  validate more masdar patterns to form 2
+        ~~  validate irregular masdar for forms 4-10
+        ok  add irregular masdar for forms 4-10
+        ok   masdar form 2/5 - don't over-shadda
+        ok  masdar form 10 - use pop/push to fix vowel over ta
+        ok   irregulars > allow 2 char masdar code
+        ok  add more masdar patterns to form 1
+        ok  add more masdar patterns to form 2
 
-- write out cheat card for data entry - esp. masdar codes...document on git read.me too?
+## medial hamza ##
+i > u > a
+
+carrier >> ئ
+kasra on hamza
+prior ar_i
+prior ar_0
+(qa vowel maybe any)
+
+carrier >> ؤ
+prior ar_u
+prior ar_U + ar_0
+(qa vowel maybe a, u, 0)
+
+carrier >> aloof ء
+prior ar_U + vowel (what about null vowel?)
+proir ar_hA + ar_a
+
+else carrier >> أ
+prior ar_a
+(qa, vowel may be a, 0;
+إ is only for start of word)
 
 
-##
+## end hamza ##
+
+ء if prior long vowel or sukkun
+ؤ if damma
+ئ if kasra
+أ if fatha
+
+##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##  ##
   old notes below
 
 nice to have
@@ -87,6 +133,7 @@ nice to have
         - doubled - using shadda on orig (write out both on 500)
         - quadrilateral (offload to separate sheet a.t.t.)
         - جوب - two meanings/rad2 conjugations in form 10
+ok  write out cheat card for data entry - esp. masdar codes...document on git read.me too?
 
 - data quality standards
     - doubled roots get shadda as rad3, not a repeat of rad2
