@@ -178,7 +178,7 @@ if ( word.isActive ) {
 
         case 1:
             word.rad1.vowel(ar_a);
-            var rad2vowel = vowelMe(objRefs.query(word.arRoot, word.formNum, "PerfectRad2Vowel"));
+            var rad2vowel = vowelMe(word);
             word.rad2.vowel(rad2vowel);
             break;
 
@@ -300,7 +300,8 @@ if ( word.isActive ) {
 
         case 1:
             word.rad1.vowel(ar_0);
-            var rad2vowel = vowelMe(objRefs.query(word.arRoot, word.formNum, "ImperfectRad2Vowel"));
+//             var rad2vowel = vowelMe(objRefs.query(word.arRoot, word.formNum, "ImperfectRad2Vowel"));
+            var rad2vowel = vowelMe(word);
             word.rad2.vowel(rad2vowel);
             break;
 
@@ -944,6 +945,50 @@ return arrIrregulars.some(isMatch);
 
 }
 
+
+function vowelMe(word) {
+//generates Arabic (short) vowels appropriate to form 1 of the given root in imperfect or perfect tense
+
+$("#divFooter2").html("");
+
+var enText = "",
+    vowelOut = "";
+
+    if ( word.enTense === "imperfect" ) {
+        enText = objRefs.query(word.arRoot, word.formNum, "ImperfectRad2Vowel")
+    } else if ( word.enTense === "perfect" ) {
+        enText = objRefs.query(word.arRoot, word.formNum, "PerfectRad2Vowel")
+    }
+
+    if ( enText === undefined ) {
+        enText = "";
+    }
+
+    if ( isShortVowel(enText) ) {
+        vowelOut = enText;
+    } else if (enText === "a") {
+        vowelOut = ar_a;
+    } else if (enText === "i") {
+        vowelOut = ar_i;
+    } else if (enText === "u") {
+        vowelOut = ar_u;
+    } else if (enText === "-") {
+        vowelOut = "";
+    } else if (enText === "-") {
+        vowelOut = "";
+    } else if (enText === "") {
+        vowelOut = "";
+    } else {
+        vowelOut = "";
+//        $("#divFooter2").html("Radical 2 vowel in form 1 is missing or invalid");
+    }
+
+    if ( ( word.isActive ) && (vowelOut === "") && (enText !== "-") ) {
+        $("#divFooter2").html("Invalid or missing radical 2 vowel in form 1, " + word.enTense + " tense. (" +  enText + ")");
+     }
+
+return vowelOut;
+}
 
 // function segment( word ) {
 // //takes a string, and returns an object containing segments of Arabic word, organized around radicals
