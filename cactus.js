@@ -718,42 +718,6 @@ return objOut.data;
 }
 
 
-function vowelMe(enText) {
-//generates Arabic (short) vowels corresponding to English text input
-
-$("#divFooter2").html("");
-
-var vowelOut = "";
-
-    if ( enText === undefined ) {
-        enText = "";
-    }
-
-    if ( isShortVowel(enText) ) {
-        vowelOut = enText;
-    } else if (enText === "a") {
-        vowelOut = ar_a;
-    } else if (enText === "i") {
-        vowelOut = ar_i;
-    } else if (enText === "u") {
-        vowelOut = ar_u;
-    } else if (enText === "-") {
-        vowelOut = "";
-    } else if (enText === "-") {
-        vowelOut = "";
-    } else if (enText === "") {
-        vowelOut = "";
-        alert("No value found for radical 2 vowel in form 1.");
-    } else {
-        vowelOut = "";
-        alert("Invalid value (" + enText + ") found for radical 2 vowel in form 1.");
-//        $("#divFooter2").html("Radical 2 vowel in form 1 is missing or invalid");
-    }
-
-return vowelOut;
-}
-
-
 function jqAlert( htmlAlert ) {
 
     $( "#divAlert" ).html( htmlAlert );
