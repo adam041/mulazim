@@ -12,16 +12,53 @@
 })();
 
 const outputFile = "quizlet.csv",
-      inputPath = "";
+      inputPath = ".";
 
 const prepositionDelim = "+",
     translationDelim = "-",
     cardDelim = ";";
 
 var fs = require("fs");
+var path = require( 'path' );
 
-var fileName = "",
-    arrSubRows = [],
+var arrRows = [],
+    arrBatch = [];
+
+////  MAIN FUNCTION
+
+fs.readdir( inputPath, function( err, files ) {
+//loop through files
+
+    if( err ) {
+        console.error( "Could not list the directory.", err );
+        process.exit( 1 );
+    }
+
+    files.forEach( function( file, index ) {
+        if ( (file.charAt(1) === "-" ) && (file.slice(-4) === ".txt") ) {
+
+            //only read from valid data files
+            arrBatch = etl(file);
+            arrRows.concat( arrBatch )
+            console.log("Extracted " + arrBatch.length + " rows from " + file);
+
+        }  else {
+            //skip
+        }
+
+    });
+});
+
+
+////    ////    Supporting Functions    ////    ////
+
+
+function etl(fileName) {
+//Takes file name, and outputs an array of JSON objects containing
+//data corresponding to backend database fields
+
+//declare variables
+var arrSubRows = [],
     perfect = "",   //past tense
     imperfect = "", //present tense
     arrCards = [],
@@ -47,14 +84,11 @@ var arrOut = [],
         Source: source,
         };
 
-//** loop through directory > hardcoded file names!
+    //get source data from file name
+    inputText = fs.readFileSync(fileName,'utf8');
+    arrCards = inputText.split(cardDelim);
 
-
-
-
-    fileName = "4-education.txt";
-
-//get source data from file name
+    //get meta data for source field
     index = fileName.indexOf("-");
     rotation = fileName.slice(0, index);
     topic = fileName.slice(index+1);
@@ -64,12 +98,7 @@ var arrOut = [],
 
     source = "FSI reading-rotation " + rotation + "-" + topic;
 
-    inputText = fs.readFileSync(fileName,'utf8');
-    arrCards = inputText.split(cardDelim);
-//     csv = "Form, Preposition, root, Masdar, ImperfectRad2Vowel, PerfectRad2Vowel, Translation, Comment, Source\n",
-
-//parse Quizlet card (in arrCards) and reformat into a CSV row
-
+    //parse Quizlet card (in arrCards) and reformat into JSON
     arrCards.forEach( function (value, index) {
 
         arrSubRows = [];
@@ -122,29 +151,25 @@ var arrOut = [],
             //hamza?
         }
 
-//    console.log("we got f" + form+ " of " + root);
-//     var rowDbg = form + "," +  preposition + "," + root + "," + masdar + "," + translation;
-//     console.log(rowDbg);
-        arrOut.push(jRow);
+    arrOut.push(jRow);
+    //console.log(jRow); // ** debug
+
     });
 
-//** OUTPUT DATA PLZ **
-// console.log(arrOut);
-
-
-
-////    ////    Supporting Functions    ////    ////
+return arrOut;
 
 //Google Sheet Column Order:
-    //Form
-    //Preposition
-    //root
-    //Masdar
-    //ImperfectRad2Vowel
-    //PerfectRad2Vowel
-    //Translation
-    //Comment
-    //Source
+//Form
+//Preposition
+//Root
+//Masdar
+//ImperfectRad2Vowel
+//PerfectRad2Vowel
+//Translation
+//Comment
+//Source
+}
+
 
 function splitTrim(line, sequence){
 
@@ -239,7 +264,7 @@ if ( perfectStem.indexOf("...") > -1 ) {
     objOut.Root = root;
 
 //>>> debug out
-    console.log( perfectStem + ">" + form + " " + root );
+//     console.log( perfectStem + ">" + form + " " + root );
 
     return objOut;
 }
