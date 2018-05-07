@@ -7,6 +7,10 @@
 // Requires: node-js, node-fs
 'esversion: 6';
 
+(function(){
+  "use strict";
+})();
+
 const outputFile = "quizlet.csv",
       inputPath = "";
 
@@ -17,41 +21,23 @@ const prepositionDelim = "+",
 var fs = require("fs");
 
 var fileName = "",
-    arrRow = "",
-    outputCSV = "";
-
-//** loop through directory > hardcoded file names!
-    fileName = "4-environment&health.txt";
-
-//get source data from file name
-var index = fileName.indexOf("-");
-var rotation = fileName.slice(0, index),
-    topic = fileName.slice(index+1),
-
-    topic = topic.replace(".txt","");
-    topic = topic.toLowerCase();
-var source = "FSI reading-rotation " + rotation + "-" + topic;
-
-
-var inputText = fs.readFileSync(fileName,'utf8'),
-    arrCards = inputText.split(cardDelim);
-
-//input segments
-var arrSubRows = [],
-    formNum = "",
-    preposition = "",
+    arrSubRows = [],
     perfect = "",   //past tense
     imperfect = "", //present tense
-    masdar = "",
-    translation = "",
-    arRoot = "";
-
-var arrRow = [],
+    arrCards = [],
     row = "",
-    csv = "Form, Preposition, arRoot, Masdar, ImperfectRad2Vowel, PerfectRad2Vowel, Translation, Comment, Source\n",
+    index = -1,
+    rotation = "",
+    topic = "",
+    source = "",
+    inputText = "",
+    re = new RegExp("foo", 'g');
+
+var arrOut = [],
     jRow = {
         Form: 0,
         Preposition: "",
+        PerfectStem:"",     //** for debugging, will not load into db
         Root: "",
         Masdar: "",
         ImperfectRad2Vowel: "",
@@ -61,6 +47,27 @@ var arrRow = [],
         Source: source,
         };
 
+//** loop through directory > hardcoded file names!
+
+
+
+
+    fileName = "4-education.txt";
+
+//get source data from file name
+    index = fileName.indexOf("-");
+    rotation = fileName.slice(0, index);
+    topic = fileName.slice(index+1);
+
+    topic = topic.replace(".txt","");
+    topic = topic.toLowerCase();
+
+    source = "FSI reading-rotation " + rotation + "-" + topic;
+
+    inputText = fs.readFileSync(fileName,'utf8');
+    arrCards = inputText.split(cardDelim);
+//     csv = "Form, Preposition, root, Masdar, ImperfectRad2Vowel, PerfectRad2Vowel, Translation, Comment, Source\n",
+
 //parse Quizlet card (in arrCards) and reformat into a CSV row
 
     arrCards.forEach( function (value, index) {
@@ -68,75 +75,70 @@ var arrRow = [],
         arrSubRows = [];
         arrSubRows = value.split("\n");
 
-    //extract preposition (if available) and past/present stems
+    //extract preposition (if available) and stems of perfect and imperfect
         perfect = splitTrim(arrSubRows[0], 0);
-        preposition = splitTrim(arrSubRows[0], 1);
+        jRow.Preposition = splitTrim(arrSubRows[0], 1);
+        imperfect = splitTrim(arrSubRows[1], 0);    //disregard preposition
 
-        imperfect = splitTrim(arrSubRows[1], 0);
-        //disregarding preposition
+    //** for debugging, will not load into db
+        jRow.PerfectStem = perfect;
 
     //extract masdar and translation
-        row = splitTrim(arrSubRows[2], 0);
-        //disregarding preposition
+        row = splitTrim(arrSubRows[2], 0);          //disregard preposition
+        jRow.Translation = row.split(translationDelim)[1];
+        jRow.Masdar = row.split(translationDelim)[0];
+        jRow.Masdar = (jRow.Masdar + "").trim();
 
-        translation = row.split(translationDelim)[1];
-        masdar = row.split(translationDelim)[0];
-        masdar = (masdar + "").trim();
+        //** compare given masdar with patterns corresponding to codes
 
     //clean up translation, remove commas and "to" prepositions
-        translation = (translation+"").toLowerCase();
-        var re = new RegExp("to ", 'g');
-        translation = translation.replace(re, '');
+        jRow.Translation = (jRow.Translation+"").toLowerCase();
+        re = new RegExp("to ", 'g');
+        jRow.Translation = jRow.Translation.replace(re, '');
         re = new RegExp(", ", 'g');
-        translation = translation.replace(re, ' - ');
-        translation = translation.trim();
+        jRow.Translation = jRow.Translation.replace(re, ' - ');
+        jRow.Translation = jRow.Translation.trim();
 
     //extract form number and root from perfect stem with separate function
-        arRoot = formFinder(perfect).arRoot;
-        formNum = formFinder(perfect).formNum;
+        jRow.Root = formFinder(perfect).Root;
+        jRow.Form = formFinder(perfect).Form;
 
     //adjust for irregulars
 
-        if ( arRoot.charAt(1) === "ا" ) {
+        if ( jRow.Root.charAt(1) === "ا" ) {
             var rad2 = imperfect.charAt(2);
-            arRoot = arRoot.charAt(0) + rad2 + arRoot.charAt(2);   //hollow, get from imperfect
+            jRow.Root = jRow.Root.charAt(0) + rad2 + jRow.Root.charAt(2);
+            //hollow, get from imperfect
 
-        } else if ( arRoot.charAt(2) === "ى" ) {
-            arRoot = arRoot.slice(0,2) + "ي";               //defective
+        } else if ( jRow.Root.charAt(2) === "ى" ) {
+            jRow.Root = jRow.Root.slice(0,2) + "ي";
+            //defective
 
-        } else if ( arRoot.charAt(2) === "ّ" ) {
-            arRoot = arRoot.slice(0,2) + arRoot.charAt(1);  //doubled
+        } else if ( jRow.Root.charAt(2) === "ّ" ) {
+            jRow.Root = jRow.Root.slice(0,2) + jRow.Root.charAt(1);
+            //doubled
 
         } else if ( false ) {
             //hamza?
         }
 
-//  row = formNum+ "," + preposition + "," + arRoot + "," + masdar + ",?,?," + translation  + ",," + source;
-//rtl / ltr gets dorked up = (
-    row = preposition + "," + arRoot + "," + masdar;                    //Arabic values
-    row = formNum + "," + row + ",?,?," + translation  + ",," + source;  //English values
-    csv += row + "\n";
-
-//    console.log("we got f" + formNum+ " of " + arRoot);
-    var rowDbg = formNum + "," +  preposition + "," + arRoot + "," + masdar + "," + translation;
-    console.log(rowDbg);
-
-/*
-    //write out
-    arrRow = [form, preposition, arRoot, masdar, "?", "?", translation, "", source];
-    csv += arrRow.join(",") + "\n";
-    //rtl / ltr gets dorked up = (
-*/
+//    console.log("we got f" + form+ " of " + root);
+//     var rowDbg = form + "," +  preposition + "," + root + "," + masdar + "," + translation;
+//     console.log(rowDbg);
+        arrOut.push(jRow);
     });
 
+//** OUTPUT DATA PLZ **
+// console.log(arrOut);
 
-//OUTPUT DATA NOW PLZ **
-//console.log(csv);
+
+
+////    ////    Supporting Functions    ////    ////
 
 //Google Sheet Column Order:
     //Form
     //Preposition
-    //arRoot
+    //root
     //Masdar
     //ImperfectRad2Vowel
     //PerfectRad2Vowel
@@ -144,10 +146,9 @@ var arrRow = [],
     //Comment
     //Source
 
-
 function splitTrim(line, sequence){
 
-    var re = new RegExp("[()]", 'gm');
+    var re = new RegExp("[()\.]", 'gm');
     line = line.replace(re, "");
 
     //split line (should be 1 or 2 parts)
@@ -164,117 +165,81 @@ function splitTrim(line, sequence){
 
 function formFinder(perfectStem) {
 //Takes perfect stem (masculine, third person conjugation of verb in active past tense),
-//and returns object containing formNumnumber and arRoot
+//and returns object containing formnumber and root
 
-    var objOut = {
-      formNum: 0,
-      arRoot: "",
-    };
+var objOut = {
+  Form: -1,
+  Root: "-1",
+};
 
-    var re = new RegExp("[َُِْ]", 'gm');
+var root = "",
+    form = "";
+
+if ( perfectStem.indexOf("...") > -1 ) {
+    console.log("elipses wtf");
+}
 
 //remove short vowels from perfectStem, alert user
+    var re = new RegExp("[َُِْ]", 'gm');
     perfect = perfectStem.replace(re, "");
 
     if ( perfect.length !== perfectStem.length ) {
-        console.log("formFinder - ignoring short vowels in perfect, line below.");
+        console.log("formFinder - ignored short vowels in perfect (below)");
+    }
+    perfect = perfect.trim();
+
+    if ( perfect.length === 3 ) {
+        form = 1;
+        root = perfect;
+
+    } else if ( ( perfect.length === 4 ) && ( perfect.charAt(2) === "ّ" ) ) {
+        form = 2;
+        root = perfect.replace("ّ", "");
+
+    } else if ( ( perfect.length === 4 ) && ( perfect.charAt(1) === "ا" ) ) {
+        form = 3;
+        root = perfect.charAt(0) + perfect.slice(2);
+
+    } else if ( ( perfect.length === 4 ) && ( perfect.charAt(0) === "أ" ) ) {
+        form = 4;
+        root = perfect.slice(1);
+
+    } else if ( ( perfect.charAt(0) === "ت" ) && ( perfect.charAt(3) === "ّ" ) ){
+        form = 5;
+        root = perfect.charAt(1) + perfect.charAt(2) + perfect.charAt(4);
+
+    } else if ( ( perfect.charAt(0) === "ت" ) && ( perfect.charAt(2) === "ا" ) ){
+        form = 6;
+        root = perfect.charAt(1) + perfect.charAt(3) + perfect.charAt(4);
+
+    } else if ( ( perfect.charAt(0) === "ا" ) && ( perfect.charAt(1) === "ن" ) ){
+        form = 7;
+        root = perfect.slice(2);
+
+    } else if ( ( perfect.charAt(0) === "ا" ) && ( perfect.charAt(2) === "ت" ) ){
+        form = 8;
+        root = perfect.charAt(1) + perfect.charAt(3) + perfect.charAt(4);
+
+    } else if ( ( perfect.charAt(0) === "ا" ) && ( perfect.charAt(4) === "ّ" ) ){
+        form = 9;
+        root = perfect.slice(1,4);
+
+    } else if ( perfect.slice(0,3) === "است" ) {
+        form = 10;
+        root = perfect.slice(3);
+
+    } else {
+        form = "?";
+        root = perfectStem;
+
+        console.log("unclassifiable stem w/ length " + perfectStem.length + "< " + perfectStem);
     }
 
-//classify formNum and extract arRoot from perfect
-    switch ( perfect.length ) {
+    objOut.Form = form;
+    objOut.Root = root;
 
-        case 3:
-            formNum = 1;
-            arRoot = perfect;
-            break;
+//>>> debug out
+    console.log( perfectStem + ">" + form + " " + root );
 
-        case 4:
-
-            if ( perfect.indexOf( String.fromCharCode(1617) ) > -1 ) {
-                //test for shadda
-                formNum = 2;
-                arRoot = perfect.replace(String.fromCharCode(1617), "");
-
-            } else if (perfect.charAt(1) === String.fromCharCode(1575) ) {
-                //test for plain alef
-                formNum = 3;
-                arRoot = perfect.charAt(0) + perfect.slice(2);
-
-            } else if (perfect.charAt(0) === String.fromCharCode(1571) ) {
-                //test for alef w/ upper hamza
-                formNum = 4;
-                arRoot = perfect.slice(1);
-
-            } else {
-                //indicates a parsing error
-                formNum = 234;
-                arRoot = "؟" + perfect;
-            }
-
-            break;
-
-        case 5:
-
-            if ( perfect.indexOf( String.fromCharCode(1617) ) > -1 ) {
-                //test for shadda
-
-                if ( perfect.charCodeAt(0) === String.fromCharCode(1578) ) {
-                    //test for teh
-                    formNum = 5;
-                } else if (perfect.charAt(0) === String.fromCharCode(1575) ) {
-                    //test for plain alef
-                    formNum = 9;
-                }
-
-                arRoot = perfect.replace(String.fromCharCode(1617), "");
-                arRoot = arRoot.slice(1);
-
-            } else if (perfect.charAt(2) === String.fromCharCode(1575) ) {
-                //test for plain alef
-                formNum = 6;
-                arRoot = perfect.charAt(1) + perfect.slice(3);
-
-            } else if ( perfect.slice(0,2) === "ان" ) {
-                formNum = 7;
-                arRoot = perfect.slice(2);
-
-            } else if ( (perfect.charAt(0) === String.fromCharCode(1575) ) && (perfect.charAt(2) === String.fromCharCode(1578) ) ){
-                //test for plain alif and teh
-                formNum = 8;
-                arRoot = perfect.charAt(1) + perfect.slice(3);
-
-            } else {
-            //indicates a parsing error
-                formNum = 56789;
-                arRoot = "؟" + perfect;
-            }
-
-            break;
-/*
-        case 6:
-            if ( perfect.slice(0,3) === "است" ) {
-                formNum = 10;
-                arRoot = perfect.slice(3);
-            } else {
-                //indicates a parsing error
-                formNum = 11;
-                arRoot = "؟" + perfect + "?";
-            }
-
-            break;
-*/
-        default:
-            formNum = "?";
-            arRoot = perfect + "?";
-            break;
-    }
-
-    if  ( perfect.slice(0,3) === "است" ) {
-        formNum = 10;
-        arRoot = perfect.slice(3);
-    }
-
-    objOut.formNum = formNum;
-    objOut.arRoot = arRoot;
     return objOut;
 }
