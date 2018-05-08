@@ -26,6 +26,10 @@ main();
 function main () {
 //master function
 
+//Announce program start on command line
+console.log(">>>>    >>>>    >>>>    Initiating ETL    >>>>    >>>>    >>>>    ");
+
+
 var arrRows = [],
     arrBatch = [],
     jsonString = "";
@@ -41,10 +45,12 @@ fs.readdir( inputPath, function( err, files ) {
     files.forEach( function( file, index ) {
         if ( (file.charAt(1) === "-" ) && (file.slice(-4) === ".txt") ) {
 
+            console.log("Opened " + file);
+
             //only read from valid data files
             arrBatch = etl(file);
             arrRows = arrRows.concat( arrBatch );
-            console.log("Extracted " + arrBatch.length + " rows from " + file + ", out of " + arrRows.length + " total rows.");
+            console.log("Extracted " + arrBatch.length + " rows from " + file + ".  Saved " + arrRows.length + " total rows.");
 
         }  else {
             //skip
@@ -56,7 +62,10 @@ fs.readdir( inputPath, function( err, files ) {
         jsonString += JSON.stringify(value) + ",\n";
     });
     jsonString = jsonString.trim();
-    jsonString = jsonString.slice(0,-1);    //remove trailing comma
+
+    //make array-like
+    jsonString = jsonString.slice(0,-1);
+    jsonString = "[" + jsonString + "]";
 
     //save the data!
     fs.writeFile(outputFile, jsonString, function(err) {
@@ -86,6 +95,11 @@ var arrSubRows = [],
 
    //load data from file and organize into array of cards
     inputText = fs.readFileSync(fileName,'utf8');
+
+    if ( inputText.charAt(inputText.length - 1) === ";" ) {
+        inputText = inputText.slice(0,-1);
+    }
+
     arrCards = inputText.split(cardDelim);
 
     //get meta data for source field
@@ -98,7 +112,7 @@ var arrSubRows = [],
         jRow = {
             Form: 0,
             Preposition: "",
-            PerfectStem:"",     //** for debugging, will not load into db
+//             PerfectStem:"",     //** for debugging, will not load into db
             Root: "",
             Masdar: "",
             ImperfectRad2Vowel: "",
@@ -110,7 +124,7 @@ var arrSubRows = [],
 
     //parse Quizlet card (in arrCards) and reformat into JSON
     arrCards.forEach( function (value, index) {
-        jRow.source = source;
+        jRow.Source = source;
 
         arrSubRows = [];
         arrSubRows = value.split("\n");
@@ -121,7 +135,7 @@ var arrSubRows = [],
         imperfect = splitPrepo(arrSubRows[1], 0);    //disregard preposition
 
     //** for debugging, do not load into db
-        jRow.PerfectStem = perfect;
+//         jRow.PerfectStem = perfect;
 
     //extract masdar and translation
         jRow.Masdar = arrSubRows[2].split(translationDelim)[0];
@@ -228,7 +242,7 @@ return masdarOut;
 function splitPrepo(line, sequence){
 //separates preposition from rest of line
 
-    var re = new RegExp("[()\.]", 'gm');
+    var re = new RegExp("[()\/._]", 'gm');
     line = line.replace(re, "");
 
     //split line (should be 1 or 2 parts)
@@ -255,11 +269,12 @@ var root = "",
     form = "";
 
 //remove short vowels from perfectStem, alert user
-    var re = new RegExp("[َُِْ]", 'gm');
-    var perfect = perfectStem.replace(re, "");
+    var re = new RegExp("[َُِْ]", 'gm')
+        perfect = perfectStem.replace(re, ""),
+        char0 = perfect.charAt(0);
 
     if ( perfect.length !== perfectStem.length ) {
-        console.log("  formFinder - ignored short vowels in " + perfectStem);
+//         console.log("  formFinder - ignored short vowels in " + perfectStem);
     }
     perfect = perfect.trim();
 
@@ -267,7 +282,7 @@ var root = "",
         form = 1;
         root = perfect;
 
-    } else if ( ( perfect.length === 6 ) && ( perfect.slice(0,3) === "است" ) ) {
+    } else if ( ( perfect.length === 6 ) && ( giveHimTheStick(char0) ) && ( perfect.slice(1,3) === "ست" ) ) {
         form = 10;
         root = perfect.slice(3);
 
@@ -279,7 +294,7 @@ var root = "",
         form = 3;
         root = perfect.charAt(0) + perfect.slice(2);
 
-    } else if ( ( perfect.length === 4 ) && ( perfect.charAt(0) === "أ" ) ) {
+    } else if ( ( perfect.length === 4 ) && ( giveHimTheStick(char0) ) ) {
         form = 4;
         root = perfect.slice(1);
 
@@ -291,15 +306,15 @@ var root = "",
         form = 6;
         root = perfect.charAt(1) + perfect.charAt(3) + perfect.charAt(4);
 
-    } else if ( ( perfect.charAt(0) === "ا" ) && ( perfect.charAt(1) === "ن" ) ){
+    } else if ( ( giveHimTheStick(char0) ) && ( perfect.charAt(1) === "ن" ) ){
         form = 7;
         root = perfect.slice(2);
 
-    } else if ( ( perfect.charAt(0) === "ا" ) && ( perfect.charAt(2) === "ت" ) ){
+    } else if ( ( giveHimTheStick(char0) ) && ( perfect.charAt(2) === "ت" ) ){
         form = 8;
         root = perfect.charAt(1) + perfect.charAt(3) + perfect.charAt(4);
 
-    } else if ( ( perfect.charAt(0) === "ا" ) && ( perfect.charAt(4) === "ّ" ) ){
+    } else if ( ( giveHimTheStick(char0) ) && ( perfect.charAt(4) === "ّ" ) ){
         form = 9;
         root = perfect.slice(1,4);
 
@@ -307,10 +322,27 @@ var root = "",
         form = "?";
         root = perfectStem;
 
-        console.log("unclassifiable stem w/ length " + perfectStem.length + "< " + perfectStem);
+        console.log(" unclassifiable stem w/ length " + perfectStem.length + "< " + perfectStem);
     }
 
     objOut.Form = form;
     objOut.Root = root;
     return objOut;
+}
+
+function giveHimTheStick(matchChar) {
+//returns true if matchChar looks like an alif, including hamza carriers
+
+    var answer = false,
+        watchList = [ String.fromCharCode(1649), String.fromCharCode(1650), String.fromCharCode(1651),
+                    String.fromCharCode(1652), String.fromCharCode(1653), String.fromCharCode(1570),
+                    String.fromCharCode(1571), String.fromCharCode(1572), String.fromCharCode(1573),
+                    String.fromCharCode(1575) ];
+
+    answer = watchList.some( function(value) {
+        return matchChar === value;
+    });
+
+return answer;
+
 }
