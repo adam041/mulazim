@@ -11,7 +11,7 @@
   "use strict";
 })();
 
-const outputFile = "quizlet.csv",
+const outputFile = "quizlet.json",
       inputPath = ".";
 
 const prepositionDelim = "+",
@@ -21,13 +21,17 @@ const prepositionDelim = "+",
 var fs = require("fs");
 var path = require( 'path' );
 
+main();
+
+function main () {
+//master function
+
 var arrRows = [],
-    arrBatch = [];
+    arrBatch = [],
+    jsonString = "";
 
-////  MAIN FUNCTION
-
-fs.readdir( inputPath, function( err, files ) {
 //loop through files
+fs.readdir( inputPath, function( err, files ) {
 
     if( err ) {
         console.error( "Could not list the directory.", err );
@@ -39,18 +43,30 @@ fs.readdir( inputPath, function( err, files ) {
 
             //only read from valid data files
             arrBatch = etl(file);
-            arrRows.concat( arrBatch )
-            console.log("Extracted " + arrBatch.length + " rows from " + file);
+            arrRows = arrRows.concat( arrBatch );
+            console.log("Extracted " + arrBatch.length + " rows from " + file + ", out of " + arrRows.length + " total rows.");
 
         }  else {
             //skip
         }
+    });
 
+    //convert JSON to string
+    arrRows.forEach( function(value, index){
+        jsonString += JSON.stringify(value) + ",\n";
+    });
+    jsonString = jsonString.trim();
+    jsonString = jsonString.slice(0,-1);    //remove trailing comma
+
+    //save the data!
+    fs.writeFile(outputFile, jsonString, function(err) {
+        if(err) {
+            return console.log(err);
+        }
+        console.log( arrRows.length + " records were saved to " + outputFile);
     });
 });
-
-
-////    ////    Supporting Functions    ////    ////
+}
 
 
 function etl(fileName) {
@@ -62,63 +78,57 @@ var arrSubRows = [],
     perfect = "",   //past tense
     imperfect = "", //present tense
     arrCards = [],
-    row = "",
-    index = -1,
     rotation = "",
     topic = "",
     source = "",
     inputText = "",
     re = new RegExp("foo", 'g');
 
-var arrOut = [],
-    jRow = {
-        Form: 0,
-        Preposition: "",
-        PerfectStem:"",     //** for debugging, will not load into db
-        Root: "",
-        Masdar: "",
-        ImperfectRad2Vowel: "",
-        PerfectRad2Vowel: "",
-        Translation: "",
-        Comment: "",
-        Source: source,
-        };
-
-    //get source data from file name
+   //load data from file and organize into array of cards
     inputText = fs.readFileSync(fileName,'utf8');
     arrCards = inputText.split(cardDelim);
 
     //get meta data for source field
-    index = fileName.indexOf("-");
-    rotation = fileName.slice(0, index);
-    topic = fileName.slice(index+1);
+    rotation = fileName.split("-")[0];
+    topic = fileName.split("-")[1].toLowerCase();
+    source = "FSI reading-rotation " + rotation + "-" + topic.replace(".txt","");
 
-    topic = topic.replace(".txt","");
-    topic = topic.toLowerCase();
-
-    source = "FSI reading-rotation " + rotation + "-" + topic;
+    //declare output variables
+    var arrOut = [],
+        jRow = {
+            Form: 0,
+            Preposition: "",
+            PerfectStem:"",     //** for debugging, will not load into db
+            Root: "",
+            Masdar: "",
+            ImperfectRad2Vowel: "",
+            PerfectRad2Vowel: "",
+            Translation: "",
+            Comment: "",
+            Source: "",
+            };
 
     //parse Quizlet card (in arrCards) and reformat into JSON
     arrCards.forEach( function (value, index) {
+        jRow.source = source;
 
         arrSubRows = [];
         arrSubRows = value.split("\n");
 
     //extract preposition (if available) and stems of perfect and imperfect
-        perfect = splitTrim(arrSubRows[0], 0);
-        jRow.Preposition = splitTrim(arrSubRows[0], 1);
-        imperfect = splitTrim(arrSubRows[1], 0);    //disregard preposition
+        perfect = splitPrepo(arrSubRows[0], 0);
+        jRow.Preposition = splitPrepo(arrSubRows[0], 1);
+        imperfect = splitPrepo(arrSubRows[1], 0);    //disregard preposition
 
-    //** for debugging, will not load into db
+    //** for debugging, do not load into db
         jRow.PerfectStem = perfect;
 
     //extract masdar and translation
-        row = splitTrim(arrSubRows[2], 0);          //disregard preposition
-        jRow.Translation = row.split(translationDelim)[1];
-        jRow.Masdar = row.split(translationDelim)[0];
-        jRow.Masdar = (jRow.Masdar + "").trim();
+        jRow.Masdar = arrSubRows[2].split(translationDelim)[0];
+        jRow.Masdar = splitPrepo(jRow.Masdar, 0);
+        jRow.Masdar = codifyMasdar(jRow.Masdar);    //check if a data entry code applies
 
-        //** compare given masdar with patterns corresponding to codes
+        jRow.Translation = arrSubRows[2].split(translationDelim)[1];
 
     //clean up translation, remove commas and "to" prepositions
         jRow.Translation = (jRow.Translation+"").toLowerCase();
@@ -133,7 +143,6 @@ var arrOut = [],
         jRow.Form = formFinder(perfect).Form;
 
     //adjust for irregulars
-
         if ( jRow.Root.charAt(1) === "ا" ) {
             var rad2 = imperfect.charAt(2);
             jRow.Root = jRow.Root.charAt(0) + rad2 + jRow.Root.charAt(2);
@@ -152,6 +161,7 @@ var arrOut = [],
         }
 
     arrOut.push(jRow);
+    jRow = {};
     //console.log(jRow); // ** debug
 
     });
@@ -159,19 +169,64 @@ var arrOut = [],
 return arrOut;
 
 //Google Sheet Column Order:
-//Form
-//Preposition
-//Root
-//Masdar
-//ImperfectRad2Vowel
-//PerfectRad2Vowel
-//Translation
-//Comment
-//Source
+    //Form
+    //Preposition
+    //Root
+    //Masdar
+    //ImperfectRad2Vowel
+    //PerfectRad2Vowel
+    //Translation
+    //Comment
+    //Source
+}
+
+function codifyMasdar(masdar){
+//takes a masdar input as string, outputs either a masdar code if pattern matched, or else the original string.
+
+var masdarOut = masdar,
+    form = -1;
+
+    if ( ( masdar.length === 5 ) && ( masdar.charAt(1) === "ت" ) && ( masdar.charAt(3) === "ي" )) {
+        form = 2;
+        masdarOut = "ي";
+
+    } else if ( ( masdar.charAt(0) === "م" ) && ( masdar.charAt(2) === "ا" ) && ( masdar.charAt(5) === "ة" ) ) {
+        form = 3;
+        masdarOut = "م";
+
+    } else if ( ( masdar.length === 5 ) && ( masdar.charAt(0) === "إ" ) && ( masdar.charAt(3) === "ا" )) {
+        form = 4;
+
+    } else if ( ( masdar.charAt(0) === "ت" ) && ( masdar.charAt(3) === "ّ" ) ){
+        form = 5;
+
+    } else if ( ( masdar.charAt(0) === "ت" ) && ( masdar.charAt(2) === "ا" ) ){
+        form = 6;
+
+    } else if ( ( masdar.charAt(0) === "ا" ) && ( masdar.charAt(1) === "ن" ) && ( masdar.charAt(4) === "ا" ) ){
+        form = 7;
+
+    } else if ( ( masdar.charAt(0) === "ا" ) && ( masdar.charAt(2) === "ت" ) && ( masdar.charAt(4) === "ا" ) ){
+        form = 8;
+
+    } else if ( ( masdar.charAt(0) === "ا" ) && ( masdar.charAt(3) === "ل" ) && ( masdar.charAt(4) === "ا" ) ){
+        form = 9;
+
+    } else if ( ( masdar.slice(0,3) === "است" ) && ( masdar.charAt(5) === "ا" ) ) {
+        form = 10;
+    }
+
+    if ( form >=4 ) {
+        //suppress output if Masdar is regular in higher forms
+        masdarOut = "";
+    }
+
+return masdarOut;
 }
 
 
-function splitTrim(line, sequence){
+function splitPrepo(line, sequence){
+//separates preposition from rest of line
 
     var re = new RegExp("[()\.]", 'gm');
     line = line.replace(re, "");
@@ -180,7 +235,6 @@ function splitTrim(line, sequence){
     var array = line.split(prepositionDelim);
 
     if ( array[sequence] === undefined ) {
-//         console.log("splitTrim('line'," + sequence + ") - Sequence parameter not found in array");
         return "";
     } else {
         return array[sequence].trim();
@@ -200,22 +254,22 @@ var objOut = {
 var root = "",
     form = "";
 
-if ( perfectStem.indexOf("...") > -1 ) {
-    console.log("elipses wtf");
-}
-
 //remove short vowels from perfectStem, alert user
-    var re = new RegExp("[َُِْ]", 'gm');
-    perfect = perfectStem.replace(re, "");
+    var re = new RegExp("[َُِْ]", 'gm');
+    var perfect = perfectStem.replace(re, "");
 
     if ( perfect.length !== perfectStem.length ) {
-        console.log("formFinder - ignored short vowels in perfect (below)");
+        console.log("  formFinder - ignored short vowels in " + perfectStem);
     }
     perfect = perfect.trim();
 
     if ( perfect.length === 3 ) {
         form = 1;
         root = perfect;
+
+    } else if ( ( perfect.length === 6 ) && ( perfect.slice(0,3) === "است" ) ) {
+        form = 10;
+        root = perfect.slice(3);
 
     } else if ( ( perfect.length === 4 ) && ( perfect.charAt(2) === "ّ" ) ) {
         form = 2;
@@ -249,10 +303,6 @@ if ( perfectStem.indexOf("...") > -1 ) {
         form = 9;
         root = perfect.slice(1,4);
 
-    } else if ( perfect.slice(0,3) === "است" ) {
-        form = 10;
-        root = perfect.slice(3);
-
     } else {
         form = "?";
         root = perfectStem;
@@ -262,9 +312,5 @@ if ( perfectStem.indexOf("...") > -1 ) {
 
     objOut.Form = form;
     objOut.Root = root;
-
-//>>> debug out
-//     console.log( perfectStem + ">" + form + " " + root );
-
     return objOut;
 }
