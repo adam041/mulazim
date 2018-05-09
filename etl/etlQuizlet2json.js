@@ -112,7 +112,6 @@ var arrSubRows = [],
         jRow = {
             Form: 0,
             Preposition: "",
-//             PerfectStem:"",     //** for debugging, will not load into db
             Root: "",
             Masdar: "",
             ImperfectRad2Vowel: "",
@@ -120,6 +119,9 @@ var arrSubRows = [],
             Translation: "",
             Comment: "",
             Source: "",
+            //** last two fields for debugging only
+            PerfectStem:"",
+            RootLen: "",
             };
 
     //parse Quizlet card (in arrCards) and reformat into JSON
@@ -133,9 +135,6 @@ var arrSubRows = [],
         perfect = splitPrepo(arrSubRows[0], 0);
         jRow.Preposition = splitPrepo(arrSubRows[0], 1);
         imperfect = splitPrepo(arrSubRows[1], 0);    //disregard preposition
-
-    //** for debugging, do not load into db
-//         jRow.PerfectStem = perfect;
 
     //extract masdar and translation
         jRow.Masdar = arrSubRows[2].split(translationDelim)[0];
@@ -158,9 +157,9 @@ var arrSubRows = [],
 
     //adjust for irregulars
         if ( jRow.Root.charAt(1) === "ا" ) {
+            //hollow, get from imperfect * won't work form 2+
             var rad2 = imperfect.charAt(2);
             jRow.Root = jRow.Root.charAt(0) + rad2 + jRow.Root.charAt(2);
-            //hollow, get from imperfect
 
         } else if ( jRow.Root.charAt(2) === "ى" ) {
             jRow.Root = jRow.Root.slice(0,2) + "ي";
@@ -173,6 +172,10 @@ var arrSubRows = [],
         } else if ( false ) {
             //hamza?
         }
+
+    //**  Next two fields for debugging, not intended for actual use
+    jRow.PerfectStem = perfect;
+    jRow.RootLen = jRow.Root.length;
 
     arrOut.push(jRow);
     jRow = {};
@@ -329,6 +332,73 @@ var root = "",
     objOut.Root = root;
     return objOut;
 }
+
+
+function hollowFiller(imperfectHe){
+//Takes imperfect active conjugation of third person masculine subject, and returns radical 2 long vowel
+//Expected output is wuw or yeh
+
+var rad2 = "";
+
+var root = "",
+    form = "";
+
+//remove short vowels and trim
+    var re = new RegExp("[َُِْ]", 'gm')
+        imperfectHe = imperfectHe.replace(re, ""),
+        char0 = imperfectHe.charAt(0);
+
+    imperfectHe = imperfectHe.trim();
+
+//find form and extract rad2
+    if ( imperfectHe.length === 4 ) {
+        form = 1.4;
+        rad2 = imperfectHe.charAt(2);
+
+    } else if ( ( imperfectHe.length === 6 ) && ( imperfectHe.slice(0,3) === "يست" ) ) {
+        form = 10;
+        rad2 = imperfectHe.charAt(2);
+
+    } else if ( ( imperfectHe.length === 5 ) && ( imperfectHe.charAt(3) === "ّ" ) ) {
+        form = 2;
+        rad2 = imperfectHe.charAt(2);
+
+    } else if ( ( imperfectHe.length === 5 ) && ( imperfectHe.charAt(2) === "ا" ) ) {
+        form = 3;
+        rad2 = imperfectHe.charAt(3);
+
+    } else if ( ( imperfectHe.charAt(1) === "ت" ) && ( imperfectHe.charAt(4) === "ّ" ) ){
+        form = 5;
+        rad2 = imperfectHe.charAt(3);
+
+    } else if ( ( imperfectHe.charAt(1) === "ت" ) && ( imperfectHe.charAt(3) === "ا" ) ){
+        form = 6;
+        rad2 = imperfectHe.charAt(3);
+
+    } else if ( ( imperfectHe.length === 5 ) && ( imperfectHe.charAt(1) === "ن" ) ){
+        form = 7;
+        rad2 = imperfectHe.charAt(3);
+
+    } else if ( ( imperfectHe.length === 5 ) && ( imperfectHe.charAt(2) === "ت" ) ){
+        form = 8;
+        rad2 = imperfectHe.charAt(3);
+
+    } else if ( ( imperfectHe.length === 5 ) && ( imperfectHe.charAt(4) === "ّ" ) ){
+        form = 9;
+        rad2 = imperfectHe.charAt(2);
+
+    } else {
+        form = "?";
+        console.log(" unclassifiable imperfect stem w/ length " + imperfectHe.length + "< " + imperfectHe);
+    }
+
+if ( (rad2 !== "ي" ) && (rad2 !== "و") ) {
+    console.log("hollowFiller applied to non-hollow root: " + imperfectHe);
+}
+
+return rad2;
+}
+
 
 function giveHimTheStick(matchChar) {
 //returns true if matchChar looks like an alif, including hamza carriers
