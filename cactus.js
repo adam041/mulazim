@@ -130,7 +130,7 @@ function conjugateUpdate( arRoot, arSubject) {
 // $( "#stage4").html( "".wrap("<h3>") );
 
 //Display active root on table and in title
-    document.title = "Conjugations of " + arRoot;
+    document.title = "cnj ( " + arRoot + " )";
     jQuery("#activeRoot").html( arRoot );
 
 //Force display of all header cells
