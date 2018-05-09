@@ -283,6 +283,11 @@ var oldRoot = "placeholder",
 
     $("#chosenRoot").trigger("chosen:updated");
 
+    //give info about data status to user
+    var message = "Loaded " + $("#chosenRoot option").length + " unique verbs.  ";
+        message += "Referencing data on " + $("#dataTable tbody tr").length + " verb forms (with some dupes).";
+    $("#dataStatus").html(message);
+
 }
 
 
