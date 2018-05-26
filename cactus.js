@@ -606,6 +606,9 @@ function whole(word){
     //collapse adjoining alifs to alif madda
     wordString = collapseAlifs(wordString);
 
+    //swap out repeating characters with shadda in middle (assumes a consonant) with shadda
+    wordString = intensify(wordString);
+
 return wordString;
 }
 
@@ -917,6 +920,34 @@ function collapseAlifs(strWord) {
 
             strWord = strWord.slice(0, i-2) + ar_Am + strWord.slice(i+1);
         }
+    }
+
+return strWord;
+}
+
+
+function intensify(strWord) {
+//parse word in string format and condense duplicate consonants with shadda
+
+    var subString = "",
+        stopIndex = 0;
+
+    for (var i = 1; i < strWord.length; i++) {
+
+        stopIndex = i + 3;
+        if ( stopIndex > strWord.length ) {
+            stopIndex = strWord.length;
+        }
+
+        subString = strWord.slice(i, stopIndex);
+
+        if ( subString.length === 3 ) {
+
+            if ( ( subString.charAt(0) === subString.charAt(2) ) && ( subString.charAt(1) === ar_0 ) ) {
+                strWord = strWord.slice(0, i) + subString.charAt(0) + ar_2v + strWord.slice(stopIndex);
+            }
+        }
+
     }
 
 return strWord;
