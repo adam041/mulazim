@@ -795,8 +795,6 @@ function cnjUltraHollowVerb(wordIn) {
 
     var word = clone(wordIn);
 
-//     word.type = "hollow, especially irregular";
-
     if ( word.enTense  === "perfect" ) {
         //conj as if it is hollow, with ar_Y in the 2nd radical
 
@@ -827,41 +825,113 @@ function cnjDefectiveVerb(wordIn) {
 
 var word = clone(wordIn);
 
-    if ( word.enTense  === "perfect" ) {
+if ( word.rad3.consonant() === ar_U )  {
 
-        if ( word.arSubject === pro_he ) {
+    if ( word.enTense === "perfect" ) {
 
-            if ( word.rad3.consonant() === ar_U ) {
-                word.rad3.consonant(ar_A);
-                word.rad3.vowel("");
+        switch ( word.arSubject ) {
+            case pro_he:
+                word.rad2.vowel( ar_a );
+                word.rad3.consonant( ar_A );
+                word.rad3.vowel( "" );
+                break;
 
-            } else if ( word.rad3.consonant() === ar_Y ) {
-                word.rad3.consonant(ar_am);
-                word.rad3.vowel("");
-            }
+            case pro_she:
+            case pro_theyM:
+            case pro_dualYou:
+                word.rad2.vowel( "" );
+                word.rad3 = [];
+                break;
+
+            default:
+                //word.rad2.consonant( ar_U);
+                word.rad2.vowel( ar_u );
+                break;
         }
 
-        if ( ( word.arSubject === pro_she ) || ( word.arSubject === pro_theyM ) ) {
+    } else { //assume imperfect
+        switch ( word.arSubject ) {
+            case pro_theyM:
+            case pro_vousM:
+                word.rad2.vowel( "" );
+                word.rad3 = [];
+                break;
 
-            console.log("defective she/theyM");
-
-            word.rad3 = [];
-
-            if (word.suffix.consonant() === "") {
-                word.suffix.shift();
-            }
-            word.suffix.vowel(ar_0);
-
+            default:
+                //word.rad2.consonant( ar_U);
+                word.rad2.vowel( ar_u );
+                break;
         }
-
-    } else if ( word.enTense  === "imperfect" ) {
-
-        if ( ( word.arSubject === pro_youF ) || ( word.arSubject === pro_vousM ) || ( word.arSubject === pro_theyM ) ) {
-            word.rad3 = [];
-            word.rad2.vowel("");
-        }
-
     }
+
+} else if ( ( word.rad3.consonant() === ar_Y ) || ( word.rad3.consonant() === ar_am ) ) {
+
+    if ( word.enTense === "perfect" ) {
+        switch ( word.arSubject ) {
+            case pro_he:
+                if ( word.rad3.consonant() === ar_Y ) {
+                    word.rad2.vowel( ar_a );
+                    word.rad3.consonant( ar_am );
+                    word.rad3.vowel( "" );
+                } else {
+                    word.rad2.vowel( ar_i );
+                    word.rad3.consonant( ar_Y );
+                    word.rad3.vowel( "" );
+                }
+                break;
+
+            case pro_she:
+            case pro_dualF:
+                if ( word.rad3.consonant() === ar_Y ) {
+                    word.rad2.vowel( "" );
+                    word.rad3 = [];
+                } else {
+                    word.rad2.vowel( ar_i );
+                    word.rad3.consonant( ar_Y );
+                    word.rad3.vowel( "" );
+                }
+                break;
+
+            case pro_theyM:
+                word.rad2.vowel( "" );
+                word.rad3 = [];
+                break;
+
+            default:
+                word.rad2.vowel( ar_i );
+                word.rad3.consonant( ar_Y );
+                word.rad3.vowel( "" );
+                break;
+            }
+
+    } else { //assume imperfect
+        switch ( word.arSubject ) {
+
+            case pro_he:
+            case pro_she:
+            case pro_youM:
+            case pro_she:
+            case pro_i:
+            case pro_we:
+                word.rad2.vowel( ar_a );
+                word.rad3.consonant( ar_am );
+                word.rad3.vowel( "" );
+                break;
+
+            case pro_theyM:
+            case pro_vousM:
+                word.rad2.vowel( "" );
+                word.rad3 = [];
+                break;
+
+            default:
+                word.rad2.vowel( ar_i );
+                word.rad3.consonant( ar_Y );
+                word.rad3.vowel( "" );
+                break;
+        }
+    }
+}
 
 return word;
 }
@@ -873,8 +943,6 @@ function cnjDoubledVerb(wordIn) {
 
     var word = clone(wordIn),
         nextChar = nextVowel(word, "rad3");
-
-//     word.type = "doubled";
 
     if ( nextChar === ar_0 ) {
         word.rad3.consonant( word.rad2.consonant() );
@@ -901,10 +969,13 @@ var word = clone(wordIn);
     //make form 8 adjustments
     if ( word.formNum === 8 ) {
 
-        if ( ( word.rad1.consonant() === ar_t ) ||
-            ( word.rad1.consonant() === ar_U ) ||
+//         if ( ( word.rad1.consonant() === ar_t ) ||
+//             ( word.rad1.consonant() === ar_U ) ||
+//             ( hasHamza(word.rad1.consonant() ) ) ) {
+        if ( ( word.rad1.consonant() === ar_U ) ||
             ( hasHamza(word.rad1.consonant() ) ) ) {
                 word.midRight.vowel( ar_2v + word.midRight.vowel() );
+    //note: Don't worry if rad1.consonant() === ar_t, post-processing script will add shadda after repeating consonants.
 
         } else if ( ( word.rad1.consonant() === ar_z ) ||
             ( word.rad1.consonant() === ar_dh ) ||
@@ -1081,52 +1152,3 @@ return vowelOut;
 //
 // return seg;
 // }
-
-
-//////////////////////////////////
-//Keep Everything ABOVE This Line
-
-
-////////////////////
-// OLD STUFF BELOW
-////////////////////
-/*
-
-function conjImperative(arRoot, formNum) {
-//returns conjugated trilateral verb in Imperative
-
-//six possible outputs (gender & quantity), derived from jussive (implied task...)
-
-    var vowelCode = "",
-        alifVowel = "",
-        rad2Vowel = "";
-
-    switch (formNum) {
-
-        case 1:
-            vowelCode = objRefs.query(arRoot, formNum, "f1Imperative0R2"); //split(**)
-            alifVowel = vowelMe(vowelCode);
-            vowelCode = objRefs.query(arRoot, formNum, "f1Imperative0R2"); //split(**)
-            rad2Vowel = vowelMe(vowelCode);
-            return ar_hA + alifVowel + arRoot[0] + ar_0 + arRoot[1] + rad2Vowel + arRoot[2] + ar_0;
-
-        case 2:
-        case 3:
-        case 7:
-        case 8:
-        case 10:
-            return conjActivePast(arRoot, formNum).slice(0,-2) + ar_i + arRoot[2] + ar_0;
-
-        case 4:
-            return ar_hA + ar_a + arRoot[0] + ar_a + arRoot[1] + ar_i + arRoot[2] + ar_0;
-
-        case 5:
-        case 6:
-        case 9:
-            return conjActivePast(arRoot, formNum);
-
-        default:
-            return "Error";
-      }
-}
-*/

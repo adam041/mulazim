@@ -580,7 +580,7 @@ var rootType = "regular";
     } else if ( ( arRoot[1] === ar_Y ) || ( arRoot[1] === ar_U ) ){
         rootType = "hollow";
 
-    } else if ( ( arRoot[2] === ar_Y ) || ( arRoot[2] === ar_U ) ) {
+    } else if ( ( arRoot[2] === ar_Y ) || ( arRoot[2] === ar_am ) || ( arRoot[2] === ar_U ) ) {
         rootType = "defective";
 
     } if ( ( arRoot.indexOf(ar_2v) > -1) || ( arRoot[1] === arRoot[2] ) ) {
