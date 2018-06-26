@@ -97,7 +97,7 @@ var word = clone(wordIn),
     }
 
     if (word.type !== "regular") {
-        footNote = "Irregular " + word.type + " conjugation applied to " + ar_LM + word.arRoot
+        footNote = "Irregular " + word.type + " conjugation applied to " + ar_LM + word.arRoot;
     }
 
     $("#divFooter").html( footNote );
@@ -438,7 +438,7 @@ var word = clone(regWord);
 
         case "hollow":
         case "hollow2":
-            if (!( word.arSubject === pro_youF ) && !( word.arSubject === pro_vousM )  && !( word.arSubject === pro_theyM ) ) {
+            if (( word.arSubject !== pro_youF ) && ( word.arSubject !== pro_vousM )  && ( word.arSubject !== pro_theyM ) ) {
                 word.rad2 = [];
             }
             break;
@@ -823,33 +823,74 @@ function cnjDefectiveVerb(wordIn) {
 // modifies stem in accordance with irregular verb rules
 // assumes ( ( root[2] === ar_Y ) || ( root[2] === ar_U ) )
 
-var word = clone(wordIn);
+var word = clone(wordIn),
+    rad3C = "";
+
+if ( word.rad3.consonant() === ar_am ){
+    word.rad3.consonant(ar_Y);
+}
+
+//helper sub-routine to set rad3 consonant based on rad2 vowel
+    word.setRad3 = function(if_a, if_i, if_u) {
+
+        var preRad3Vowel = "",
+            vowelOut = "";
+
+        switch ( word.rad2.vowel() ) {
+
+            case ar_a:
+                vowelOut = if_a;
+                break;
+
+            case ar_i:
+                vowelOut = if_i;
+                break;
+
+            case ar_u:
+                vowelOut = if_u;
+                break;
+        }
+
+        return vowelOut;
+    }
+//end sub-routine
+
 
 if ( word.rad3.consonant() === ar_U )  {
 
     if ( word.enTense === "perfect" ) {
 
         switch ( word.arSubject ) {
+
             case pro_he:
-                word.rad2.vowel( ar_a );
-                word.rad3.consonant( ar_A );
-                word.rad3.vowel( "" );
+
+                if ( word.formNum === 1 ) {
+                    rad3C = word.setRad3(ar_A, ar_Y, ar_U);
+                    word.rad3.consonant(rad3C);
+
+                } else {
+                    //forms 2-10
+                    rad3C = word.setRad3(ar_am, ar_Y, ar_U);    //* swag, qa دعو f8 *
+                    word.rad3.consonant(rad3C);
+                }
                 break;
 
-            case pro_she:
             case pro_theyM:
-            case pro_dualYou:
-                word.rad2.vowel( "" );
+            case pro_dualF:
+            case pro_she:
+//              case pro_dualYou:
+//              word.rad2.vowel( "" );
                 word.rad3 = [];
                 break;
 
-            default:
+            default: // rad3 stays U
                 //word.rad2.consonant( ar_U);
-                word.rad2.vowel( ar_u );
+//                 word.rad2.vowel( ar_u );
                 break;
         }
 
     } else { //assume imperfect
+
         switch ( word.arSubject ) {
             case pro_theyM:
             case pro_vousM:
@@ -864,32 +905,14 @@ if ( word.rad3.consonant() === ar_U )  {
         }
     }
 
-} else if ( ( word.rad3.consonant() === ar_Y ) || ( word.rad3.consonant() === ar_am ) ) {
+} else if ( word.rad3.consonant() === ar_Y ) {
 
     if ( word.enTense === "perfect" ) {
+
         switch ( word.arSubject ) {
             case pro_he:
-                if ( word.rad3.consonant() === ar_Y ) {
-                    word.rad2.vowel( ar_a );
-                    word.rad3.consonant( ar_am );
-                    word.rad3.vowel( "" );
-                } else {
-                    word.rad2.vowel( ar_i );
-                    word.rad3.consonant( ar_Y );
-                    word.rad3.vowel( "" );
-                }
-                break;
-
-            case pro_she:
-            case pro_dualF:
-                if ( word.rad3.consonant() === ar_Y ) {
-                    word.rad2.vowel( "" );
-                    word.rad3 = [];
-                } else {
-                    word.rad2.vowel( ar_i );
-                    word.rad3.consonant( ar_Y );
-                    word.rad3.vowel( "" );
-                }
+                rad3C = word.setRad3(ar_am, ar_Y, ar_U);
+                word.rad3.consonant(rad3C);
                 break;
 
             case pro_theyM:
@@ -897,11 +920,30 @@ if ( word.rad3.consonant() === ar_U )  {
                 word.rad3 = [];
                 break;
 
-            default:
-                word.rad2.vowel( ar_i );
-                word.rad3.consonant( ar_Y );
-                word.rad3.vowel( "" );
+            case pro_she:
+            case pro_dualF:
+                rad3C = word.setRad3(ar_am, ar_Y, ar_Y);    //* swag'd
+//                 rad3C = word.setRad3("", ar_Y, "");
+                word.rad3.consonant(rad3C);
                 break;
+
+//             case pro_she:
+//             case pro_dualF:
+//                 if ( word.rad3.consonant() === ar_Y ) {
+//                     word.rad2.vowel( "" );
+//                     word.rad3 = [];
+//                 } else {
+//                     word.rad2.vowel( ar_i );
+//                     word.rad3.consonant( ar_Y );
+//                     word.rad3.vowel( "" );
+//                 }
+//                 break;
+
+//             default:
+//                 word.rad2.vowel( ar_i );
+//                 word.rad3.consonant( ar_Y );
+//                 word.rad3.vowel( "" );
+//                 break;
             }
 
     } else { //assume imperfect
@@ -1026,9 +1068,9 @@ var enText = "",
     vowelOut = "";
 
     if ( word.enTense === "imperfect" ) {
-        enText = objRefs.query(word.arRoot, word.formNum, "ImperfectRad2Vowel")
+        enText = objRefs.query(word.arRoot, word.formNum, "ImperfectRad2Vowel");
     } else if ( word.enTense === "perfect" ) {
-        enText = objRefs.query(word.arRoot, word.formNum, "PerfectRad2Vowel")
+        enText = objRefs.query(word.arRoot, word.formNum, "PerfectRad2Vowel");
     }
 
     if ( enText === undefined ) {

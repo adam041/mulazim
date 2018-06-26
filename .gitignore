@@ -1,0 +1,6 @@
+*.txt*
+*garbage*
+*.bbprojectsettings
+etl/node_modules
+
+*.bbprojectsettings

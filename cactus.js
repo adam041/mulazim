@@ -8,6 +8,9 @@ $( function() {
     $( "#tabs" ).tabs();
 } );
 
+//document ready scripts for multicactus.html
+readyPlayer2();
+
 $('#menuTable tbody td:first-child').each(function() {
     $("#menuOfRoots").append("<li><div>" +  $(this).text() + "</div></li>");
 });
@@ -764,8 +767,7 @@ if ( strWord === undefined ) {
     return "hailHamza did not receive valid string input";
 }
 
-    var strWord = strWord,
-        index = -1,
+    var index = -1,
         charX = strWord.charAt(0),
         charPrior = "",
         charNext = "",
