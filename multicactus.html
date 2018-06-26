@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
     <title>Cactus Subject View</title>
 
@@ -34,72 +34,77 @@
 <div id="accordion">
     <h3>Form 1 <span class="spanTran"></span> </h3>
     <div class="accFormDiv">insert content here</div>
-    <h3>Form 2 <span class="spanTran"><span> </h3>
+    <h3>Form 2 <span class="spanTran"></span> </h3>
     <div class="accFormDiv">insert content here</div>
-    <h3>Form 3 <span class="spanTran"><span> </h3>
+    <h3>Form 3 <span class="spanTran"></span> </h3>
     <div class="accFormDiv">insert content here</div>
-    <h3>Form 4 <span class="spanTran"><span> </h3>
+    <h3>Form 4 <span class="spanTran"></span> </h3>
     <div class="accFormDiv">insert content here</div>
-    <h3>Form 5 <span class="spanTran"><span> </h3>
+    <h3>Form 5 <span class="spanTran"></span> </h3>
     <div class="accFormDiv">insert content here</div>
-    <h3>Form 6 <span class="spanTran"><span> </h3>
+    <h3>Form 6 <span class="spanTran"></span> </h3>
     <div class="accFormDiv">insert content here</div>
-    <h3>Form 7 <span class="spanTran"><span> </h3>
+    <h3>Form 7 <span class="spanTran"></span> </h3>
     <div class="accFormDiv">insert content here</div>
-    <h3>Form 8 <span class="spanTran"><span> </h3>
+    <h3>Form 8 <span class="spanTran"></span> </h3>
     <div class="accFormDiv">insert content here</div>
-    <h3>Form 9 <span class="spanTran"><span> </h3>
+    <h3>Form 9 <span class="spanTran"></span> </h3>
     <div class="accFormDiv">insert content here</div>
-    <h3>Form 10 <span class="spanTran"><span> </h3>
+    <h3>Form 10 <span class="spanTran"></span> </h3>
     <div class="accFormDiv">insert content here</div>
 </div>
 
 <hr>
 
-<div class="hideMe">
+<div class="dideMe">
 
     <div id="divTemplates">
 
     <table id="fTableTemplate">
-        <tbody>
-            <tr> <th colspan="2">Active</th></tr>
+            <tr> <th colspan="2">ACTIVE</th></tr>
+            <tr> <th>Subjunctive</th>
+                 <th>Perfect</th> </tr>
             <tr>    <td class="subjunctiveActive">subjunctive,active</td>
                     <td class="perfectActive">perfect,active</td> </tr>
+            <tr> <th>Jussive</th>
+                 <th>Imperfect</th> </tr>
             <tr>    <td class="jussiveActive">jussive,active</td>
                     <td class="imperfectActive">imperfect,active</td> </tr>
 
-            <tr> <th colspan="2">Other</th></tr>
+            <tr> <th colspan="2">OTHER</th></tr>
+            <tr> <th>Imperative</th> <th>Other</th> </tr>
+
             <tr>    <td class="imperative">imperative</td>	<td class="nouns">other</td> </tr>
 
-            <tr> <th colspan="2">Passive</th></tr>
+            <tr> <th colspan="2">PASSIVE</th></tr>
+            <tr> <th>Subjunctive</th> <th>Perfect</th> </tr>
             <tr>    <td class="subjunctivePassive">subjunctive,passive</td>
                     <td class="perfectPassive">perfect,passive</td> </tr>
+            <tr> <th>Jussive</th> <th>Imperfect</th> </tr>
             <tr>    <td class="jussivePassive">jussive,passive</td>
                     <td class="imperfectPassive">imperfect,passive</td> </tr>
-        </tbody>
     </table>
 
     <hr>
 
     <table id="subTableTemplate">
         <thead>
-        <tr>    <th>Plural</th>	<th>Dual</th>	<th>Singular</th>
-                <th colspan="2">Subject</th>	</tr>
+            <tr>  <th>Plural</th>	<th>Dual</th> <th>Singular</th> <th colspan="2">Subject</th> </tr>
         </thead>
 
         <tbody>
             <tr> <td class="theyM"></td>	<td class="dualM"></td>	<td class="he"></td>   <th>m</th> <th>3</th> </tr>
-            <tr> <td class="theyF"></td>	<td class="dualF"></td>	<td class="she"></td>   <th>f</th> <th></th>  </tr>
+            <tr> <td class="theyF"></td>	<td class="dualF"></td>	<td class="she"></td>  <th>f</th> <th></th>  </tr>
             <tr> <td class="vousM"></td>	<td class="dualYou"></td>	<td class="youM"></td>   <th>m</th> <th>2</th> </tr>
             <tr> <td class="vousF"></td>	<td class="dualYou"></td>	<td class="youF"></td>   <th>f</th> <th></th>  </tr>
+
             <tr> <td class="we"></td>	<td class="dual1">---</td>	<td class="i"></td>   <th></th>  <th>1</th> </tr>
         </tbody>
+    </table>
     <!-- Notes:
             * CSS away the inner border of th cells
-
             * Dual You coded as single gendered, but data maybe exists for both
     -->
-    </table>
 
     </div>
 </div>
@@ -121,13 +126,16 @@
             <th>Form</th>               <th>Preposition</th>        <th>Root</th>           <th>Masdar</th>
             <th>ImperfectRad2Vowel</th> <th>PerfectRad2Vowel</th>   <th>Translation</th>    <th>Comment</th>
         </tr> </thead>
-        <tbody><tr>
+        <tbody>
+        <tr>
             <td>1</td>      <td></td>      <td>فعل</td>            <td></td>
             <td>a</td>      <td>a</td>     <td>do a process</td>   <td></td> </tr>
 
+        <tr>
             <td>2</td>      <td></td>      <td>فعل</td>         <td>ي</td>
             <td></td>       <td></td>      <td>activate</td>    <td></td>   </tr>
 
+        <tr>
             <td>6</td>      <td></td>       <td>فعل</td>        <td></td>
             <td></td>       <td></td>       <td>interact</td>   <td></td>   </tr>
         </tbody>

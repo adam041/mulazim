@@ -9,7 +9,6 @@ function readyPlayer2() {
     $( "#kickIt" ).button();
     $( "#kickIt" ).click( function( event ) {
         kicker(ar_Do); //* pull from select *
-        console.log("kick it");
     } );
 }
 
@@ -27,8 +26,8 @@ function kicker(arRoot) {
         $( "#fTableDraft" ).html( fTable );
 
         //insert completed subTables, active
-    //     subTable = sTable(arRoot, "subjunctive", true, formNum);
-        $( "#fTableDraft .subjunctiveActive" ).html( $( "#subTableTemplate" ).html() );
+        // subTable = sTable(arRoot, "subjunctive", true, formNum);
+        $( "#fTableDraft .subjunctiveActive" ).html( $( "#subTableTemplate" ).html().wrap("<table>") );
 
         subTable = sTable(arRoot, "perfect", true, formNum);
         $( "#fTableDraft .perfectActive" ).html( subTable );
@@ -45,8 +44,8 @@ function kicker(arRoot) {
             //* subjunctive active / passive
 
         //insert completed subTables, passive
-    //     subTable = sTable(arRoot, "subjunctive", false, formNum);
-        $( "#fTableDraft .subjunctivePassive" ).html(  $( "#subTableTemplate" ).html() );
+        // subTable = sTable(arRoot, "subjunctive", false, formNum);
+        $( "#fTableDraft .subjunctivePassive" ).html(  $( "#subTableTemplate" ).html().wrap("<table>") );
 
         subTable = sTable(arRoot, "perfect", false, formNum);
         $( "#fTableDraft .perfectPassive" ).html( subTable );
@@ -59,11 +58,15 @@ function kicker(arRoot) {
 
 
         //write draft fTableDraft to DOM
-        fTable = $( "#fTableDraft" ).html();
+        fTable = $( "#fTableDraft" ).html().wrap("<table>");
         $( "#accordion .accFormDiv").eq(formNum - 1).html(fTable);
 
     //loop to next form
     }
+
+    //* fix styling because I don't have CSS set up yet
+    $( "#accordion .accFormDiv").css({"height":"100%"});
+
 }
 
 
@@ -75,8 +78,9 @@ function sTable(arRoot, enTense, isActive, formNum) {
     $( "#subTableDraft" ).html( subTable );
 
 //loop through all possible subjects
-    var arrSubjects = ["theyM","dualM","he","theyF","dualF","she","vousM","dualYou","youM","vousF","dualYou","youF","we","i"];
-//         arrSubjects = ["theyM"];
+    var arrSubjects = ["theyM","dualM","he","theyF","dualF","she",
+                       "vousM","dualYou","youM","vousF","dualYou","youF",
+                       "we","i"];
     var cnjdVerb = "";
 
     arrSubjects.forEach( function(value, index){
@@ -87,5 +91,5 @@ function sTable(arRoot, enTense, isActive, formNum) {
 
 //return draft
 subTable = $( "#subTableDraft" ).html();
-return subTable;
+return subTable.wrap("<table>");
 }
