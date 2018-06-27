@@ -129,16 +129,16 @@ var word = new Word(arRoot, enTense, isActive, arSubject);
     drafts.push(draft);
 
 //get regular verb conj, for all 10 forms
-    draft = cnjRegularVerb(word);
+    draft = cnjRegularVerb(draft);
     drafts.push(draft);
 
 //adjust conj if irregular, for all 10 forms
-    draft = cnjIrregularVerb(word);
+    draft = cnjIrregularVerb(draft);
     drafts.push(draft);
 
 
 //apply QA routines
-    draft = qaVerb(word);
+    draft = qaVerb(draft);
     drafts.push(draft);
 
 console.log(drafts);
