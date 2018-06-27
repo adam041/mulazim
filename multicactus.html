@@ -20,7 +20,6 @@
     <meta charset="utf-8"/>
 </head>
 
-
 <body>
 
     <select id="chosenRoot" data-placeholder="Choose a Root..." class="chosen-select" tabindex="1">
@@ -60,7 +59,107 @@
 
     <div id="divTemplates">
 
-    <table id="fTableTemplate">
+    <div id="fTableTemplate">
+<!--
+    <div class="fAccordion">
+ -->
+        <h3>Active</h3>
+            <div class="accActive">
+                <table>
+                <tr>
+                    <th>Subjunctive</th> <th>Perfect</th> <th>Jussive</th> <th>Imperfect</th>
+                </tr>
+
+                <tr>
+                    <td class="subjunctiveActive">subjunctive,active</td>
+                    <td class="perfectActive">perfect,active</td>
+                    <td class="jussiveActive">jussive,active</td>
+                    <td class="imperfectActive">imperfect,active</td>
+                </tr> </table>
+            </div>
+
+        <h3>Other</h3>
+            <div class="accOther">
+                <table>
+                    <tr>
+                        <th>Imperative</th> <th>Nouns</th>
+                    </tr>
+
+                    <tr>
+                        <td>foo</td> <td>bar</td>
+                    </tr>
+                 </table>
+            </div>
+
+        <h3>Passive</h3>
+            <div class="accPassive">
+                <table>
+                <tr>
+                    <th>Subjunctive</th> <th>Perfect</th> <th>Jussive</th> <th>Imperfect</th>
+                </tr>
+
+                <tr>
+                    <td class="subjunctivePassive">subjunctive,passive</td>
+                    <td class="perfectPassive">perfect,passive</td>
+                    <td class="jussivePassive">jussive,passive</td>
+                    <td class="imperfectPassive">imperfect,passive</td>
+                </tr> </table>
+            </div>
+<!--
+    </div>
+ -->
+    </div>
+
+
+<!-- tabs variant -->
+<!--
+    <div id="draftTabs">
+
+        <div id="divHeaderTabs">
+        <ul>
+            <li><a href="#tabs-1">Active</a></li>
+            <li><a href="#tabs-2">Passive</a></li>
+            <li><a href="#tabs-3">Other</a></li>
+        </ul>
+        </div>
+
+        <div id="tabs-1">
+            <table>
+                <tr> <th>Subjunctive</th>   <th>Perfect</th>
+                     <th>Jussive</th>       <th>Imperfect</th> </tr>
+
+                <tr>    <td class="subjunctiveActive">subjunctive,active</td>
+                        <td class="perfectActive">perfect,active</td>
+                        <td class="jussiveActive">jussive,active</td>
+                        <td class="imperfectActive">imperfect,active</td> </tr>
+            </table>
+        </div>
+
+        <div id="tabs-2">
+            <table>
+                <tr> <th>Subjunctive</th>   <th>Perfect</th>
+                     <th>Jussive</th>       <th>Imperfect</th> </tr>
+
+                <tr>    <td class="subjunctivePassive">subjunctive,passive</td>
+                        <td class="perfectPassive">perfect,passive</td>
+                        <td class="jussivePassive">jussive,passive</td>
+                        <td class="imperfectPassive">imperfect,passive</td> </tr>
+            </table>
+        </div>
+
+        <div id="tabs-3">
+            <table>
+                <tr> <th>Imperative</th>   <th>Other</th>  </tr>
+
+                <tr> <td>foo</td> <td>bar</td> </tr>
+            </table>
+        </div>
+
+    </div>
+ -->
+
+  <!--
+  <table id="fTableTemplate">
             <tr> <th colspan="2">ACTIVE</th></tr>
             <tr> <th>Subjunctive</th>
                  <th>Perfect</th> </tr>
@@ -84,6 +183,7 @@
             <tr>    <td class="jussivePassive">jussive,passive</td>
                     <td class="imperfectPassive">imperfect,passive</td> </tr>
     </table>
+ -->
 
     <hr>
 
@@ -93,12 +193,13 @@
         </thead>
 
         <tbody>
-            <tr> <td class="theyM"></td>	<td class="dualM"></td>	<td class="he"></td>   <th>m</th> <th>3</th> </tr>
-            <tr> <td class="theyF"></td>	<td class="dualF"></td>	<td class="she"></td>  <th>f</th> <th></th>  </tr>
-            <tr> <td class="vousM"></td>	<td class="dualYou"></td>	<td class="youM"></td>   <th>m</th> <th>2</th> </tr>
-            <tr> <td class="vousF"></td>	<td class="dualYou"></td>	<td class="youF"></td>   <th>f</th> <th></th>  </tr>
+            <tr> <td class="theyM"></td>	<td class="dualM"></td>	<td class="he"></td>   <th>3/m</th> <!-- <th>3</th> --> </tr>
+            <tr> <td class="theyF"></td>	<td class="dualF"></td>	<td class="she"></td>  <th>3/f</th> <!-- <th></th> -->  </tr>
 
-            <tr> <td class="we"></td>	<td class="dual1">---</td>	<td class="i"></td>   <th></th>  <th>1</th> </tr>
+            <tr> <td class="vousM"></td>	<td class="dualYou"></td>	<td class="youM"></td>   <th>2/m</th> <!-- <th>2</th> --> </tr>
+            <tr> <td class="vousF"></td>	<td class="dualYou"></td>	<td class="youF"></td>   <th>2/f</th> <!-- <th></th> -->  </tr>
+
+            <tr> <td class="we"></td>	<td class="dual1">---</td>	<td class="i"></td>   <!-- <th></th>  --> <th>&nbsp&nbsp1</th> </tr>
         </tbody>
     </table>
     <!-- Notes:
@@ -111,14 +212,19 @@
 
 <div class="showMe">
     <hr>
+
     <div id="divDrafts">
         <!-- staging area for programatically generated content  -->
         <h3>DRAFTS</h3>
+
         <div id="fTableDraft"></div>
         <hr>
         <div id="subTableDraft"></div>
+
     </div>
+
     <hr>
+
     <h3>DATA</h3>
     <table id="dataTable">
         <!--here is some data so initial loading doesn't get dorked up before XHR returned-->

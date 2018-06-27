@@ -1,6 +1,9 @@
-*.txt*
 *garbage*
-*.bbprojectsettings
+*.txt
+*.txt-bak
+worklog.txt
+*.bbproject*
 etl/node_modules
-
+etl/quizlet.json
+etl/package-lock.json
 *.bbprojectsettings
