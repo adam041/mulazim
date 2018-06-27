@@ -24,6 +24,14 @@ function readyPlayer2() {
     $( "#kickIt" ).click( function( event ) {
         kicker(ar_Do); //* pull from select *
     } );
+
+    $("#chosenRoot").chosen().change(function(){
+        kicker( $("#chosenRoot").val() );
+    });
+
+    //ersatz CSS
+    $(".chosen-container").css({"width":"60%", "text-align":"right"});
+
 }
 
 
@@ -31,7 +39,10 @@ function kicker(arRoot) {
 //draw root/form appropriate tables within accordion divs
 
 //loop through forms
-    var fTable = "";
+    var fTable = "",
+        formLabelEn = "",
+        formLabelAr = "",
+        formNumAr = "٠";
 
     for (var formNum = 1; formNum <= 10; formNum++) {
 
@@ -75,18 +86,32 @@ function kicker(arRoot) {
         fTable = $( "#fTableDraft" ).html().wrap("<table>");
         $( "#accordion .accFormDiv").eq(formNum - 1).html(fTable);
 
-        //re-init accordion
-//         $( function() {
-//             $( ".fAccordion" ).accordion();
-//             //for multicactus.html, not needed for cactus.html
-//         } );
+        formLabelEn = objRefs.query(arRoot, formNum, "Translation");
+
+        if ( formLabelEn !== "" ) {
+            formLabelEn = " of " + formLabelEn;
+        } else {
+            formLabelEn = "(notational)";
+        }
+
+        if (formNum < 10) {
+            formNumAr = String.fromCharCode(formNum + 1776);
+        } else {
+            formNumAr = "١٠";
+        }
+
+
+        formLabelAr = ar_LM + arRoot + " - وزن " + formNumAr + ar_LM;
+
+        $( "#accordion .accFormSpan").eq(formNum - 1).html(formLabelEn + " - " + formLabelAr);
+
 
     //loop to next form
     }
 
     //* fix styling because I don't have CSS set up yet
     $( "#accordion .accFormDiv").css({"height":"100%"});
-
+//     $( "#chosenRoot").css({"width":"100%"});
 }
 
 

@@ -9,7 +9,9 @@ $( function() {
 } );
 
 //document ready scripts for multicactus.html
-readyPlayer2();
+if (typeof readyPlayer2 === "function") {
+    readyPlayer2();
+}
 
 $('#menuTable tbody td:first-child').each(function() {
     $("#menuOfRoots").append("<li><div>" +  $(this).text() + "</div></li>");
