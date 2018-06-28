@@ -41,7 +41,8 @@ function kicker(arRoot) {
     var fTable = "",
         formLabelEn = "",
         formLabelAr = "",
-        formNumAr = "٠";
+        formNumAr = "٠",
+        cnjStem = "";
 
     for (var formNum = 1; formNum <= 10; formNum++) {
 
@@ -99,10 +100,11 @@ function kicker(arRoot) {
             formNumAr = "١٠";
         }
 
+        cnjStem = whole(cnjVerb1( arRoot, "perfect", true,  pro_he, formNum ));
 
-        formLabelAr = ar_LM + arRoot + " - وزن " + formNumAr + ar_LM;
+        formLabelAr = ar_LM + cnjStem + " <<< وزن " + formNumAr + " " + arRoot + ar_LM;
 
-        $( "#accordion .accFormSpan").eq(formNum - 1).html(formLabelEn + " - " + formLabelAr);
+        $( "#accordion .accFormSpan").eq(formNum - 1).html(formLabelEn + " >>> " + formLabelAr);
 
 
     //loop to next form
