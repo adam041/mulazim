@@ -1,38 +1,37 @@
 function readyPlayer2() {
 //functions to enable multicactus.html (or whatever becomes of 2nd page)
 
-    $( function() {
-        $( "#accordion" ).accordion();
-        //for multicactus.html, not needed for cactus.html
-    } );
 
     $( function() {
-        $( ".fAccordion" ).accordion();
-        //for multicactus.html, not needed for cactus.html
-    } );
+        $( "#accordion" ).accordion({
+        collapsible: true
+        });
+    })
 
-    $( function() {
-        $( ".fAccordion" ).accordion();
-        //for multicactus.html, not needed for cactus.html
-    } );
-
-    $( function() {
-        $( "#draftTabs" ).tabs();
-    } );
-
-    $( "#kickIt" ).button();
-    $( "#kickIt" ).click( function( event ) {
-        kicker(ar_Do); //* pull from select *
-    } );
+//     $( function() {
+//         $( "#draftTabs" ).tabs();
+//     } );
+//
+//     $( "#kickIt" ).button();
+//     $( "#kickIt" ).click( function( event ) {
+//         kicker(ar_Do); //* pull from select *
+//     } );
 
     $("#chosenRoot").chosen().change(function(){
         kicker( $("#chosenRoot").val() );
     });
 
+    kicker(ar_Do); //* pull from select *
+
     //ersatz CSS
     $(".chosen-container").css({"width":"60%", "text-align":"right"});
-
+    $("td td").css({"padding":"5px", "text-align":"right"});
+    $("td th").css({"padding":"1px", "text-align":"center"});
+    $("table").css({"border-collapse":"collapse"});
+    $("h4").css({"padding":"1px","margin":"1px" });
+    $( "#accordion .accFormDiv").css({"height":"100%"});
 }
+
 
 
 function kicker(arRoot) {
@@ -89,7 +88,7 @@ function kicker(arRoot) {
         formLabelEn = objRefs.query(arRoot, formNum, "Translation");
 
         if ( formLabelEn !== "" ) {
-            formLabelEn = " of " + formLabelEn;
+            formLabelEn = "(" + formLabelEn + ")";
         } else {
             formLabelEn = "(notational)";
         }
@@ -108,10 +107,6 @@ function kicker(arRoot) {
 
     //loop to next form
     }
-
-    //* fix styling because I don't have CSS set up yet
-    $( "#accordion .accFormDiv").css({"height":"100%"});
-//     $( "#chosenRoot").css({"width":"100%"});
 }
 
 
