@@ -29,6 +29,9 @@ function readyPlayer2() {
     //conjugate default root on load, then close container
     kicker(ar_Do);
     changeView();
+
+    //kludge
+    $( ".accOther").hide()
 }
 
 
