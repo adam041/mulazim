@@ -34,7 +34,7 @@ function readyPlayer2() {
 
 function changeView() {
 
-    var view = $("#chosenView").val();
+    var newView = $("#chosenView").val();
 
     //hide all by default
     $( ".jussiveActive").hide()
@@ -44,7 +44,7 @@ function changeView() {
 
     $( ".accOther").show()
 
-    switch (view) {
+    switch (newView) {
 
         case "portrait":
             $( ".jussiveActive:nth-child(even)").show();
