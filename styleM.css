@@ -1,0 +1,28 @@
+.chosen-container {
+    width: 60%;
+    text-align: right;
+/* resume work here */
+}
+
+td td {
+    padding: 5px;
+    text-align: right;
+}
+
+td th {
+    padding: 1px;
+    text-align: center;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+h4 {
+    padding: 1px;
+    margin: 1px;
+}
+
+#accordion .accFormDiv {
+    height: 100%;
+}

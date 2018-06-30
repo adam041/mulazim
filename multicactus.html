@@ -3,6 +3,7 @@
 <head>
     <title></title>
 
+    <link rel="stylesheet" type="text/css" href="styleM.css">
     <link rel="stylesheet" type="text/css" href="style.css">
 
     <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
@@ -26,6 +27,12 @@
         <option value=""></option>
         <option selected value="فعل">do / فعل</option>
         <!-- programatically load more data from backend -->
+    </select>
+
+   <select id="chosenView" class="chosen-select" tabindex="2">
+        <option selected value="square">square</option>
+        <option value="portrait">portrait</option>
+        <option value="landscape">landscape</option>
     </select>
     <br>
 <!--
@@ -65,16 +72,22 @@
         <h4>Active</h4>
             <div class="accActive">
                 <table>
+<!--
                 <tr>
                     <th>Subjunctive</th> <th>Perfect</th> <th>Jussive</th> <th>Imperfect</th>
                 </tr>
-
+ -->
                 <tr>
                     <td class="subjunctiveActive">subjunctive,active</td>
                     <td class="perfectActive">perfect,active</td>
                     <td class="jussiveActive">jussive,active</td>
                     <td class="imperfectActive">imperfect,active</td>
-                </tr> </table>
+                </tr>
+                <tr>
+                    <td class="subjunctiveActive">subjunctive,active</td>
+                    <td class="jussiveActive">jussive,active</td>
+                </tr>
+                </table>
             </div>
 
         <h4>Other</h4>
@@ -110,16 +123,23 @@
         <h4>Passive</h4>
             <div class="accPassive">
                 <table>
+<!--
                 <tr>
                     <th>Subjunctive</th> <th>Perfect</th> <th>Jussive</th> <th>Imperfect</th>
                 </tr>
-
+-->
                 <tr>
                     <td class="subjunctivePassive">subjunctive,passive</td>
                     <td class="perfectPassive">perfect,passive</td>
                     <td class="jussivePassive">jussive,passive</td>
                     <td class="imperfectPassive">imperfect,passive</td>
-                </tr> </table>
+                </tr>
+                <tr>
+                    <td class="subjunctiveActive">subjunctive,active</td>
+                    <td class="jussiveActive">jussive,active</td>
+                </tr>
+
+                </table>
             </div>
     </div>
 
@@ -202,6 +222,7 @@
 
     <table id="subTableTemplate">
         <thead>
+            <tr>  <th class="subTableTense" colspan="4"></th>  </tr>
             <tr>  <th>Plural</th>	<th>Dual</th> <th>Singular</th>  </tr>
         </thead>
 

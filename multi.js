@@ -21,18 +21,45 @@ function readyPlayer2() {
         kicker( $("#chosenRoot").val() );
     });
 
-    kicker(ar_Do); //* pull from select *
+    $("#chosenView").chosen().change(function(){
+        changeView();
+    });
 
-    //ersatz CSS
-    $(".chosen-container").css({"width":"60%", "text-align":"right"});
-    $("td td").css({"padding":"5px", "text-align":"right"});
-    $("td th").css({"padding":"1px", "text-align":"center"});
-    $("table").css({"border-collapse":"collapse"});
-    $("h4").css({"padding":"1px","margin":"1px" });
-    $( "#accordion .accFormDiv").css({"height":"100%"});
+
+    //conjugate default root on load, then close container
+    kicker(ar_Do);
 }
 
 
+function changeView() {
+
+    var view = $("#chosenView").val();
+
+    //hide all by default
+    $( ".jussiveActive").hide()
+    $( ".subjunctiveActive").hide()
+    $( ".jussivePassive").hide()
+    $( ".subjunctivePassive").hide()
+
+    switch (view) {
+
+        case "portrait":
+            $( ".jussiveActive:nth-child(even)").show();
+            $( ".subjunctiveActive:nth-child(even)").show();
+            $( ".jussivePassive:nth-child(even)").show();
+            $( ".subjunctivePassive:nth-child(even)").show();
+            break;
+
+        case "landscape":
+            $( ".jussiveActive:nth-child(odd)").show()
+            $( ".subjunctiveActive:nth-child(odd)").show()
+            $( ".jussivePassive:nth-child(odd)").show()
+            $( ".subjunctivePassive:nth-child(odd)").show()
+            break;
+
+        case "square":  //do nothing, happens by default
+    }
+}
 
 function kicker(arRoot) {
 //draw root/form appropriate tables within accordion divs
@@ -109,6 +136,21 @@ function kicker(arRoot) {
 
     //loop to next form
     }
+
+    $( "#accordion .accFormSpan").eq(formNum - 1).html(formLabelEn + " >>> " + formLabelAr);
+
+    // show/hide jussive & subjunctive subTables, as appropriate to view
+    $( ".jussiveActive:nth-child(even)").hide()
+    $( ".subjunctiveActive:nth-child(even)").hide()
+
+    $( ".jussiveActive:nth-child(odd)").hide()
+    $( ".subjunctiveActive:nth-child(odd)").hide()
+
+    $( ".jussivePassive:nth-child(even)").hide()
+    $( ".subjunctivePassive:nth-child(even)").hide()
+
+    $( ".jussivePassive:nth-child(odd)").hide()
+    $( ".subjunctivePassive:nth-child(odd)").hide()
 }
 
 
@@ -123,7 +165,14 @@ function sTable(arRoot, enTense, isActive, formNum) {
     var arrSubjects = ["theyM","dualM","he","theyF","dualF","she",
                        "vousM","dualYou","youM","vousF","dualYou","youF",
                        "we","i"];
-    var cnjdVerb = "";
+    var cnjdVerb = "",
+        camelTense = enTense;
+
+        if (enTense.length > 2) {
+            camelTense = enTense.charAt(0).toUpperCase() + enTense.slice(1);
+        }
+
+    $("#subTableDraft .subTableTense").html(camelTense);
 
     arrSubjects.forEach( function(value, index){
 //         cnjdVerb = whole( cnjVerb( arRoot, enTense, isActive, eval("pro_" + value) )[formNum] );
@@ -134,7 +183,7 @@ function sTable(arRoot, enTense, isActive, formNum) {
 
 //return draft
 subTable = $( "#subTableDraft" ).html();
-return subTable.wrap("<table>");
+return subTable.wrap("<table class='subTable'>");
 }
 
 
