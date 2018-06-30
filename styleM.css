@@ -1,16 +1,25 @@
-.chosen-container {
-    width: 60%;
-    text-align: right;
-/* resume work here */
+#topTable {
+    min-width: 80%;
+}
+
+#topTable td {
+/*     min-width: 40%; */
+    display: inline;
+}
+.chosen-single, .chosen-container, .chosen-select {
+    width: 10em;
+    padding: 5px;
 }
 
 td td {
     padding: 5px;
+    min-width:3em;
     text-align: right;
 }
 
 td th {
     padding: 1px;
+    min-width:3em;
     text-align: center;
 }
 

@@ -22,18 +22,24 @@
 </head>
 
 <body>
-    <label>Choose a root: </label>
-    <select id="chosenRoot" data-placeholder="Choose a Root..." class="chosen-select" tabindex="1">
-        <option value=""></option>
-        <option selected value="فعل">do / فعل</option>
-        <!-- programatically load more data from backend -->
-    </select>
-
-   <select id="chosenView" class="chosen-select" tabindex="2">
-        <option selected value="square">square</option>
-        <option value="portrait">portrait</option>
-        <option value="landscape">landscape</option>
-    </select>
+    <div id="divTopper">
+    <table id="topTable"> <tr>
+        <td> <label>Choose a root: </label> </td>
+        <td>
+             <select id="chosenRoot" class="chosen-select" tabindex="1">
+                <option selected value="فعل">do / فعل</option>
+                <!-- programatically load more data from backend -->
+            </select>
+        </td>
+        <td>
+            <select id="chosenView" class="chosen-select" tabindex="2">
+                <option selected value="square">square</option>
+                <option value="portrait">portrait</option>
+                <option value="landscape">landscape</option>
+            </select>
+        </td>
+    </tr> </table>
+    </div>
     <br>
 <!--
    <button class="ui-button ui-widget ui-corner-all" id="kickIt">kick it</button>
@@ -41,25 +47,25 @@
 
 <div id="accordion">
     <h3>Form 1 <span class="accFormSpan"></span> </h3>
-    <div class="accFormDiv">insert content here</div>
+    <div class="accFormDiv">...</div>
     <h3>Form 2 <span class="accFormSpan"></span> </h3>
-    <div class="accFormDiv">insert content here</div>
+    <div class="accFormDiv">...</div>
     <h3>Form 3 <span class="accFormSpan"></span> </h3>
-    <div class="accFormDiv">insert content here</div>
+    <div class="accFormDiv">...</div>
     <h3>Form 4 <span class="accFormSpan"></span> </h3>
-    <div class="accFormDiv">insert content here</div>
+    <div class="accFormDiv">...</div>
     <h3>Form 5 <span class="accFormSpan"></span> </h3>
-    <div class="accFormDiv">insert content here</div>
+    <div class="accFormDiv">...</div>
     <h3>Form 6 <span class="accFormSpan"></span> </h3>
-    <div class="accFormDiv">insert content here</div>
+    <div class="accFormDiv">...</div>
     <h3>Form 7 <span class="accFormSpan"></span> </h3>
-    <div class="accFormDiv">insert content here</div>
+    <div class="accFormDiv">...</div>
     <h3>Form 8 <span class="accFormSpan"></span> </h3>
-    <div class="accFormDiv">insert content here</div>
+    <div class="accFormDiv">...</div>
     <h3>Form 9 <span class="accFormSpan"></span> </h3>
-    <div class="accFormDiv">insert content here</div>
+    <div class="accFormDiv">...</div>
     <h3>Form 10 <span class="accFormSpan"></span> </h3>
-    <div class="accFormDiv">insert content here</div>
+    <div class="accFormDiv">...</div>
 </div>
 
 <hr>
@@ -69,8 +75,9 @@
     <div id="divTemplates">
 
     <div id="fTableTemplate">
-        <h4>Active</h4>
             <div class="accActive">
+            <h4>Active</h4>
+
                 <table>
 <!--
                 <tr>
@@ -90,8 +97,9 @@
                 </table>
             </div>
 
-        <h4>Other</h4>
             <div class="accOther">
+            <h4>Other</h4>
+
                 <table>
                     <tr>
                         <th>Imperative</th> <th>Nouns</th>
@@ -120,8 +128,9 @@
                  </table>
             </div>
 
-        <h4>Passive</h4>
             <div class="accPassive">
+            <h4>Passive</h4>
+
                 <table>
 <!--
                 <tr>

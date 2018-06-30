@@ -28,6 +28,7 @@ function readyPlayer2() {
 
     //conjugate default root on load, then close container
     kicker(ar_Do);
+    changeView();
 }
 
 
@@ -40,6 +41,8 @@ function changeView() {
     $( ".subjunctiveActive").hide()
     $( ".jussivePassive").hide()
     $( ".subjunctivePassive").hide()
+
+    $( ".accOther").show()
 
     switch (view) {
 
@@ -57,9 +60,12 @@ function changeView() {
             $( ".subjunctivePassive:nth-child(odd)").show()
             break;
 
-        case "square":  //do nothing, happens by default
+        case "square":
+            $( ".accOther").hide()
+            break;
     }
 }
+
 
 function kicker(arRoot) {
 //draw root/form appropriate tables within accordion divs
@@ -212,7 +218,6 @@ var word = new Word(arRoot, enTense, isActive, arSubject);
     draft = qaVerb(draft);
     drafts.push(draft);
 
-console.log(drafts);
+// console.log(drafts);
 return drafts.last();
-
 }
